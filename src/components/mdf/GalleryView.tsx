@@ -19,77 +19,91 @@ interface Wallpaper {
 
 const WALLPAPERS: Wallpaper[] = [
   {
-    id: 'w1',
-    title: 'Mahabali Hanuman Ji',
-    subtitle: 'Supreme Celibate & Jitendriya',
-    category: 'hanuman',
-    bgGradient: 'from-amber-600 via-amber-900 to-black',
-    symbol: '🔱',
-    quote: 'मनोजवं मारुततुल्यवेगं जितेन्द्रियं बुद्धिमतां वरिष्ठम्',
-    author: 'Ramayana • Sri Hanuman',
+    id: 'w_train_insane',
+    title: 'TRAIN INSANE',
+    subtitle: 'OR REMAIN THE SAME',
+    category: 'warrior',
+    bgGradient: 'from-amber-600 via-rose-950 to-black',
+    symbol: '⚡',
+    quote: 'Suffer the temporary burn of discipline, or suffer the eternal poison of relapse.',
+    author: 'Vedic Warrior Creed',
     accentColor: '#f59e0b',
   },
   {
-    id: 'w2',
-    title: 'Mahadev Transmutation',
-    subtitle: 'Lord of Ascetics & Third Eye',
-    category: 'shiva',
-    bgGradient: 'from-indigo-900 via-purple-950 to-black',
-    symbol: '🌙',
-    quote: 'The fire of celibacy burns the illusions of the senses into sacred ashes.',
-    author: 'Shiva Purana',
-    accentColor: '#818cf8',
-  },
-  {
-    id: 'w3',
-    title: 'Swami Vivekananda',
-    subtitle: 'The Power of Pure Semen',
+    id: 'w_keep_moving',
+    title: 'KEEP MOVING',
+    subtitle: 'DO NOT LOOK BACK',
     category: 'warrior',
-    bgGradient: 'from-orange-700 via-amber-950 to-black',
-    symbol: '⚡',
-    quote: 'Every boy should be trained to practice complete Brahmacharya. Then only will tremendous power come.',
+    bgGradient: 'from-purple-700 via-indigo-950 to-black',
+    symbol: '🔱',
+    quote: 'When your lower senses scream for cheap pleasure, that is when you take one more step.',
     author: 'Swami Vivekananda',
-    accentColor: '#fbbf24',
+    accentColor: '#a855f7',
   },
   {
-    id: 'w4',
-    title: 'The Sacred Ojas Armor',
-    subtitle: 'Invincible Spiritual Force',
-    category: 'quotes',
-    bgGradient: 'from-yellow-700 via-zinc-950 to-black',
-    symbol: '🛡️',
-    quote: 'शुक्रं हि परमं तेजः सर्वेन्द्रियसुखावहम् — Semen is the supreme radiance.',
+    id: 'w_empire',
+    title: 'BUILD AN EMPIRE',
+    subtitle: 'CONQUER YOUR SENSES',
+    category: 'hanuman',
+    bgGradient: 'from-yellow-600 via-amber-950 to-black',
+    symbol: '👑',
+    quote: 'He who conquers a thousand men in battle is great, but he who conquers himself is the supreme victor.',
+    author: 'Ramayana & Gita',
+    accentColor: '#eab308',
+  },
+  {
+    id: 'w_unstoppable',
+    title: 'BE UNSTOPPABLE',
+    subtitle: 'OJAS OVER IMPULSE',
+    category: 'shiva',
+    bgGradient: 'from-red-600 via-orange-950 to-black',
+    symbol: '🔥',
+    quote: 'Every drop of vital energy preserved today becomes invincible intellect tomorrow.',
     author: 'Charaka Samhita',
-    accentColor: '#fef08a',
-  },
-  {
-    id: 'w5',
-    title: 'Urge Slayer & Mind Shield',
-    subtitle: 'Conquer Lower Dopamine',
-    category: 'warrior',
-    bgGradient: 'from-red-950 via-zinc-950 to-black',
-    symbol: '⚔️',
-    quote: 'A lion does not graze grass for temporary hunger. A Sadhak does not waste life essence for 5 seconds of delusion.',
-    author: 'Vedic Sutra',
     accentColor: '#ef4444',
   },
   {
-    id: 'w6',
-    title: 'Brahma Muhurta Dawn',
-    subtitle: '4:00 AM Solar Rebirth',
+    id: 'w_discipline',
+    title: 'DISCIPLINE',
+    subtitle: 'EQUALS TRUE FREEDOM',
     category: 'quotes',
-    bgGradient: 'from-amber-500/80 via-zinc-900 to-black',
+    bgGradient: 'from-cyan-600 via-blue-950 to-black',
     symbol: '🌅',
-    quote: 'He who conquers the morning hours conquers the temptations of the night.',
-    author: 'Ancient Discipline',
-    accentColor: '#f59e0b',
+    quote: 'True freedom is commanding the mind at will, not serving lustful urges.',
+    author: 'Patanjali Yoga Sutra',
+    accentColor: '#06b6d4',
+  },
+  {
+    id: 'w_relentless',
+    title: 'RELENTLESS',
+    subtitle: 'THE LION NEVER QUITS',
+    category: 'quotes',
+    bgGradient: 'from-emerald-600 via-zinc-950 to-black',
+    symbol: '🦁',
+    quote: 'Stand like an iron pillar in the storm of cheap stimulation.',
+    author: 'Vedic Sutra',
+    accentColor: '#10b981',
   },
 ];
 
 export default function GalleryView() {
+  const [streakDays, setStreakDays] = useState(7);
   const [filter, setFilter] = useState<'all' | 'hanuman' | 'shiva' | 'warrior' | 'quotes'>('all');
   const [previewItem, setPreviewItem] = useState<Wallpaper | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('bm_streak_days');
+      if (saved) setStreakDays(parseInt(saved, 10));
+    } catch {}
+
+    const handleStreak = (e: any) => {
+      if (e.detail?.days !== undefined) setStreakDays(e.detail.days);
+    };
+    window.addEventListener('streak-updated', handleStreak);
+    return () => window.removeEventListener('streak-updated', handleStreak);
+  }, []);
 
   const filtered = filter === 'all' ? WALLPAPERS : WALLPAPERS.filter(w => w.category === filter);
 
@@ -201,7 +215,9 @@ export default function GalleryView() {
             onClick={() => setPreviewItem(item)}
           >
             <div className="flex items-center justify-between">
-              <span className="text-2xl drop-shadow-md">{item.symbol}</span>
+              <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[9px] font-black text-amber-300 flex items-center gap-1">
+                <span>🔥 Day {streakDays}</span>
+              </span>
               <span className="p-1.5 rounded-lg bg-black/50 backdrop-blur-md text-zinc-300 group-hover:text-amber-400 transition">
                 <Eye className="w-3.5 h-3.5" />
               </span>

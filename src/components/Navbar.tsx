@@ -185,6 +185,12 @@ function ToolsDrawer({
       href: '#courses',
       icon: Compass,
     },
+    {
+      title: 'Ultra-HD Wallpaper Gallery',
+      subtitle: 'Dynamic active streak wallpapers',
+      href: '#wallpapers',
+      icon: ImageIcon,
+    },
   ];
 
   return (
