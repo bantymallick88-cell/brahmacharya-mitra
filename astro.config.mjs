@@ -7,7 +7,7 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.SITE || 'https://your-github-username.github.io',
+  site: 'https://bantymallick88-cell.github.io',
   base: '/brahmacharya-mitra',
 
   vite: {
