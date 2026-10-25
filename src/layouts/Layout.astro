@@ -1,23 +1,76 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+	title = "Brahmacharya Mitra (ब्रह्मचर्य मित्र) — Master Your Vitality & Transmute Your Energy",
+	description = "The premier spiritual & scientific platform for Brahmacharya, semen retention, dopamine detox, mental clarity, and energy transmutation. Grounded in Sanatan Dharma and modern neuroscience."
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth" translate="no">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
+		<link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.ico`} />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name="title" content={title} />
+		<meta name="description" content={description} />
+		<meta name="keywords" content="Brahmacharya, Semen Retention, Dopamine Detox, Brain Fog, Ojas, Prana, Celibacy, Hanuman Ji, Shiva, Energy Transmutation, NoFap, Vedic Discipline, Meditation, Self Control" />
+		<meta name="author" content="Brahmacharya Mitra" />
+		<meta name="theme-color" content="#02040a" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/og-image.jpg`} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet" />
 	</head>
-	<body>
-		<slot />
+	<body class="bg-[#02040a] text-zinc-100 min-h-screen selection:bg-amber-400 selection:text-black overflow-x-hidden antialiased">
+		<!-- Mystic Deep Cosmic Purple & Indigo Aura Glow Mesh (21st.dev / Godly aesthetic) -->
+		<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+			<!-- Top Navbar & Hero Aura: Deep Cosmic Purple & Indigo Aura -->
+			<div class="absolute -top-36 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.18)_40%,rgba(245,158,11,0.12)_65%,transparent_80%)] blur-[100px] rounded-full pointer-events-none animate-aura-pulse"></div>
+			
+			<!-- Mid-Left Mystic Cosmic Purple Halo -->
+			<div class="absolute top-[30%] -left-48 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.14)_50%,transparent_75%)] blur-[130px] rounded-full pointer-events-none"></div>
+			
+			<!-- Mid-Right Electric Gold & Indigo Fusion Pulse -->
+			<div class="absolute top-[52%] -right-48 w-[800px] h-[800px] bg-[radial-gradient(circle,rgba(99,102,241,0.18)_0%,rgba(245,158,11,0.15)_45%,transparent_75%)] blur-[130px] rounded-full pointer-events-none"></div>
+
+			<!-- Deity & Reboot Section: Warm Sunrise Amber Rising Glow -->
+			<div class="absolute top-[60%] left-1/2 -translate-x-1/2 w-[1400px] h-[600px] bg-[radial-gradient(ellipse_at_50%_80%,rgba(245,158,11,0.13)_0%,rgba(217,119,6,0.08)_40%,rgba(109,40,217,0.07)_65%,transparent_85%)] blur-[90px] rounded-full pointer-events-none animate-aura-pulse"></div>
+
+			<!-- Lower Deities & Footer Cosmic Purple Depth Aura -->
+			<div class="absolute top-[75%] left-1/3 w-[900px] h-[900px] bg-[radial-gradient(circle,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.12)_45%,transparent_75%)] blur-[150px] rounded-full pointer-events-none"></div>
+
+			<!-- Horizon sunrise line glow — deep bottom atmospheric depth -->
+			<div class="absolute bottom-0 left-0 right-0 h-[3px] bg-[linear-gradient(90deg,transparent_0%,rgba(245,158,11,0.25)_30%,rgba(251,191,36,0.4)_50%,rgba(245,158,11,0.25)_70%,transparent_100%)] blur-[2px] pointer-events-none"></div>
+			
+			<!-- Ultra-refined Tech-Grid texture -->
+			<div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_80%,transparent_100%)]"></div>
+		</div>
+
+		<div class="relative z-10 flex flex-col min-h-screen">
+			<slot />
+		</div>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

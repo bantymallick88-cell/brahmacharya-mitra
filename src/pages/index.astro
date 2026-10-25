@@ -1,11 +1,70 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import PanicModal from '../components/PanicModal';
+import StreakCounterWidget from '../components/StreakCounterWidget';
+import BrainFogTracker from '../components/BrainFogTracker';
+import RelapseCostCalculator from '../components/RelapseCostCalculator';
+import RebootCourses from '../components/RebootCourses';
+import AIMentor from '../components/AIMentor';
+import DeitiesSection from '../components/DeitiesSection';
+import BooksSection from '../components/BooksSection';
+import DonationSection from '../components/DonationSection';
+import Footer from '../components/Footer';
 ---
 
-<Layout>
-	<Welcome />
+<Layout 
+	title="Brahmacharya Mitra (ब्रह्मचर्य मित्र) — Master Your Vitality & Transmute Your Energy"
+	description="The premier spiritual-scientific platform for Brahmacharya, semen retention, dopamine detox, brain fog recovery, and Ojas transmutation. Backed by Sanatan Hindu Dharma deities and modern neuroscience."
+>
+	<!-- Fixed Header Navbar -->
+	<Navbar client:load />
+
+	<!-- Fullscreen Emergency Panic Shield Modal (Triggerable anywhere) -->
+	<PanicModal client:load />
+
+	<main class="flex-1">
+		<!-- Hero Section -->
+		<Hero client:load />
+
+		<!-- Live Personal Streak Counter & Transmutation Stage Tracker -->
+		<StreakCounterWidget client:load />
+
+		<!-- Porn-Induced Brain Fog & Mental Clarity Tracker -->
+		<BrainFogTracker client:visible />
+
+		<!-- Relapse Cost & Vitality Hemorrhage Calculator -->
+		<RelapseCostCalculator client:visible />
+
+		<!-- Structured 30, 60 & 100 Days Reboot Courses -->
+		<RebootCourses client:visible />
+
+		<!-- AI Brahmacharya Mentor & Routine Generator -->
+		<AIMentor client:visible />
+
+
+
+		<!-- Donation / Support The Cause Box -->
+		<DonationSection client:visible />
+	</main>
+
+	<!-- Footer -->
+	<Footer client:visible />
+
+	<!-- Floating Emergency Panic FAB for instant access on any screen -->
+	<div class="fixed bottom-6 right-6 z-40">
+		<button
+			id="floating-panic-btn"
+			onclick="window.dispatchEvent(new CustomEvent('open-panic-modal'))"
+			class="btn-shimmer flex items-center gap-2.5 px-4.5 py-3 rounded-full backdrop-blur-xl bg-zinc-950/85 hover:bg-zinc-900 border border-red-500/40 hover:border-amber-400 text-white font-black text-xs sm:text-sm tracking-wide shadow-[0_0_25px_rgba(239,68,68,0.35),0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_35px_rgba(245,158,11,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
+			aria-label="Emergency Panic Mode"
+		>
+			<span class="relative flex h-3 w-3">
+				<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+				<span class="relative inline-flex rounded-full h-3 w-3 bg-red-400 group-hover:bg-amber-400 transition-colors"></span>
+			</span>
+			<span class="text-zinc-100 group-hover:text-amber-200 transition-colors font-bold tracking-wider">🚨 Panic Mode</span>
+		</button>
+	</div>
 </Layout>
