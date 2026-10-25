@@ -250,19 +250,19 @@ export default function RebootCourses() {
             <Compass className="w-4 h-4 text-amber-400" />
             {t.courses.badge}
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight text-balance break-words">
             {t.courses.title}{' '}
             <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-600 bg-clip-text text-transparent metallic-gold-text">
               {t.courses.titleHighlight}
             </span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-zinc-300">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-300 text-balance break-words">
             {t.courses.subtitle}
           </p>
         </motion.div>
 
         {/* Course Tier Selector Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 w-full">
           {COURSES.map((c) => {
             const isSelected = selectedCourse === c.id;
             return (
@@ -272,15 +272,15 @@ export default function RebootCourses() {
                   setSelectedCourse(c.id);
                   setActiveDayIndex(0);
                 }}
-                className={`btn-shimmer px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2.5 ${
+                className={`btn-shimmer px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 sm:gap-2.5 ${
                   isSelected
                     ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-zinc-950 shadow-[0_0_25px_rgba(245,158,11,0.35)] scale-105'
                     : 'bg-zinc-950/70 border border-zinc-800/80 text-zinc-300 hover:text-white hover:border-amber-500/40'
                 }`}
               >
-                <Flame className={`w-4 h-4 ${isSelected ? 'fill-black' : 'text-amber-400'}`} />
+                <Flame className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isSelected ? 'fill-black' : 'text-amber-400'}`} />
                 <span>{c.duration} {t.courses.dayRoadmap}</span>
-                <span className={`text-[11px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/20 text-black font-extrabold' : 'bg-zinc-900 text-zinc-400'}`}>
+                <span className={`text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/20 text-black font-extrabold' : 'bg-zinc-900 text-zinc-400'}`}>
                   {c.level}
                 </span>
               </button>

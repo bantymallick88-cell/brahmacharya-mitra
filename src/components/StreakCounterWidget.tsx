@@ -125,32 +125,32 @@ export default function StreakCounterWidget() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative backdrop-blur-3xl bg-zinc-950/70 rounded-3xl p-6 sm:p-10 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 overflow-hidden shadow-2xl"
+          className="relative backdrop-blur-3xl bg-zinc-950/70 rounded-3xl p-4 sm:p-8 md:p-10 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 overflow-hidden shadow-2xl w-full max-w-full"
         >
           
           {/* Subtle Ambient Cosmic Violet & Electric Gold Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.18)_40%,rgba(245,158,11,0.14)_70%,transparent_100%)] blur-3xl rounded-full pointer-events-none -z-10 animate-aura-pulse" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center w-full">
             
             {/* Left Column: Streak Display & Controls */}
-            <div className="lg:col-span-5 flex flex-col items-center text-center p-4">
+            <div className="lg:col-span-5 flex flex-col items-center text-center p-2 sm:p-4 w-full">
               
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
-                <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                {t.streak.badge}
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-[0_0_20px_rgba(245,158,11,0.15)] max-w-full">
+                <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400 flex-shrink-0" />
+                <span className="truncate">{t.streak.badge}</span>
               </div>
 
               {/* Day Streak Big Display */}
               <div className="relative my-2">
-                <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-amber-400/50 bg-gradient-to-b from-zinc-950 to-black flex flex-col items-center justify-center p-4 shadow-[0_0_50px_rgba(245,158,11,0.35),inset_0_0_25px_rgba(245,158,11,0.15)]">
+                <div className="w-44 h-44 xs:w-48 xs:h-48 sm:w-56 sm:h-56 rounded-full border-4 border-amber-400/50 bg-gradient-to-b from-zinc-950 to-black flex flex-col items-center justify-center p-3 sm:p-4 shadow-[0_0_50px_rgba(245,158,11,0.35),inset_0_0_25px_rgba(245,158,11,0.15)]">
                   <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">
                     {t.streak.akhandStreak}
                   </span>
-                  <span className="text-6xl sm:text-7xl font-black font-cinzel text-white metallic-gold-text tracking-tight my-1 drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+                  <span className="text-5xl sm:text-7xl font-black font-cinzel text-white metallic-gold-text tracking-tight my-1 drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]">
                     {days}
                   </span>
-                  <span className="text-sm font-bold text-amber-300">
+                  <span className="text-xs sm:text-sm font-bold text-amber-300">
                     {t.streak.daysClean}
                   </span>
                 </div>
@@ -295,30 +295,30 @@ export default function StreakCounterWidget() {
               </div>
 
               {/* Vitality Reclaimed Stats Grid */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
                 
-                <div className="p-4 sm:p-5 rounded-2xl backdrop-blur-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-amber-400/50 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all duration-300 glass-card-lift">
+                <div className="p-3.5 sm:p-5 rounded-2xl backdrop-blur-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-amber-400/50 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all duration-300 glass-card-lift">
                   <div className="flex items-center gap-2 text-xs font-medium text-amber-400 mb-1">
-                    <Droplets className="w-4 h-4 text-amber-400" />
-                    <span>{t.streak.veeryaDropsSaved}</span>
+                    <Droplets className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                    <span className="truncate">{t.streak.veeryaDropsSaved}</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black font-cinzel text-white">
+                  <div className="text-xl sm:text-3xl font-black font-cinzel text-white">
                     ~{veeryaDropsSaved.toLocaleString()}
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                  <p className="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
                     {t.streak.veeryaDesc}
                   </p>
                 </div>
 
-                <div className="p-4 sm:p-5 rounded-2xl backdrop-blur-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-amber-400/50 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all duration-300 glass-card-lift">
+                <div className="p-3.5 sm:p-5 rounded-2xl backdrop-blur-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-amber-400/50 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all duration-300 glass-card-lift">
                   <div className="flex items-center gap-2 text-xs font-medium text-amber-300 mb-1">
-                    <Clock className="w-4 h-4 text-amber-400" />
-                    <span>{t.streak.hoursReclaimed}</span>
+                    <Clock className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                    <span className="truncate">{t.streak.hoursReclaimed}</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black font-cinzel text-white">
+                  <div className="text-xl sm:text-3xl font-black font-cinzel text-white">
                     {hoursReclaimed.toFixed(1)} hrs
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                  <p className="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
                     {t.streak.hoursDesc}
                   </p>
                 </div>

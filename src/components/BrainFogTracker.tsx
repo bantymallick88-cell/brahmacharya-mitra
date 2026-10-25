@@ -133,21 +133,21 @@ export default function BrainFogTracker() {
             <Brain className="w-4 h-4 text-amber-400" />
             {t.brainFog.badge}
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight text-balance break-words">
             {t.brainFog.title}{' '}
             <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-600 bg-clip-text text-transparent metallic-gold-text">
               {t.brainFog.titleHighlight}
             </span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-zinc-300">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-300 text-balance break-words">
             {t.brainFog.subtitle}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start w-full">
           
           {/* Diagnostic Questions (Left 7 Cols) */}
-          <div className="lg:col-span-7 space-y-5">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-5 w-full">
             {QUESTIONS.map((q) => (
               <motion.div 
                 key={q.id}
@@ -155,7 +155,7 @@ export default function BrainFogTracker() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="p-5 sm:p-6 rounded-3xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 glass-card-lift shadow-xl"
+                className="p-4 sm:p-6 rounded-3xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 glass-card-lift shadow-xl w-full"
               >
                 <h3 className="text-base font-bold text-white mb-1">
                   {q.title}

@@ -69,13 +69,13 @@ export default function PanicModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/92 backdrop-blur-3xl overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl backdrop-blur-3xl bg-gradient-to-b from-[#120508] via-[#06040a] to-[#02040a] border-2 border-red-500/50 rounded-3xl p-6 sm:p-8 shadow-[0_0_80px_rgba(239,68,68,0.35),0_0_40px_rgba(109,40,217,0.25)] text-zinc-100 my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/92 backdrop-blur-3xl overflow-y-auto animate-in fade-in duration-200">
+      <div className="relative w-full max-w-4xl backdrop-blur-3xl bg-gradient-to-b from-[#120508] via-[#06040a] to-[#02040a] border-2 border-red-500/50 rounded-3xl p-4 sm:p-8 shadow-[0_0_80px_rgba(239,68,68,0.35),0_0_40px_rgba(109,40,217,0.25)] text-zinc-100 my-6 sm:my-8">
         
         {/* Close Button */}
         <button 
           onClick={() => setIsOpen(false)}
-          className="absolute top-5 right-5 p-2 rounded-full bg-zinc-950/80 border border-zinc-800 hover:border-amber-400 text-zinc-400 hover:text-white transition-all cursor-pointer shadow-md"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-full bg-zinc-950/80 border border-zinc-800 hover:border-amber-400 text-zinc-400 hover:text-white transition-all cursor-pointer shadow-md"
           aria-label="Close Panic Shield"
         >
           <X className="w-5 h-5" />
@@ -88,14 +88,14 @@ export default function PanicModal() {
             {t.panic.badge}
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight drop-shadow-md">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight drop-shadow-md text-balance break-words">
             {t.panic.stopTitle}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-amber-300 to-yellow-500 metallic-gold-text">
               {t.panic.stepBackTitle}
             </span>
           </h2>
 
-          <p className="mt-3 text-sm sm:text-base text-zinc-300 max-w-2xl font-medium leading-relaxed bg-red-950/30 p-3.5 rounded-2xl border border-red-900/40">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-300 max-w-2xl font-medium leading-relaxed bg-red-950/30 p-3 sm:p-3.5 rounded-2xl border border-red-900/40 text-balance break-words">
             {t.panic.quote}
           </p>
         </div>

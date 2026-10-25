@@ -50,18 +50,18 @@ export default function RelapseCostCalculator() {
             <AlertTriangle className="w-4 h-4 text-red-400" />
             {t.calculator.badge}
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight text-balance break-words">
             {t.calculator.title}{' '}
             <span className="bg-gradient-to-r from-red-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent metallic-gold-text">
               {t.calculator.titleHighlight}
             </span>
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-zinc-300">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-300 text-balance break-words">
             {t.calculator.subtitle}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start w-full">
           
           {/* Left Column: Interactive Sliders (5 Cols) */}
           <motion.div 
@@ -69,9 +69,9 @@ export default function RelapseCostCalculator() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 p-6 sm:p-7 rounded-3xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 space-y-6 shadow-2xl"
+            className="lg:col-span-5 p-4 sm:p-7 rounded-3xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/25 hover:border-amber-400/70 hover:shadow-[0_0_35px_rgba(245,158,11,0.3)] transition-all duration-500 space-y-5 sm:space-y-6 shadow-2xl w-full"
           >
-            <h3 className="text-lg font-bold font-cinzel text-white flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold font-cinzel text-white flex items-center gap-2">
               <Calculator className="w-5 h-5 text-amber-400" />
               {t.calculator.paramsTitle}
             </h3>

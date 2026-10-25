@@ -71,14 +71,14 @@ export default function Hero() {
             ब्रह्मचर्य मित्र • Brahmacharya Mitra
           </div>
 
-          {/* Clean wrapping on mobile: max-w-full px-4 break-words */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-cinzel tracking-tight text-white max-w-full px-4 mx-auto leading-[1.15] relative break-words">
+          {/* Clean wrapping on mobile: max-w-full px-2 sm:px-4 break-words text-balance */}
+          <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-cinzel tracking-tight text-white max-w-full px-2 sm:px-4 mx-auto leading-[1.18] sm:leading-[1.15] relative text-balance break-words">
             <span className="block text-zinc-100 drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
               {t.hero.title1}
             </span>
             
             {/* High-Intensity Glow Lens Flare & Glowing Prism Headline (21st.dev Style) */}
-            <span className="relative inline-block my-1.5 px-3 sm:px-6 max-w-full break-words">
+            <span className="relative inline-block my-1.5 px-2 sm:px-6 max-w-full break-words">
               <span className="lens-flare-beam" />
               <span className="lens-flare-orb" />
               <span className="relative z-10 block bg-gradient-to-r from-amber-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent metallic-gold-text drop-shadow-[0_0_35px_rgba(245,158,11,0.6)]">
@@ -97,7 +97,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-base sm:text-xl md:text-2xl font-sanskrit font-medium text-amber-200/95 max-w-full px-4 mx-auto leading-relaxed drop-shadow-[0_2px_15px_rgba(245,158,11,0.3)] break-words"
+          className="text-sm xs:text-base sm:text-xl md:text-2xl font-sanskrit font-medium text-amber-200/95 max-w-full px-3 sm:px-4 mx-auto leading-relaxed drop-shadow-[0_2px_15px_rgba(245,158,11,0.3)] text-balance break-words"
         >
           {t.hero.subheadlineHindi}
         </motion.p>
@@ -107,7 +107,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-4 text-xs sm:text-sm md:text-base text-zinc-300 max-w-full px-4 mx-auto leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.7)] break-words"
+          className="mt-3 sm:mt-4 text-xs sm:text-sm md:text-base text-zinc-300 max-w-3xl px-3 sm:px-4 mx-auto leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.7)] text-balance break-words"
         >
           {t.hero.description}
         </motion.p>
@@ -117,7 +117,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-full px-4 mx-auto"
+          className="mt-7 sm:mt-10 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 max-w-full px-3 sm:px-4 mx-auto w-full"
         >
           {/* Streak Counter CTA with Rotating Border Beam */}
           <motion.a
@@ -125,11 +125,11 @@ export default function Hero() {
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="border-beam-badge btn-shimmer flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/30 hover:border-amber-400 text-amber-200 hover:text-white font-black text-sm sm:text-base tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.25)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)] transition-all cursor-pointer"
+            className="w-full sm:w-auto border-beam-badge btn-shimmer flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/30 hover:border-amber-400 text-amber-200 hover:text-white font-black text-sm sm:text-base tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.25)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)] transition-all cursor-pointer text-center text-balance break-words"
           >
-            <Flame className="w-5 h-5 text-amber-400 fill-amber-400" />
+            <Flame className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
             <span>{t.hero.startStreakBtn}</span>
-            <ArrowRight className="w-4 h-4 ml-0.5 text-amber-400" />
+            <ArrowRight className="w-4 h-4 ml-0.5 text-amber-400 flex-shrink-0" />
           </motion.a>
 
           {/* Emergency Panic Mode Button */}
@@ -138,9 +138,9 @@ export default function Hero() {
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl backdrop-blur-3xl bg-red-950/45 hover:bg-red-950/70 border border-red-500/60 hover:border-red-400 text-red-200 hover:text-white font-bold text-sm sm:text-base tracking-wide shadow-[0_0_25px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.55)] transition-all cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl backdrop-blur-3xl bg-red-950/45 hover:bg-red-950/70 border border-red-500/60 hover:border-red-400 text-red-200 hover:text-white font-bold text-sm sm:text-base tracking-wide shadow-[0_0_25px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.55)] transition-all cursor-pointer text-center text-balance break-words"
           >
-            <ShieldAlert className="w-5 h-5 text-red-400 animate-pulse" />
+            <ShieldAlert className="w-5 h-5 text-red-400 animate-pulse flex-shrink-0" />
             <span>{t.hero.panicBtn}</span>
           </motion.button>
 
@@ -150,9 +150,9 @@ export default function Hero() {
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-200 hover:text-white font-semibold text-sm sm:text-base transition-all cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-200 hover:text-white font-semibold text-sm sm:text-base transition-all cursor-pointer text-center text-balance break-words"
           >
-            <Brain className="w-5 h-5 text-amber-400" />
+            <Brain className="w-5 h-5 text-amber-400 flex-shrink-0" />
             <span>{t.hero.brainFogBtn}</span>
           </motion.a>
 
@@ -162,9 +162,9 @@ export default function Hero() {
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-300 hover:text-amber-300 text-xs sm:text-sm font-medium transition-all cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-300 hover:text-amber-300 text-xs sm:text-sm font-medium transition-all cursor-pointer text-center text-balance break-words"
           >
-            <Calculator className="w-4 h-4 text-amber-400" />
+            <Calculator className="w-4 h-4 text-amber-400 flex-shrink-0" />
             <span>{t.hero.calculatorBtn}</span>
           </motion.a>
         </motion.div>
