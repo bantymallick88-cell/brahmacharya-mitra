@@ -10,10 +10,10 @@ import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
 import AuthModal from './AuthModal';
 
-// MDF Feature Sub-Views
+// Feature Sub-Views
 import JournalNotesView from './mdf/JournalNotesView';
 import StatsView from './mdf/StatsView';
-import CommunityView from './mdf/CommunityView';
+import CommunityFeed from './CommunityFeed';
 import BreatheView from './mdf/BreatheView';
 import GalleryView from './mdf/GalleryView';
 import SettingsView from './mdf/SettingsView';
@@ -113,8 +113,8 @@ function ToolsDrawer({
     return () => { document.body.style.overflow = ''; };
   }, [open]);
 
-  // The 6 Selected MDF Features
-  const mdfFeatures = [
+  // The 6 Selected Sadhana Features
+  const sadhanaFeatures = [
     {
       id: 'journal',
       title: 'Journal & Notes',
@@ -327,9 +327,9 @@ function ToolsDrawer({
                     <div className="flex-1 h-px bg-zinc-800/80" />
                   </div>
 
-                  {/* ── 6 Selected MDF Features Grid ── */}
+                  {/* ── 6 Selected Sadhana Features Grid ── */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {mdfFeatures.map(item => {
+                    {sadhanaFeatures.map(item => {
                       const Icon = item.icon;
                       return (
                         <motion.button
@@ -419,7 +419,7 @@ function ToolsDrawer({
               {currentScreen === 'stats' && <StatsView />}
 
               {/* SCREEN 4: COMMUNITY SAKHAD FEED */}
-              {currentScreen === 'community' && <CommunityView />}
+              {currentScreen === 'community' && <CommunityFeed />}
 
               {/* SCREEN 5: MEDITATE & BREATHE */}
               {currentScreen === 'breathe' && <BreatheView />}
@@ -540,7 +540,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* ── Slide-Open Glassmorphic Drawer with MDF Modules ── */}
+      {/* ── Slide-Open Glassmorphic Drawer with Sadhana Modules ── */}
       <ToolsDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
