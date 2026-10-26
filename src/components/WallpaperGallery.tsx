@@ -165,7 +165,7 @@ export default function WallpaperGallery() {
                       ? 'group-hover:scale-105'
                       : 'filter blur-[3px] brightness-40 grayscale-[30%]'
                   }`}
-                  style={{ backgroundImage: `url('${item.imageUrl}')` }}
+                  style={{ backgroundImage: `url('${item.backupUrl || item.imageUrl}'), url('${item.imageUrl}')` }}
                 />
 
                 {/* Dark Vignette Overlay for Crisp Typography Legibility */}
@@ -284,7 +284,7 @@ export default function WallpaperGallery() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="w-full max-w-sm rounded-3xl border-2 border-amber-500/60 p-4 sm:p-6 shadow-[0_0_80px_rgba(0,0,0,0.95),0_0_40px_rgba(245,158,11,0.25)] relative overflow-hidden flex flex-col items-center text-center space-y-3 sm:space-y-4"
               style={{
-                backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.98) 0%, rgba(2,4,10,0.7) 50%, rgba(2,4,10,0.5) 100%), url('${previewItem.imageUrl}')`,
+                backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.98) 0%, rgba(2,4,10,0.7) 50%, rgba(2,4,10,0.5) 100%), url('${previewItem.backupUrl || previewItem.imageUrl}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}

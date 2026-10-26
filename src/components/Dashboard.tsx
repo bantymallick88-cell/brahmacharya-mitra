@@ -6,23 +6,7 @@ import {
   ShieldCheck, RefreshCw, ChevronRight, X, SlidersHorizontal
 } from 'lucide-react';
 import { getStoredStreak, updateGlobalStreak, logRelapse } from '../streakStore';
-
-interface HabitItem {
-  id: string;
-  name: string;
-  icon: string;
-  completed: number;
-  total: number;
-  unit: string;
-  color: string;
-}
-
-const INITIAL_HABITS: HabitItem[] = [
-  { id: 'workout', name: 'WORKOUT', icon: '🏋️‍♂️', completed: 0, total: 7, unit: 'days', color: 'from-amber-400 to-yellow-500' },
-  { id: 'reading', name: 'READING', icon: '📚', completed: 0, total: 7, unit: 'days', color: 'from-purple-400 to-indigo-500' },
-  { id: 'cold_shower', name: 'COLD SHOWER', icon: '🧊', completed: 0, total: 7, unit: 'days', color: 'from-cyan-400 to-blue-500' },
-  { id: 'meditation', name: 'MEDITATION', icon: '🧘', completed: 0, total: 7, unit: 'days', color: 'from-emerald-400 to-teal-500' },
-];
+import Habits from './Habits';
 
 export default function Dashboard() {
   const initial = getStoredStreak();
@@ -39,15 +23,7 @@ export default function Dashboard() {
     seconds: 45,
   });
 
-  // Daily Habits State
-  const [habits, setHabits] = useState<HabitItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('bm_daily_habits');
-      return saved ? JSON.parse(saved) : INITIAL_HABITS;
-    } catch {
-      return INITIAL_HABITS;
-    }
-  });
+
 
   // Sync streak from global store & custom events
   useEffect(() => {
@@ -96,22 +72,7 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [streakDays]);
 
-  // Persist habits
-  useEffect(() => {
-    try {
-      localStorage.setItem('bm_daily_habits', JSON.stringify(habits));
-    } catch {}
-  }, [habits]);
 
-  const handleIncrementHabit = (id: string) => {
-    setHabits(prev => prev.map(h => {
-      if (h.id === id) {
-        const nextVal = h.completed >= h.total ? 0 : h.completed + 1;
-        return { ...h, completed: nextVal };
-      }
-      return h;
-    }));
-  };
 
   const handleRelapseReset = () => {
     logRelapse();
@@ -323,63 +284,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ── Daily Habit Tracking Cards Section Below Timer (Compact & Micro-Animated) ── */}
-          <div className="w-full pt-3 border-t border-zinc-800/80 text-left">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-white font-cinzel flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Daily Habit Transformation</span>
-                </h3>
-                <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">
-                  Tap card to check off daily streak discipline (0/7 target)
-                </p>
-              </div>
-              <span className="text-[10px] sm:text-xs font-bold text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30">
-                Weekly Target
-              </span>
-            </div>
-
-            {/* 4 Habit Cards Grid with Scale 1.05 Micro-Animations */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 w-full">
-              {habits.map((habit) => {
-                const progressPct = (habit.completed / habit.total) * 100;
-                const isMax = habit.completed >= habit.total;
-
-                return (
-                  <motion.div
-                    key={habit.id}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleIncrementHabit(habit.id)}
-                    className="p-3 rounded-2xl bg-zinc-950/70 hover:bg-zinc-900/90 border border-zinc-800/80 hover:border-amber-400/80 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all cursor-pointer shadow-md group relative overflow-hidden"
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xl sm:text-2xl">{habit.icon}</span>
-                      <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                        isMax
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
-                          : 'bg-zinc-900 text-zinc-400 border-zinc-800 group-hover:border-amber-500/40'
-                      }`}>
-                        {habit.completed}/{habit.total}
-                      </span>
-                    </div>
-
-                    <h4 className="text-[11px] sm:text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
-                      {habit.name}
-                    </h4>
-
-                    {/* Progress Bar */}
-                    <div className="w-full h-1.5 rounded-full bg-zinc-900 overflow-hidden border border-zinc-800 mt-2">
-                      <div
-                        className={`h-full bg-gradient-to-r ${habit.color} transition-all duration-300`}
-                        style={{ width: `${progressPct}%` }}
-                      />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+          {/* ── Compact Single-Line Horizontal Motion Habits Carousel ── */}
+          <div className="w-full pt-3 border-t border-zinc-800/80">
+            <Habits />
           </div>
 
         </motion.div>
