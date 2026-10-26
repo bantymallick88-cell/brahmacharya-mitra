@@ -4,7 +4,8 @@ import {
   Flame, ShieldAlert, Heart, Menu, X, Sparkles,
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
-  Image as ImageIcon, Settings, ChevronLeft, Zap, Clock
+  Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
+  Share2, Check, Smartphone
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -57,7 +58,7 @@ type DrawerScreen = 'menu' | 'journal' | 'stats' | 'community' | 'breathe' | 'ga
    Excludes: AI Mentor, Battles & Clans, MDF Lessons, Kegels, Store/Coins
 ───────────────────────────────────────────────────────────── */
 function ToolsDrawer({
-  open, onClose, streakDays, t, triggerPanic, openAuth
+  open, onClose, streakDays, t, triggerPanic, openAuth, onShare
 }: {
   open: boolean;
   onClose: () => void;
@@ -65,6 +66,7 @@ function ToolsDrawer({
   t: any;
   triggerPanic: () => void;
   openAuth: () => void;
+  onShare: () => void;
 }) {
   const [currentScreen, setCurrentScreen] = useState<DrawerScreen>('menu');
 
@@ -299,6 +301,28 @@ function ToolsDrawer({
                     </div>
                   </motion.button>
 
+                  {/* Share & Add to Home Screen Quick Row */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={onShare}
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 to-yellow-500/10 hover:from-amber-500/25 hover:to-yellow-500/20 border border-amber-500/40 hover:border-amber-400 text-xs font-bold text-amber-300 transition shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
+                    >
+                      <Share2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                      <span>Share App</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        window.dispatchEvent(new CustomEvent('open-install-prompt'));
+                        onClose();
+                      }}
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-200 transition shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
+                    >
+                      <Smartphone className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                      <span>📱 Install PWA</span>
+                    </button>
+                  </div>
+
                   {/* Streak & Emergency Panic Quick Row */}
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -492,6 +516,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [streakDays, setStreakDays] = useState(7);
   const [authOpen, setAuthOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -515,6 +540,46 @@ export default function Header() {
 
   const triggerPanic = () => {
     window.dispatchEvent(new CustomEvent('open-panic-modal'));
+  };
+
+  /* ─────────────────────────────────────────────────────────────
+     Share & Copy Link API (Mobile Native Share or Desktop Clipboard)
+  ───────────────────────────────────────────────────────────── */
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: 'Brahmacharya Mitra',
+      text: 'Master Your Vitality & Transmute Your Energy with Brahmacharya Mitra!',
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    // Desktop fallback: copy to clipboard & show "Link Copied!" toast
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setToastMessage('Link Copied to Clipboard!');
+      setTimeout(() => setToastMessage(null), 2500);
+    } catch (e) {
+      setToastMessage('Link Copied!');
+      setTimeout(() => setToastMessage(null), 2500);
+    }
   };
 
   return (
@@ -566,8 +631,18 @@ export default function Header() {
               </div>
             </a>
 
-            {/* ── Right: Language Dropdown and 3-Line Hamburger Menu Icon ── */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* ── Right: Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+              {/* Share Icon Button */}
+              <button
+                onClick={handleShare}
+                className="relative group p-2 sm:p-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
+                aria-label="Share Brahmacharya Mitra"
+                title="Share App / Copy Link"
+              >
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+              </button>
+
               <div className="scale-90 sm:scale-100 origin-right">
                 <LanguageSelector />
               </div>
@@ -594,7 +669,26 @@ export default function Header() {
         t={t}
         triggerPanic={triggerPanic}
         openAuth={() => setAuthOpen(true)}
+        onShare={handleShare}
       />
+
+      {/* ── Toast Notification: Link Copied! ── */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ duration: 0.25 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[120] pointer-events-none"
+          >
+            <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-zinc-950/95 border border-amber-400/80 shadow-[0_0_30px_rgba(245,158,11,0.5)] backdrop-blur-2xl text-white font-bold text-xs sm:text-sm">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-amber-200">{toastMessage}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Auth Modal (Google & Phone + OTP) ── */}
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />

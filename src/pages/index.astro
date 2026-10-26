@@ -5,6 +5,7 @@ import Hero from '../components/Hero';
 import PanicModal from '../components/PanicModal';
 import BrainFogModal from '../components/BrainFogModal';
 import CalculatorModal from '../components/CalculatorModal';
+import InstallPrompt from '../components/InstallPrompt';
 import Dashboard from '../components/Dashboard';
 import BookRecommendations from '../components/BookRecommendations';
 import DonationSection from '../components/DonationSection';
@@ -17,6 +18,9 @@ import Footer from '../components/Footer';
 >
 	<!-- Fixed Header Navbar & Drawer -->
 	<Header client:load />
+
+	<!-- Add to Home Screen PWA Install Prompt -->
+	<InstallPrompt client:load />
 
 	<!-- Fullscreen Emergency Panic Shield Modal (Triggerable anywhere) -->
 	<PanicModal client:load />

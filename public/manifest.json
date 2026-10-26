@@ -1,0 +1,19 @@
+{
+  "name": "Brahmacharya Mitra (ब्रह्मचर्य मित्र)",
+  "short_name": "Brahmacharya Mitra",
+  "description": "Master Your Vitality & Transmute Your Energy. The premier spiritual & scientific platform for Brahmacharya.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0D0D0D",
+  "theme_color": "#0D0D0D",
+  "icons": [
+    {
+      "src": "/photo_mahadev.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
