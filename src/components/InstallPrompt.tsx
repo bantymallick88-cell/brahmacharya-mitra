@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Smartphone, X, Sparkles, Share2, PlusSquare } from 'lucide-react';
+import { Smartphone, X, Check, Download } from 'lucide-react';
 import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 
 export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
-  const [showIosGuide, setShowIosGuide] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
   useEffect(() => {
-    // Check if already running in standalone mode (PWA installed)
+    // Check if app is already running in standalone mode (PWA installed)
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       (window.navigator as any).standalone === true;
@@ -19,12 +20,12 @@ export default function InstallPrompt() {
       return;
     }
 
-    // Capture beforeinstallprompt event
+    // Capture browser beforeinstallprompt event (Native Chrome / Edge / Android)
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setIsInstallable(true);
 
+      // Check if user previously dismissed in this browser session
       const dismissed = sessionStorage.getItem('bm_pwa_dismissed');
       if (!dismissed) {
         setShowBanner(true);
@@ -33,44 +34,54 @@ export default function InstallPrompt() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Custom event to manually open prompt from Navigation Menu / Drawer
+    // Listen for successful PWA installation
+    const handleAppInstalled = () => {
+      setShowBanner(false);
+      setDeferredPrompt(null);
+      setToastMessage('Brahmacharya Mitra successfully installed!');
+      setTimeout(() => setToastMessage(null), 3000);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    // Custom event to trigger install prompt from Header / Navigation Menu
     const handleManualTrigger = () => {
       setShowBanner(true);
-      if (!deferredPrompt && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        setShowIosGuide(true);
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
       }
     };
-    window.addEventListener('open-install-prompt', handleManualTrigger);
 
-    // Check if on iOS
-    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    if (isIos && !isStandalone) {
-      const dismissed = sessionStorage.getItem('bm_pwa_dismissed');
-      if (!dismissed) {
-        // Delay showing banner slightly on iOS for smooth UX
-        const timer = setTimeout(() => setShowBanner(true), 3500);
-        return () => clearTimeout(timer);
-      }
-    }
+    window.addEventListener('open-install-prompt', handleManualTrigger);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('open-install-prompt', handleManualTrigger);
     };
   }, [deferredPrompt]);
 
-  const handleInstallTap = async () => {
+  /* ─────────────────────────────────────────────────────────────
+     True 1-Tap Native PWA Install Trigger:
+     Directly invokes deferredPrompt.prompt() to open native Chrome/Edge/Android dialog
+  ───────────────────────────────────────────────────────────── */
+  const handleInstallClick = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const choiceResult = await deferredPrompt.userChoice;
-      if (choiceResult.outcome === 'accepted') {
-        setShowBanner(false);
-        setIsInstallable(false);
+      try {
+        // Trigger native browser install dialog directly
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult && choiceResult.outcome === 'accepted') {
+          setShowBanner(false);
+        }
+        setDeferredPrompt(null);
+      } catch (err) {
+        console.warn('Install prompt error:', err);
       }
-      setDeferredPrompt(null);
     } else {
-      // Show iOS or standard browser instructions
-      setShowIosGuide(true);
+      // Fallback message for browsers where install prompt is in the address bar
+      setToastMessage('To install: click the Install icon (⊕) in your browser address bar.');
+      setTimeout(() => setToastMessage(null), 3500);
     }
   };
 
@@ -85,9 +96,9 @@ export default function InstallPrompt() {
       <AnimatePresence>
         {showBanner && (
           <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.95 }}
+            exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 z-50 sm:max-w-md w-auto"
           >
@@ -103,9 +114,9 @@ export default function InstallPrompt() {
               {/* Brand Avatar */}
               <div className="relative flex-shrink-0">
                 <img
-                  src="/photo_mahadev.jpg"
-                  alt="Brahmacharya Mitra"
-                  className="w-10 h-10 rounded-full object-cover object-top border-2 border-[#FF8C00] shrink-0 shadow-[0_0_12px_rgba(255,140,0,0.5)]"
+                  src={baseUrl + "photo_mahadev.jpg"}
+                  alt="Mahadev"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-[#FF8C00] shrink-0 shadow-[0_0_12px_rgba(255,140,0,0.5)]"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = MAHADEV_IMAGE_DATA;
@@ -123,7 +134,7 @@ export default function InstallPrompt() {
                     Brahmacharya Mitra
                   </h4>
                   <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    App
+                    PWA
                   </span>
                 </div>
                 <p className="text-[11px] text-zinc-300 truncate mt-0.5">
@@ -134,11 +145,12 @@ export default function InstallPrompt() {
               {/* Actions */}
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <button
-                  onClick={handleInstallTap}
+                  onClick={handleInstallClick}
                   className="flex items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-xs shadow-[0_0_20px_rgba(245,158,11,0.4)] active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                  title="1-Tap Native Install"
                 >
                   <Smartphone className="w-3.5 h-3.5 shrink-0" />
-                  <span>Install</span>
+                  <span>Add to Home Screen</span>
                 </button>
 
                 <button
@@ -154,92 +166,21 @@ export default function InstallPrompt() {
         )}
       </AnimatePresence>
 
-      {/* ── iOS / Safari Add to Home Screen Step-by-Step Modal ── */}
+      {/* ── Feedback Toast ── */}
       <AnimatePresence>
-        {showIosGuide && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowIosGuide(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative z-10 w-full max-w-sm rounded-3xl p-6 border border-amber-500/40 shadow-2xl text-white text-center"
-              style={{
-                background: 'linear-gradient(135deg, #0d0d0d 0%, #161622 100%)',
-              }}
-            >
-              <div className="w-14 h-14 mx-auto mb-3 rounded-full border-2 border-[#FF8C00] overflow-hidden shadow-[0_0_25px_rgba(255,140,0,0.5)]">
-                <img
-                  src="/photo_mahadev.jpg"
-                  alt="Brahmacharya Mitra"
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = MAHADEV_IMAGE_DATA;
-                  }}
-                />
-              </div>
-
-              <h3 className="text-base font-black font-cinzel text-amber-300 mb-1">
-                Install Brahmacharya Mitra
-              </h3>
-              <p className="text-xs text-zinc-300 mb-4">
-                Fast, 1-tap launch directly from your Home Screen with zero app store download needed.
-              </p>
-
-              <div className="space-y-3 text-left text-xs bg-zinc-950/70 p-3.5 rounded-2xl border border-zinc-800 mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">
-                    1
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span>Tap the Safari</span>
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800 text-amber-300 font-semibold text-[11px]">
-                      <Share2 className="w-3 h-3" /> Share
-                    </span>
-                    <span>button below</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">
-                    2
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span>Scroll down and select</span>
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800 text-amber-300 font-semibold text-[11px]">
-                      <PlusSquare className="w-3 h-3" /> Add to Home Screen
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">
-                    3
-                  </div>
-                  <div>
-                    <span>Tap </span>
-                    <span className="font-bold text-amber-300">"Add"</span>
-                    <span> in the top right corner</span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setShowIosGuide(false)}
-                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs transition cursor-pointer"
-              >
-                Got It, Thank You!
-              </button>
-            </motion.div>
-          </div>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ duration: 0.25 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[120] pointer-events-none"
+          >
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-zinc-950/95 border border-amber-400/80 shadow-[0_0_30px_rgba(245,158,11,0.5)] backdrop-blur-2xl text-white font-bold text-xs sm:text-sm">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-amber-200">{toastMessage}</span>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

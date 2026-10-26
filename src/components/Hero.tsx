@@ -10,6 +10,8 @@ import { useTranslation } from '../i18n';
 import LiquidAuroraCanvas from './LiquidAuroraCanvas';
 import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
+
 export default function Hero() {
   const { t } = useTranslation();
 
@@ -56,15 +58,12 @@ export default function Hero() {
           className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border-beam-badge backdrop-blur-3xl bg-zinc-950/70 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] text-amber-300 text-xs sm:text-sm font-semibold tracking-wider mb-6 transition-all duration-300 max-w-full"
         >
           <img
-            src="/photo_mahadev.jpg"
-            alt="Brahmacharya Mitra Logo"
+            src={baseUrl + "photo_mahadev.jpg"}
+            alt="Mahadev"
             className="w-5 h-5 rounded-full object-cover shrink-0"
             onError={(e) => {
-              const target = e.currentTarget;
-              if (!target.dataset.fallbackTried) {
-                target.dataset.fallbackTried = 'true';
-                target.src = MAHADEV_IMAGE_DATA;
-              }
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = MAHADEV_IMAGE_DATA;
             }}
           />
           <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />

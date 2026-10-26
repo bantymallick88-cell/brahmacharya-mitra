@@ -21,22 +21,21 @@ import SettingsView from './mdf/SettingsView';
 
 import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
+
 /* ─────────────────────────────────────────────────────────────
    App Brand Logo — Mahadev Divine Photo
-   Strict Circular CSS Fit: w-9 h-9 rounded-full object-cover object-top border-2 border-[#FF8C00] shrink-0
+   Strict Circular CSS Fit: w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0
 ───────────────────────────────────────────────────────────── */
 export function MahadevLogo({ className }: { size?: number; className?: string }) {
   return (
     <img
-      src="/photo_mahadev.jpg"
-      alt="Brahmacharya Mitra Logo"
-      className={className || "w-9 h-9 rounded-full object-cover object-top border-2 border-[#FF8C00] shrink-0"}
+      src={baseUrl + "photo_mahadev.jpg"}
+      alt="Mahadev"
+      className={className || "w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"}
       onError={(e) => {
-        const target = e.currentTarget;
-        if (!target.dataset.fallbackTried) {
-          target.dataset.fallbackTried = 'true';
-          target.src = MAHADEV_IMAGE_DATA;
-        }
+        e.currentTarget.onerror = null;
+        e.currentTarget.src = MAHADEV_IMAGE_DATA;
       }}
     />
   );
@@ -222,15 +221,12 @@ function ToolsDrawer({
               {currentScreen === 'menu' ? (
                 <div className="flex items-center gap-3">
                   <img
-                    src="/photo_mahadev.jpg"
-                    alt="Brahmacharya Mitra Logo"
-                    className="w-9 h-9 rounded-full object-cover object-top border-2 border-[#FF8C00] shrink-0"
+                    src={baseUrl + "photo_mahadev.jpg"}
+                    alt="Mahadev"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"
                     onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.dataset.fallbackTried) {
-                        target.dataset.fallbackTried = 'true';
-                        target.src = MAHADEV_IMAGE_DATA;
-                      }
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = MAHADEV_IMAGE_DATA;
                     }}
                   />
                   <div className="flex flex-col leading-none">
@@ -602,15 +598,12 @@ export default function Header() {
             {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
             <a href="#" className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0">
               <img
-                src="/photo_mahadev.jpg"
-                alt="Brahmacharya Mitra Logo"
-                className="w-9 h-9 rounded-full object-cover object-top border-2 border-[#FF8C00] shrink-0"
+                src={baseUrl + "photo_mahadev.jpg"}
+                alt="Mahadev"
+                className="w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"
                 onError={(e) => {
-                  const target = e.currentTarget;
-                  if (!target.dataset.fallbackTried) {
-                    target.dataset.fallbackTried = 'true';
-                    target.src = MAHADEV_IMAGE_DATA;
-                  }
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = MAHADEV_IMAGE_DATA;
                 }}
               />
 
