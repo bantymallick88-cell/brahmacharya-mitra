@@ -165,31 +165,56 @@ function ToolsDrawer({
     },
   ];
 
-  // Quick navigation to on-page sections
-  const quickSections = [
+  // Direct Diagnostic & Emergency Tools (Opens Dedicated Modals)
+  const diagnosticTools = [
     {
-      title: 'Brain Fog Quiz',
+      title: 'Brain Fog Test',
       subtitle: 'Porn-induced mental fog diagnostic',
-      href: '#brain-fog',
       icon: Brain,
+      badge: 'Test Modal',
+      color: 'border-cyan-500/40 text-cyan-300',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-brainfog-modal'));
+        onClose();
+      },
     },
     {
       title: 'Relapse Cost Calculator',
-      subtitle: 'Lost vitality, dopamine & life energy',
-      href: '#calculator',
+      subtitle: 'Lost vitality, hours & economic drain',
       icon: Calculator,
+      badge: 'Calculator Modal',
+      color: 'border-amber-500/40 text-amber-300',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-calculator-modal'));
+        onClose();
+      },
     },
     {
-      title: '100-Day Reboot Roadmap',
-      subtitle: 'Structured transmutation stages',
-      href: '#courses',
-      icon: Compass,
+      title: 'Panic Mode',
+      subtitle: 'Instant urge breaker & 4-7-8 breathwork',
+      icon: ShieldAlert,
+      badge: 'Emergency',
+      color: 'border-red-500/50 text-red-300',
+      action: () => {
+        triggerPanic();
+        onClose();
+      },
     },
+  ];
+
+  // Quick navigation to primary sections
+  const quickSections = [
     {
-      title: 'Daily Streak Wallpaper',
-      subtitle: 'Dynamic active streak wallpaper',
+      title: 'Streak Counter & Habit Carousel',
+      subtitle: 'Sobriety timer & daily disciplines',
       href: '#streak',
-      icon: ImageIcon,
+      icon: Flame,
+    },
+    {
+      title: 'Essential Books & Scripture Studies',
+      subtitle: 'Brahmacharya & spiritual growth',
+      href: '#books',
+      icon: BookOpen,
     },
   ];
 
@@ -360,10 +385,47 @@ function ToolsDrawer({
                     })}
                   </div>
 
-                  {/* Quick-Jump On-Page Sections */}
+                  {/* ── Diagnostic & Emergency Modals Section ── */}
                   <div className="pt-2 space-y-2">
+                    <div className="text-[10px] font-black text-amber-400/90 uppercase tracking-widest px-1 flex items-center justify-between">
+                      <span>Diagnostic & Emergency Tools</span>
+                      <span className="text-[9px] text-zinc-500 font-normal">Opens Interactive Modals</span>
+                    </div>
+
+                    {diagnosticTools.map(tool => {
+                      const Icon = tool.icon;
+                      return (
+                        <motion.button
+                          key={tool.title}
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={tool.action}
+                          className="w-full flex items-center justify-between p-3 rounded-2xl bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-800/80 hover:border-amber-400/60 transition group cursor-pointer text-left shadow-sm"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+                              <Icon className="w-4 h-4 text-amber-400" />
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors flex items-center gap-2">
+                                <span>{tool.title}</span>
+                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-zinc-900 ${tool.color}`}>
+                                  {tool.badge}
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-zinc-400 mt-0.5">{tool.subtitle}</div>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Primary Landing Page Links */}
+                  <div className="pt-2 space-y-1.5">
                     <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-1">
-                      Quick On-Page Tools
+                      Main Landing Navigation
                     </div>
                     {quickSections.map(sec => {
                       const Icon = sec.icon;
@@ -372,18 +434,17 @@ function ToolsDrawer({
                           key={sec.title}
                           href={sec.href}
                           onClick={onClose}
-                          className="flex items-center justify-between p-3 rounded-xl bg-zinc-950/50 hover:bg-zinc-900 border border-zinc-850 border-zinc-800/60 hover:border-amber-500/40 transition group"
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-950/40 hover:bg-zinc-900/70 border border-zinc-800/60 hover:border-amber-500/30 transition group"
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2.5">
                             <Icon className="w-4 h-4 text-amber-400" />
                             <div>
-                              <div className="text-xs font-bold text-zinc-200 group-hover:text-white">
+                              <div className="text-xs font-semibold text-zinc-300 group-hover:text-white">
                                 {sec.title}
                               </div>
-                              <div className="text-[10px] text-zinc-500">{sec.subtitle}</div>
                             </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-amber-400" />
+                          <ChevronRight className="w-3.5 h-3.5 text-zinc-600 group-hover:text-amber-400" />
                         </a>
                       );
                     })}

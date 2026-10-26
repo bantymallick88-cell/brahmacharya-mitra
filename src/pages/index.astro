@@ -3,12 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import PanicModal from '../components/PanicModal';
+import BrainFogModal from '../components/BrainFogModal';
+import CalculatorModal from '../components/CalculatorModal';
 import Dashboard from '../components/Dashboard';
-
-import BrainFogTracker from '../components/BrainFogTracker';
-import RelapseCostCalculator from '../components/RelapseCostCalculator';
-import RebootCourses from '../components/RebootCourses';
-import DeitiesSection from '../components/DeitiesSection';
 import BookRecommendations from '../components/BookRecommendations';
 import DonationSection from '../components/DonationSection';
 import Footer from '../components/Footer';
@@ -18,32 +15,25 @@ import Footer from '../components/Footer';
 	title="Brahmacharya Mitra (ब्रह्मचर्य मित्र) — Master Your Vitality & Transmute Your Energy"
 	description="The premier spiritual-scientific platform for Brahmacharya, semen retention, dopamine detox, brain fog recovery, and Ojas transmutation. Backed by Sanatan Hindu Dharma deities and modern neuroscience."
 >
-	<!-- Fixed Header Navbar -->
+	<!-- Fixed Header Navbar & Drawer -->
 	<Navbar client:load />
 
 	<!-- Fullscreen Emergency Panic Shield Modal (Triggerable anywhere) -->
 	<PanicModal client:load />
 
+	<!-- Fullscreen Brain Fog Diagnostic Modal (Triggerable from Navigation Drawer) -->
+	<BrainFogModal client:load />
+
+	<!-- Fullscreen Relapse Cost Calculator Modal (Triggerable from Navigation Drawer) -->
+	<CalculatorModal client:load />
+
+	<!-- Clean Landing Page: Strictly focused on Streak Counter, Habit Carousel & Books -->
 	<main class="flex-1 w-full max-w-full overflow-x-hidden">
-		<!-- Hero Section -->
+		<!-- Clean Landing Hero Section -->
 		<Hero client:load />
 
-		<!-- Animated Circular Streak Timer & Daily Habit Transformation (Matching 1st Screenshot) -->
+		<!-- Animated Circular Streak Timer & Daily Habit Transformation Carousel -->
 		<Dashboard client:load />
-
-
-
-		<!-- Porn-Induced Brain Fog & Mental Clarity Tracker -->
-		<BrainFogTracker client:visible />
-
-		<!-- Relapse Cost & Vitality Hemorrhage Calculator -->
-		<RelapseCostCalculator client:visible />
-
-		<!-- Structured 30, 60 & 100 Days Reboot Courses -->
-		<RebootCourses client:visible />
-
-		<!-- Sacred Sanatan Deities Archetypes -->
-		<DeitiesSection client:visible />
 
 		<!-- Essential Books & Scripture Studies -->
 		<BookRecommendations client:visible />

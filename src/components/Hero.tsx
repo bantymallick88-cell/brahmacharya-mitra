@@ -3,10 +3,8 @@ import { motion } from 'framer-motion';
 import { 
   Flame, 
   ShieldAlert, 
-  Brain, 
   Sparkles, 
-  ArrowRight, 
-  Calculator
+  ArrowRight
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import LiquidAuroraCanvas from './LiquidAuroraCanvas';
@@ -144,93 +142,6 @@ export default function Hero() {
             <span>{t.hero.panicBtn}</span>
           </motion.button>
 
-          {/* Brain Fog Test CTA */}
-          <motion.a
-            href="#brain-fog"
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-200 hover:text-white font-semibold text-sm sm:text-base transition-all cursor-pointer text-center text-balance break-words"
-          >
-            <Brain className="w-5 h-5 text-amber-400 flex-shrink-0" />
-            <span>{t.hero.brainFogBtn}</span>
-          </motion.a>
-
-          {/* Calculator CTA */}
-          <motion.a
-            href="#calculator"
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl backdrop-blur-3xl bg-zinc-950/60 hover:bg-zinc-900/80 border border-zinc-700/60 hover:border-amber-400/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] text-zinc-300 hover:text-amber-300 text-xs sm:text-sm font-medium transition-all cursor-pointer text-center text-balance break-words"
-          >
-            <Calculator className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span>{t.hero.calculatorBtn}</span>
-          </motion.a>
-        </motion.div>
-
-        {/* Live Credibility Statistics Grid - Framer Motion Micro-Interactions on all Cards */}
-        <motion.div 
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto pt-8 border-t border-amber-500/20"
-        >
-          <motion.div
-            whileHover={{ scale: 1.05, y: -4 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="p-4 rounded-2xl backdrop-blur-3xl bg-zinc-950/65 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-all duration-300 glass-card-lift cursor-default"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-cinzel text-amber-400">
-              {t.hero.stat1Number}
-            </div>
-            <div className="text-xs text-zinc-400 font-medium mt-1">
-              {t.hero.stat1Label}
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ scale: 1.05, y: -4 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="p-4 rounded-2xl backdrop-blur-3xl bg-zinc-950/65 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-all duration-300 glass-card-lift cursor-default"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-cinzel text-amber-300">
-              {t.hero.stat2Number}
-            </div>
-            <div className="text-xs text-zinc-400 font-medium mt-1">
-              {t.hero.stat2Label}
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ scale: 1.05, y: -4 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="p-4 rounded-2xl backdrop-blur-3xl bg-zinc-950/65 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-all duration-300 glass-card-lift cursor-default"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-cinzel text-yellow-300">
-              {t.hero.stat3Number}
-            </div>
-            <div className="text-xs text-zinc-400 font-medium mt-1">
-              {t.hero.stat3Label}
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ scale: 1.05, y: -4 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="p-4 rounded-2xl backdrop-blur-3xl bg-zinc-950/65 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-all duration-300 glass-card-lift cursor-default"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-cinzel text-emerald-400">
-              {t.hero.stat4Number}
-            </div>
-            <div className="text-xs text-zinc-400 font-medium mt-1">
-              {t.hero.stat4Label}
-            </div>
-          </motion.div>
         </motion.div>
 
       </div>
