@@ -4,7 +4,7 @@ import {
   Flame, ShieldAlert, Heart, Menu, X, Sparkles,
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
-  Image as ImageIcon, Settings, ChevronLeft, Zap
+  Image as ImageIcon, Settings, ChevronLeft, Zap, Clock
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -117,9 +117,9 @@ function ToolsDrawer({
   const sadhanaFeatures = [
     {
       id: 'journal',
-      title: 'Journal & Notes',
-      subtitle: 'Daily reflections, notes, sadhana todos & schedule',
-      icon: BookOpen,
+      title: 'Schedule, Todo & Journal',
+      subtitle: 'Ideal Dinacharya, daily tasks, notes & reflections',
+      icon: Clock,
       badge: 'Interactive',
       color: 'from-amber-400 to-yellow-500',
     },
