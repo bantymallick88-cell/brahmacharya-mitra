@@ -146,7 +146,7 @@ export default function Dashboard() {
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-amber-500/15 border border-purple-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider mb-6 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
             <Flame className="w-4 h-4 text-pink-400 fill-pink-400" />
-            <span>MDF Sobriety & Akhand Streak Engine</span>
+            <span>Sadhana Sobriety & Akhand Streak Engine</span>
           </div>
 
           {/* ── Animated Circular Streak Timer (Matching 1st Screenshot) ── */}

@@ -35,7 +35,7 @@ const INITIAL_POSTS: Post[] = [
     badge: '🔥 Bhasma Destroyer',
     streak: 18,
     timeAgo: '1h ago',
-    content: 'Surfed a massive urge spike after returning from work exhausted. Used the MDF Breathe module for 5 minutes + cold shower. Energy completely rerouted to my upper chakras.',
+    content: 'Surfed a massive urge spike after returning from work exhausted. Used the Prana Breathe module for 5 minutes + cold shower. Energy completely rerouted to my upper chakras.',
     likes: 35,
     cheers: 19
   },

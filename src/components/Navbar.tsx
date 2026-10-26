@@ -240,7 +240,7 @@ function ToolsDrawer({
                       </span>
                     </div>
                     <span className="text-[9px] font-sanskrit text-amber-400/80 mt-0.5 tracking-widest">
-                      ब्रह्मचर्य मित्र • MDF Features
+                      ब्रह्मचर्य मित्र • Sadhana Tools
                     </span>
                   </div>
                 </div>
@@ -322,7 +322,7 @@ function ToolsDrawer({
                     <div className="flex-1 h-px bg-zinc-800/80" />
                     <span className="text-[10px] font-black text-amber-400/90 tracking-widest uppercase flex items-center gap-1.5">
                       <Zap className="w-3 h-3 text-amber-400" />
-                      MDF Sravana & Sadhana Modules
+                      Sadhana & Vitality Modules
                     </span>
                     <div className="flex-1 h-px bg-zinc-800/80" />
                   </div>
@@ -530,7 +530,7 @@ export default function Navbar() {
               <button
                 onClick={() => setDrawerOpen(true)}
                 className="relative group p-2 sm:p-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
-                aria-label="Open MDF Tools and Navigation Drawer"
+                aria-label="Open Sadhana Tools and Navigation Drawer"
               >
                 <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 group-hover:scale-110 transition-transform" />
               </button>
