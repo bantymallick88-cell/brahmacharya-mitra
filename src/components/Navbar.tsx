@@ -19,61 +19,29 @@ import GalleryView from './mdf/GalleryView';
 import SettingsView from './mdf/SettingsView';
 
 /* ─────────────────────────────────────────────────────────────
-   Minimalist Black Shadow Silhouette of Lord Hanuman Ji (holding Gada)
+   App Brand Logo — Mahadev Divine Photo
+   Styling: width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #FF8C00; with gold glow
 ───────────────────────────────────────────────────────────── */
-function HanumanLogo({ size = 46 }: { size?: number }) {
+export function MahadevLogo({ size = 38 }: { size?: number }) {
   return (
     <div
-      className="relative flex-shrink-0 rounded-full overflow-hidden shadow-[0_0_24px_rgba(245,158,11,0.55)] group cursor-pointer"
-      style={{ width: size, height: size }}
+      className="relative flex-shrink-0 rounded-full overflow-hidden group cursor-pointer"
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: '50%',
+        border: '1.5px solid #FF8C00',
+        boxShadow: '0 0 16px rgba(255, 140, 0, 0.55), 0 0 30px rgba(245, 158, 11, 0.3)',
+      }}
     >
-      <div
-        className="absolute inset-0 rounded-full z-20 pointer-events-none animate-spin-slow"
-        style={{
-          background: 'conic-gradient(from 0deg, #f59e0b, #fef08a, #d97706, #fbbf24, #f59e0b)',
-          padding: '2px',
-          borderRadius: '50%',
-        }}
+      <img
+        src="/photo_mahadev.jpg"
+        alt="Mahadev - Brahmacharya Mitra"
+        className="w-full h-full object-cover object-center rounded-full scale-[1.02] group-hover:scale-110 transition-transform duration-300"
+        loading="eager"
+        width={size}
+        height={size}
       />
-      <div className="absolute inset-[2px] rounded-full z-20 pointer-events-none border border-amber-300/40" />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-amber-400 via-amber-600 to-yellow-900" />
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_45%_35%,rgba(255,255,255,0.95)_0%,rgba(251,191,36,0.85)_30%,rgba(217,119,6,0.9)_65%,rgba(120,53,15,1)_100%)]" />
-
-      <svg
-        viewBox="0 0 100 100"
-        className="w-full h-full relative z-10 scale-[1.1] translate-y-[2px]"
-        fill="#050508"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <line x1="28" y1="88" x2="68" y2="22" stroke="#050508" strokeWidth="5.5" strokeLinecap="round" />
-        <line x1="68" y1="22" x2="73" y2="14" stroke="#050508" strokeWidth="4" strokeLinecap="round" />
-        <circle cx="70" cy="18" r="11" fill="#050508" />
-        <ellipse cx="70" cy="18" rx="13" ry="8" transform="rotate(-35 70 18)" fill="#050508" />
-        <polygon points="76,9 79,4 73,8" fill="#050508" />
-        <circle cx="28" cy="88" r="3.5" fill="#050508" />
-        <path
-          d="M 28 85 C 10 75, 4 45, 16 25 C 24 12, 42 10, 48 18 C 50 20, 48 24, 45 23 C 38 18, 25 19, 21 30 C 13 46, 17 68, 32 83 Z"
-          fill="#050508"
-        />
-        <path d="M 44 26 L 47 16 L 51 21 L 55 12 L 58 22 L 62 18 L 60 28 Z" fill="#050508" />
-        <path
-          d="M 44 26 C 43 32, 44 38, 48 40 C 50 41, 52 42, 53 45 C 54 48, 52 50, 48 51 C 43 51, 40 47, 39 42 C 38 35, 40 28, 44 26 Z"
-          fill="#050508"
-        />
-        <path d="M 48 37 C 54 36, 59 38, 60 42 C 61 45, 58 48, 53 48 C 50 48, 48 45, 48 40 Z" fill="#050508" />
-        <circle cx="43" cy="38" r="2.5" fill="#050508" />
-        <path d="M 43 40 C 44 45, 42 47, 41 48" stroke="#050508" strokeWidth="2" strokeLinecap="round" />
-        <path
-          d="M 43 48 C 37 54, 30 62, 33 78 C 34 85, 38 95, 42 100 L 76 100 C 74 88, 70 78, 64 68 C 58 58, 54 52, 48 48 Z"
-          fill="#050508"
-        />
-        <path
-          d="M 46 54 C 52 56, 60 60, 64 68 C 66 72, 64 78, 59 81 C 54 83, 49 78, 47 72 C 45 66, 45 58, 46 54 Z"
-          fill="#050508"
-        />
-        <path d="M 59 74 C 64 70, 67 66, 68 58 C 69 54, 66 52, 63 56 C 60 61, 56 68, 54 75 Z" fill="#050508" />
-      </svg>
-      <div className="absolute -inset-2 rounded-full bg-amber-500/35 blur-md z-0 pointer-events-none animate-pulse-slow" />
     </div>
   );
 }
@@ -254,7 +222,7 @@ function ToolsDrawer({
             <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 flex-shrink-0 border-b border-zinc-800/80 bg-zinc-950/40">
               {currentScreen === 'menu' ? (
                 <div className="flex items-center gap-3">
-                  <HanumanLogo size={36} />
+                  <MahadevLogo size={38} />
                   <div className="flex flex-col leading-none">
                     <div className="flex items-baseline gap-1.5">
                       <span className="font-cinzel font-black text-sm tracking-wider text-white">
@@ -558,10 +526,10 @@ export default function Navbar() {
             }`}
           >
 
-            {/* ── Left: Logo (Hanuman Ji) & Responsive Brand Title ── */}
+            {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
             <a href="#" className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0">
-              <div className="relative pulse-gold-ring rounded-full group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
-                <HanumanLogo size={38} />
+              <div className="relative group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+                <MahadevLogo size={38} />
               </div>
 
               <div className="flex flex-col leading-none min-w-0">

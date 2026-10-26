@@ -47,14 +47,20 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 w-full">
         
-        {/* Divine Badge with Rotating Border Beam */}
+        {/* Divine Badge with Rotating Border Beam & Mahadev Avatar */}
         <motion.div 
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border-beam-badge backdrop-blur-3xl bg-zinc-950/70 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] text-amber-300 text-xs sm:text-sm font-semibold tracking-wider mb-6 transition-all duration-300 max-w-full"
+          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border-beam-badge backdrop-blur-3xl bg-zinc-950/70 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] text-amber-300 text-xs sm:text-sm font-semibold tracking-wider mb-6 transition-all duration-300 max-w-full"
         >
-          <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <img
+            src="/photo_mahadev.jpg"
+            alt="Lord Shiva Mahadev"
+            className="w-5 h-5 rounded-full object-cover border border-[#FF8C00] shadow-[0_0_10px_rgba(255,140,0,0.5)] flex-shrink-0"
+            loading="eager"
+          />
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
           <span className="truncate">{t.hero.badge}</span>
         </motion.div>
 
