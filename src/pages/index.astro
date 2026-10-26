@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar';
+import Header from '../components/Header';
 import Hero from '../components/Hero';
 import PanicModal from '../components/PanicModal';
 import BrainFogModal from '../components/BrainFogModal';
@@ -16,7 +16,7 @@ import Footer from '../components/Footer';
 	description="The premier spiritual-scientific platform for Brahmacharya, semen retention, dopamine detox, brain fog recovery, and Ojas transmutation. Backed by Sanatan Hindu Dharma deities and modern neuroscience."
 >
 	<!-- Fixed Header Navbar & Drawer -->
-	<Navbar client:load />
+	<Header client:load />
 
 	<!-- Fullscreen Emergency Panic Shield Modal (Triggerable anywhere) -->
 	<PanicModal client:load />

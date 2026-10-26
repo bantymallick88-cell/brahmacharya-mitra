@@ -57,23 +57,15 @@ export default function Hero() {
         >
           <img
             src="/photo_mahadev.jpg"
-            alt=""
+            alt="Brahmacharya Mitra Logo"
+            className="w-5 h-5 rounded-full object-cover shrink-0"
             onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = MAHADEV_IMAGE_DATA;
+              const target = e.currentTarget;
+              if (!target.dataset.fallbackTried) {
+                target.dataset.fallbackTried = 'true';
+                target.src = MAHADEV_IMAGE_DATA;
+              }
             }}
-            style={{
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              objectPosition: 'center top',
-              border: '1px solid #FF8C00',
-              flexShrink: 0,
-            }}
-            loading="eager"
-            width={20}
-            height={20}
           />
           <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
           <span className="truncate">{t.hero.badge}</span>

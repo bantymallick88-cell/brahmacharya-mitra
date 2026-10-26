@@ -11,7 +11,20 @@ export default defineConfig({
   base: '/brahmacharya-mitra',
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [
+      tailwindcss(),
+      {
+        name: 'serve-root-public-assets',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url && (req.url === '/photo_mahadev.jpg' || req.url === '/photo_mahadev.png' || req.url.startsWith('/photo_mahadev.'))) {
+              req.url = '/brahmacharya-mitra' + req.url;
+            }
+            next();
+          });
+        }
+      }
+    ]
   },
 
   integrations: [react()]
