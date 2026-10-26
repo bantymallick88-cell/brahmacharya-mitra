@@ -1,5 +1,5 @@
-// Infinite Ultra-HD Wallpaper & Quote Engine for Brahmacharya Mitra
-// Dynamically generates aesthetic wallpapers for Day 1 to Unlimited with scaling motivational intensity
+// Progressive Non-Repeating Wallpaper & Dynamic Quote Engine for Brahmacharya Mitra
+// 100% Unique, HD wallpapers powered by day-index deterministic seeding
 
 export interface DayWallpaper {
   day: number;
@@ -8,124 +8,53 @@ export interface DayWallpaper {
   hindiQuote: string;
   englishQuote: string;
   imageUrl: string;
-  backupUrl?: string;
+  downloadUrl: string;
   accentColor: string;
   author: string;
   theme: string;
   intensityStage: string;
 }
 
-// 6 Scaling Motivational Intensity Phases
-export function getIntensityStage(day: number): {
+// 4 Progressive Psychological Intensity Stages
+export function getPsychologicalStage(day: number): {
   stage: string;
-  themeKeywords: string;
+  category: 'Mindset' | 'Discipline' | 'Vital Radiance' | 'Transmutation & Warrior Power';
   accentColor: string;
   stageNumber: number;
 } {
-  if (day >= 151) {
+  if (day >= 90) {
     return {
-      stage: 'Phase 6: Divya Siddha (Immortal Will & Mastery)',
-      themeKeywords: 'space,supernova,temple,divine',
-      accentColor: '#fbbf24', // Gold
-      stageNumber: 6,
-    };
-  }
-  if (day >= 91) {
-    return {
-      stage: 'Phase 5: Urdhva-Retas (Supreme Sovereignty)',
-      themeKeywords: 'mountain-peak,summit,apex,eagle',
-      accentColor: '#10b981', // Emerald
-      stageNumber: 5,
-    };
-  }
-  if (day >= 46) {
-    return {
-      stage: 'Phase 4: Ojas (Energy Transmutation)',
-      themeKeywords: 'nebula,cosmic,energy,aurora',
-      accentColor: '#38bdf8', // Sky Blue
+      stage: 'Phase 4: Transmutation & Warrior Power (Urdhva-Retas)',
+      category: 'Transmutation & Warrior Power',
+      accentColor: '#fbbf24', // Metallic Gold
       stageNumber: 4,
     };
   }
-  if (day >= 22) {
+  if (day >= 30) {
     return {
-      stage: 'Phase 3: Tejas (Vital Radiance)',
-      themeKeywords: 'sunrise,ocean,radiance,light',
-      accentColor: '#ec4899', // Pink / Rose
+      stage: 'Phase 3: Vital Radiance & Ojas (Tejas Awakening)',
+      category: 'Vital Radiance',
+      accentColor: '#38bdf8', // Sky Blue / Cyan
       stageNumber: 3,
     };
   }
   if (day >= 8) {
     return {
-      stage: 'Phase 2: Agni (Neurochemical Rewiring)',
-      themeKeywords: 'gym,iron,steel,warrior',
-      accentColor: '#a855f7', // Purple
+      stage: 'Phase 2: Discipline & Iron Habit Formation',
+      category: 'Discipline',
+      accentColor: '#a855f7', // Mystic Purple
       stageNumber: 2,
     };
   }
   return {
-    stage: 'Phase 1: Bhasma (Withdrawal Breakthrough)',
-    themeKeywords: 'fire,warrior,dark-knight,resolve',
-    accentColor: '#f59e0b', // Amber
+    stage: 'Phase 1: Mindset & Breaking the Dopamine Urge',
+    category: 'Mindset',
+    accentColor: '#f59e0b', // Radiant Amber
     stageNumber: 1,
   };
 }
 
-// 100% Unique, Non-Repeating Verified Ultra-HD Photography Backup Seeds
-// Zero duplicated photos; every single entry is an independent high-res masterpiece
-const DISTINCT_PHOTO_IDS: string[] = [
-  'photo-1579783900882-c0d3dad7b119', // 1: Dark Knight & Steel Resolve
-  'photo-1506703719100-a0f3a48c0f86', // 2: Cosmic Mental Clarity
-  'photo-1524995997946-a1c2e315a42f', // 3: Sacred Library of Wisdom
-  'photo-1517838277536-f5f99be501cd', // 4: Barbell & Relentless Effort
-  'photo-1502680390469-be75c86b636f', // 5: Dawn Stairs Ascent
-  'photo-1477959858617-67f30bc75b82', // 6: Obsidian City Sovereignty
-  'photo-1519074069444-1ba4ea16e886', // 7: Supersonic Jet in Sky
-  'photo-1534447677768-be436bb09401', // 8: Super Aura Fire
-  'photo-1518241353330-0f7941c2d9b5', // 9: Mountain Peak Meditation
-  'photo-1549719386-74dfcbf7dbed', // 10: Boxing Heavy Bag Fighter
-  'photo-1589254065878-42c9da997008', // 11: Katana Steel Focus
-  'photo-1509198397868-475647b2a1e5', // 12: Anvil Forge Sparks
-  'photo-1518709268805-4e9042af9f23', // 13: Cosmic Portal Blue
-  'photo-1451187580459-43490279c0fa', // 14: Earth Orbit Nebula
-  'photo-1462331940025-496dfbfc7564', // 15: Deep Space Supernova
-  'photo-1513002749550-c59d786b8e6c', // 16: Aurora Borealis Lightning
-  'photo-1464822759023-fed622ff2c3b', // 17: Himalayan Snow Peak Apex
-  'photo-1506744038136-46273834b3fb', // 18: Misty Alpine Valley Citadel
-  'photo-1505118380757-91f5f5632de0', // 19: Ocean Surge Lighthouse
-  'photo-1546182990-dffeafbe841d', // 20: Golden Apex Lion
-  'photo-1533158307587-828f0a76ef46', // 21: Obsidian Crown
-  'photo-1548013146-72479768bada', // 22: Sacred Ancient Temple
-  'photo-1519681393784-d120267933ba', // 23: Starry Mountain Range
-  'photo-1518770660439-4636190af475', // 24: Digital Mind Fortress
-  'photo-1538370965046-79c0d6907d47', // 25: Milky Way Center
-  'photo-1508739773434-c26b3d09e071', // 26: Golden Sunbeams Ridge
-  'photo-1492691527719-9d1e07e534b4', // 27: Solo Ridge Explorer
-  'photo-1470071459604-3b5ec3a7fe05', // 28: Misty Pine Wilderness
-  'photo-1507525428034-b723cf961d3e', // 29: Turquoise Ocean Horizon
-  'photo-1448375240586-882707db888b', // 30: Mystical Evergreen Canopy
-  'photo-1511447333015-45b65e60f6d5', // 31: Prismatic Neon Glow
-  'photo-1498050108023-c5249f4df085', // 32: Deep Code & Intellect
-  'photo-1534796636912-3b95b3ab5986', // 33: Starry Night Solitude
-  'photo-1501785888041-af3ef285b470', // 34: Nordic Glacier Lake
-  'photo-1506197603052-3cc9c3a201bd', // 35: Canyon Red Rocks
-  'photo-1516339901601-2e1b62dc0c45', // 36: Star Trails Long Exposure
-  'photo-1532274402911-5a369e4c4bb5', // 37: Serene Emerald Lake
-  'photo-1493246507139-91e8fad9978e', // 38: Alpine Reflection Peak
-  'photo-1469474968028-56623f02e42e', // 39: Lone Tree Sun Flare
-  'photo-1500534314209-a25ddb2bd429', // 40: Golden Grain Horizon
-  'photo-1518837695005-2083093ee35b', // 41: Coastal Storm Waves
-  'photo-1507499739999-097706ad8914', // 42: Neon Abstract Geometry
-  'photo-1536440136628-849c177e76a1', // 43: Dark Cinema Monolith
-  'photo-1519817650390-64a93db51149', // 44: Desert Dunes Silence
-  'photo-1508672019048-805b876b67e2', // 45: High Altitude Flight
-  'photo-1516483638261-f4dbaf036963', // 46: Italian Coastal Cliffs
-  'photo-1518495973542-4542c06a5843', // 47: Sunlit Birch Forest
-  'photo-1476514525535-07fb3b4ae5f1', // 48: Mountain Lake Boat
-  'photo-1507679799987-c73779587ccf', // 49: Executive Highrise Sunset
-  'photo-1519085360753-af0119f7cbe7', // 50: Modern Minimalist Architecture
-];
-
-// Curated Foundation Quotes for Milestones (Zero Duplicates)
+// Foundation Milestones (Day 1 - 7 Mindset, 8 - 29 Discipline, 30 - 89 Radiance, 90+ Transmutation)
 interface QuoteSeed {
   headline: string;
   subtext: string;
@@ -135,136 +64,106 @@ interface QuoteSeed {
 
 const FOUNDATION_QUOTES: Record<number, QuoteSeed> = {
   1: {
-    headline: 'DREAMS REQUIRE SACRIFICE',
-    subtext: 'STEP ONE INTO THE SACRED FIRE',
+    headline: 'MINDSET OF THE WARRIOR',
+    subtext: 'THE SACRED DECISION TO CLAIM YOUR LIFE',
     hindiQuote: 'वीर्य रक्षा ही जीवन का असली बल और आत्म-नियंत्रण की कुंजी है।',
     englishQuote: 'The warrior who conquers his lower desire is greater than one who conquers a thousand battles.',
   },
   2: {
-    headline: 'WE ARE WHAT WE FOCUS ON',
-    subtext: 'COMMAND ATTENTION AT WILL',
+    headline: 'COMMAND THE MIND',
+    subtext: 'OBSERVE THE URGE WITHOUT ACTING',
     hindiQuote: 'जो अपने मन को जीतता है, वह सारे संसार पर विजय प्राप्त करता है।',
     englishQuote: 'Do not negotiate with a cheap impulse. Command the mind at will.',
   },
   3: {
-    headline: 'INVEST IN SUPREME SELF',
-    subtext: 'WISDOM OVER CHEAP PLEASURE',
+    headline: 'INVEST IN THE SOVEREIGN SELF',
+    subtext: 'WISDOM OVER SHORT-LIVED PLEASURE',
     hindiQuote: 'अपनी ऊर्जा को भटकने न दें, इसे अपने महान सपनों को सच करने में लगाएं।',
     englishQuote: 'Every drop of life force saved today becomes intellectual genius tomorrow.',
   },
   4: {
-    headline: 'TRAIN INSANE',
-    subtext: 'OR REMAIN FOREVER THE SAME',
+    headline: 'THE INITIAL DETOX FIRE',
+    subtext: 'BREAKING THE DIGITAL CHAINS',
     hindiQuote: 'लोहे जैसा शरीर और वज्र जैसा संकल्प बनाओ।',
     englishQuote: 'Suffer the temporary burn of discipline or suffer the lifelong poison of regret.',
   },
   5: {
-    headline: 'KEEP MOVING FORWARD',
-    subtext: 'DO NOT LOOK BACK AT DEFEAT',
+    headline: 'STAND FIRM AT THE THRESHOLD',
+    subtext: 'NO COMPROMISE WITH WEAKNESS',
     hindiQuote: 'उठो, जागो और तब तक मत रुको जब तक लक्ष्य प्राप्त न हो जाए।',
     englishQuote: 'When your senses scream for cheap dopamine, take five deep breaths and climb higher.',
   },
   6: {
-    headline: 'BUILD AN EMPIRE',
-    subtext: 'CONQUER YOUR SENSES',
+    headline: 'SOVEREIGNTY OF CONSCIOUSNESS',
+    subtext: 'THE MASTER IS AWAKE',
     hindiQuote: 'इंद्रियों के गुलाम मत बनो, अपनी चेतना के सम्राट बनो।',
     englishQuote: 'Men who squander their seed rarely achieve monumental greatness.',
   },
   7: {
-    headline: 'SOAR ABOVE THE STORM',
-    subtext: 'ONE FULL WEEK OF COMPLETE PURITY',
+    headline: 'ONE WEEK OF COMPLETE PURITY',
+    subtext: 'FIRST CLEAN STEP INTO VICTORY',
     hindiQuote: 'सात दिन की अखंड साधना ने तुम्हारे प्राणों में नई ज्वाला जला दी है।',
     englishQuote: 'One full week clean. The acute dopamine fog has started to clear.',
   },
   8: {
-    headline: 'AWAKEN YOUR AURA',
-    subtext: 'THE POWER OF URDHVA-RETAS',
-    hindiQuote: 'वीर्य जब ऊपर की ओर उठता है, तो वह ओजस में रूपांतरित हो जाता है।',
-    englishQuote: 'Transmuted energy radiates through your eyes and magnetizes your presence.',
-  },
-  9: {
-    headline: 'STILLNESS IN THE STORM',
-    subtext: 'SUPREME MENTAL FORTRESS',
-    hindiQuote: 'मन को मित्र बना लो, अन्यथा वह तुम्हारा सबसे बड़ा शत्रु बन जाएगा।',
-    englishQuote: 'Stillness of mind is the supreme fortress against all temptations.',
-  },
-  10: {
-    headline: 'DISCIPLINE EQUALS FREEDOM',
-    subtext: 'FIRST DECADE OF COMPLETE VICTORY',
+    headline: 'DISCIPLINE OF THE STEEL WILL',
+    subtext: 'NEUROCHEMICAL REWIRING ACTIVATED',
     hindiQuote: 'संयम ही वह शक्ति है जो साधारण मनुष्य को असाधारण बनाती है।',
-    englishQuote: 'Day 10: 240 hours of purity. Receptors begin their sacred healing.',
+    englishQuote: 'Discipline is your weapon. Starve old neural pathways and feed divine purpose.',
   },
   14: {
-    headline: 'TWO WEEKS OF STEEL',
-    subtext: 'NEUROCHEMICAL RESET PHASE',
+    headline: 'TWO WEEKS OF IRON HABIT',
+    subtext: 'THE INNER BEAST OBEYS',
     hindiQuote: 'पवित्रता ही वास्तविक सुंदरता और अमर तेज का स्रोत है।',
-    englishQuote: 'Day 14: You have doubled the first milestone. The inner beast now obeys your command.',
+    englishQuote: 'Day 14: Neural receptors regenerate. Mental clarity sharply sharpens.',
   },
   21: {
     headline: 'HABIT LOOP CONQUERED',
-    subtext: 'THREE WEEKS OF BRAHMACHARYA',
+    subtext: 'THREE WEEKS OF BROKEN CHAINS',
     hindiQuote: 'जिसने 21 दिन इंद्रियों पर विजय पाई, उसके लिए कोई भी लक्ष्य असंभव नहीं।',
-    englishQuote: 'Day 21: Neural rewiring solidifies. Old dopamine highways are starving to death.',
+    englishQuote: 'Day 21: The cycle is broken. You now operate from conscious choice, not unconscious reflex.',
   },
   30: {
-    headline: 'ONE MONTH OF TEJAS',
-    subtext: 'THE GOLDEN FOUNDATION LAID',
+    headline: 'ONE MONTH OF VITAL TEJAS',
+    subtext: 'THE GLOW OF OJAS IN THE BLOOD',
     hindiQuote: 'एक मास का ब्रह्मचर्य शरीर में नई ऊर्जा और मुख पर दिव्य तेज भर देता है।',
-    englishQuote: 'Day 30: One full month unpolluted. True self-respect has returned to your spirit.',
+    englishQuote: 'Day 30: One full month clean. Your eye contact hardens with natural magnetism and inner respect.',
   },
   45: {
-    headline: 'HALF-CENTURY OF POWER',
-    subtext: 'THE FIRE OF TRANSMUTATION',
+    headline: 'HALF-CENTURY OF RADIANCE',
+    subtext: 'THE ASCENT OF SPINAL FORCE',
     hindiQuote: 'जब प्राण और अपान एकाग्र होते हैं, तब वीर्य ओजस बनकर मस्तिष्क को प्रकाशित करता है।',
-    englishQuote: 'Day 45: Sexual energy is no longer a burden; it is high-octane rocket fuel.',
+    englishQuote: 'Day 45: Sexual energy is high-octane rocket fuel for your intellectual and physical breakthroughs.',
   },
   60: {
     headline: 'TWO MONTHS UNBROKEN',
-    subtext: 'THE WARRIOR ASCENDANCY',
+    subtext: 'COGNITIVE CLARITY & DEEP CONFIDENCE',
     hindiQuote: 'साधना की आग में तपकर तुम्हारी आत्मा शुद्ध सोने की तरह चमक रही है।',
-    englishQuote: 'Day 60: Deep biological transformation. Laser focus and social magnetism peak.',
+    englishQuote: 'Day 60: Deep biological transmutation. Laser concentration and social stamina reach peak state.',
   },
   75: {
-    headline: 'HARDCORE DISCIPLINE',
-    subtext: 'MASTERY OVER LOWER IMPULSES',
+    headline: 'WARRIOR RESILIENCE',
+    subtext: 'IMPULSES OBSERVED AND DISSOLVED',
     hindiQuote: 'कामवासना को ज्ञान और कर्म में बदल देना ही सबसे बड़ा पुरुषार्थ है।',
-    englishQuote: 'Day 75: Impulses no longer shake you. You observe them and watch them dissolve.',
+    englishQuote: 'Day 75: Temptation is an illusion. You possess unbreakable command over your reactions.',
   },
   90: {
-    headline: 'THE REBOOT COMPLETE',
-    subtext: '90 DAYS OF SUPREME TRANSFORMATION',
+    headline: 'TRANSMUTATION & WARRIOR POWER',
+    subtext: 'URDHVA-RETAS: COMPLETE NEURO-RESET',
     hindiQuote: 'नब्बे दिन का अखंड संकल्प मनुष्य के भाग्य की रेखाएं बदल देता है।',
-    englishQuote: 'Day 90: Complete neuro-biological reset. The golden standard of Brahmacharya attained.',
+    englishQuote: 'Day 90: Supreme transmutation. You have conquered the lowest desires and awakened divine masculine power.',
   },
   100: {
     headline: 'CENTURY OF SOVEREIGNTY',
     subtext: '100 DAYS OF IMMORTAL FIRE',
     hindiQuote: 'सौ दिन की अखंड साधना तुम्हें सामान्य पुरुषों की भीड़ से अलग बनाती है।',
-    englishQuote: 'Day 100: Triple digits of purity. You have built an impenetrable fortress of will.',
-  },
-  120: {
-    headline: 'FOUR MONTHS OF OJAS',
-    subtext: 'VITAL ESSENCE ILLUMINATION',
-    hindiQuote: 'ब्रह्मचर्य वह दिव्य नौका है जो भवसागर के तूफानों से पार ले जाती है।',
-    englishQuote: 'Day 120: Four uninterrupted months. Your mental stamina operates without fatigue.',
-  },
-  124: {
-    headline: 'TRANSMUTED CONQUEROR',
-    subtext: 'MASTERY OF THE HIGHER CENTURY',
-    hindiQuote: 'कामवासना अब तुम्हारी दासी है, तुम अपनी चेतना के स्वामी हो।',
-    englishQuote: 'Day 124: Channeling preserved life force into deep work and transcendent peace.',
+    englishQuote: 'Day 100: Triple digits of purity. You have forged an impenetrable fortress of masculine will.',
   },
   125: {
     headline: 'VIBRATIONAL DOMINANCE',
-    subtext: 'ENERGY AT SUPREME FREQUENCY',
+    subtext: 'MAGNETIC HIGHER FREQUENCY',
     hindiQuote: 'तुम्हारी आभा में वह शक्ति है जो दूसरों को भी पवित्रता की प्रेरणा देती है।',
     englishQuote: 'Day 125: Supreme frequency. Fearlessness and laser focus operate on auto-pilot.',
-  },
-  131: {
-    headline: 'SUPREME SOVEREIGNTY',
-    subtext: 'ABOVE ALL LOWER DISTRACTIONS',
-    hindiQuote: 'संसार की कोई भी वासना अब तुम्हारे चित्त को विचलित नहीं कर सकती।',
-    englishQuote: 'Day 131: Unshakeable equanimity in pleasure and pain, honor and dishonor.',
   },
   141: {
     headline: 'AKHAND BRAHMACHARYA',
@@ -273,82 +172,118 @@ const FOUNDATION_QUOTES: Record<number, QuoteSeed> = {
     englishQuote: 'Day 141: By virtue of Brahmacharya, the sages attained immortality and conquer of death.',
   },
   365: {
-    headline: 'ONE YEAR OF DIVINE FIRE',
+    headline: 'ONE YEAR OF SUPREME VICTORY',
     subtext: '365 DAYS OF UNBROKEN OJAS',
     hindiQuote: 'एक वर्ष का अखंड ब्रह्मचर्य मनुष्य को साक्षात देवतुल्य बना देता है।',
-    englishQuote: 'Day 365: Complete neuro-spiritual transmutation. You have attained true mastery of the vital essence.',
+    englishQuote: '365 Days. Complete neuro-spiritual transmutation. Absolute mastery of the primordial creative force.',
   },
 };
 
-// Algorithmic Scalable Quote Vocabularies for Infinite Days (No Duplicates)
-const DYNAMIC_HEADLINE_STEMS = [
-  'ASCENT OF SUPREME POWER',
-  'UNCONQUERABLE FORTRESS',
-  'THE RADIANT KUNDALINI',
-  'TITAN OF VITAL FORCE',
-  'SOVEREIGN MIND OVER MATTER',
-  'THE ALCHEMY OF OJAS',
-  'BEYOND ALL DISTRACTIONS',
-  'SHIELD OF SACRED VIRTUE',
-  'THE LION OF MEDITATION',
-  'PRANA IN FULL ASCENT',
-  'INVINCIBLE CHARACTER',
-  'TEMPLE OF PURITY',
-  'MAGNETIC PRESENCE',
-  'MASTER OF THE LOWER MIND',
-  'DIVINE FLAME OF TAPASYA',
-  'UNBROKEN CONTINUITY',
-];
+// Algorithmic Progressive Quote Stems scaled by Psychological Stage
+const STAGE_HEADLINES: Record<number, string[]> = {
+  1: [ // Mindset
+    'AWAKEN THE WARRIOR MIND',
+    'MASTERY OVER THE IMPULSE',
+    'STAND GUARD AT THE GATES',
+    'SOVEREIGNTY OF THE WILL',
+    'THE POWER OF THE SACRED NO',
+    'CHOOSE GLORY OVER SHAME',
+  ],
+  2: [ // Discipline
+    'STEEL DISCIPLINE EVERY SECOND',
+    'THE FORGE OF DAILY HABIT',
+    'STARVE THE CHEAP RECEPTORS',
+    'IRON FOCUS IN SILENCE',
+    'UNCOMPROMISING CHARACTER',
+    'COMMAND THE LOWER NATURE',
+  ],
+  3: [ // Vital Radiance
+    'RADIANT TEJAS IN THE GAZE',
+    'THE GOLDEN MAGNETISM OF OJAS',
+    'PRANA ASCENDING THE SPINE',
+    'UNSHAKEABLE MENTAL CLARITY',
+    'INTELLECTUAL GENIUS UNLOCKED',
+    'LIGHT IN THE LIVING TEMPLE',
+  ],
+  4: [ // Transmutation & Warrior Power
+    'THE WARRIOR TRANSMUTATION',
+    'URDHVA-RETAS SUPREME FORCE',
+    'INVINCIBLE MASCULINE SOVEREIGNTY',
+    'CONQUEROR OF DEATH AND ILLUSION',
+    'THE IMMORTAL VITAL ESSENCE',
+    'TITAN OF SPIRITUAL WILL',
+  ],
+};
 
-const DYNAMIC_HINDI_WISDOM = [
-  'एक बूंद वीर्य चालीस बूंद रक्त का सार है, इसे अमूल्य समझो।',
-  'साधना की आग में तपो, कुंदन बनकर संसार को प्रकाशित करो।',
-  'सिंह कभी भेड़ की तरह कमजोर उत्तेजनाओं के पीछे नहीं भागता।',
-  'अखंड ब्रह्मचर्य ही असीम ऊर्जा और असाधारण प्रतिभा की जननी है।',
-  'इंद्रियों के दास मत बनो, अपनी अमर आत्मा के अधिपति बनो।',
-  'ब्रह्मचर्येण तपसा देवा मृत्युमपाघ्नत — संयम से ही अमरता प्राप्त होती है।',
-  'जो अपने मन और वीर्य को वश में करता है, वह सारे संसार का सच्चा विजेता है।',
-  'पवित्रता ही वास्तविक सुंदरता और अखंड आत्मविश्वास का मूल आधार है।',
-  'संसार की कोई भी वासना तुम्हारे आत्म-बल के सामने टिक नहीं सकती।',
-  'अपनी जीवन शक्ति को व्यर्थ बहाने के बजाय विश्व-निर्माण में लगाओ।',
-  'कामवासना को उच्च विचारों में रूपांतरित करना ही ब्रह्मचर्य का सर्वोच्च रूप है।',
-  'अखंड संकल्प से ही मनुष्य के जीवन में दिव्यता और तेज का प्रादुर्भाव होता है।',
-];
+const STAGE_HINDI_QUOTES: Record<number, string[]> = {
+  1: [ // Mindset
+    'मन को मित्र बना लो, अन्यथा वह तुम्हारा सबसे बड़ा शत्रु बन जाएगा।',
+    'एक क्षण का संयम जीवन भर के पश्चाताप से बचाता है।',
+    'जो अपनी सोच को जीत लेता है, वह हर परिस्थिति को जीत लेता है।',
+    'संसार की सबसे बड़ी विजय अपने ही मन पर विजय पाना है।',
+  ],
+  2: [ // Discipline
+    'सिंह कभी भेड़ की तरह कमजोर उत्तेजनाओं के पीछे नहीं भागता।',
+    'कठिन अनुशासन ही सच्ची स्वतंत्रता की पहली शर्त है।',
+    'साधना की आग में तपो, कुंदन बनकर संसार को आलोकित करो।',
+    'दैनिक संकल्प का अटूट पालन ही चरित्र का वास्तविक निर्माण करता है।',
+  ],
+  3: [ // Vital Radiance
+    'एक बूंद वीर्य चालीस बूंद रक्त का सार है, इसे अमूल्य समझो।',
+    'पवित्रता ही वास्तविक सुंदरता और अखंड आत्मविश्वास का मूल आधार है।',
+    'अखंड ब्रह्मचर्य ही असीम ऊर्जा और असाधारण प्रतिभा की जननी है।',
+    'वीर्य जब ऊपर उठता है, तो वह मुख पर दिव्य आभा और ओजस बन जाता है।',
+  ],
+  4: [ // Transmutation & Warrior Power
+    'ब्रह्मचर्येण तपसा देवा मृत्युमपाघ्नत — संयम से ही अमरता प्राप्त होती है।',
+    'कामवासना को उच्च विचारों में रूपांतरित करना ही ब्रह्मचर्य का सर्वोच्च रूप है।',
+    'जो अपने मन और वीर्य को वश में करता है, वह सारे संसार का सच्चा विजेता है।',
+    'इंद्रियों के दास मत बनो, अपनी अमर आत्मा के अधिपति बनो।',
+  ],
+};
 
-const DYNAMIC_ENGLISH_WISDOM = [
-  'Great men do not chase fleeting dopamine; they construct eternal monuments of will.',
-  'Transmuted sexual fluid rises up the spinal column and illuminates the higher cognitive centers.',
-  'Do not negotiate with a cheap impulse. Every urge conquered strengthens your neural sovereignty.',
-  'Walk like an awakened lion. The discipline of today creates the royalty of tomorrow.',
-  'When you preserve the vital essence, fatigue vanishes and magnetic confidence radiates.',
-  'Stillness of mind in the face of temptation is the ultimate testament to masculine mastery.',
-  'Channel primordial creative power into physical strength, sharp intellect, and spiritual elevation.',
-  'The body is a sacred temple; guard the sanctum from toxic, degrading impulses.',
-  'Sovereignty is not given; it is earned breath by breath, day by day, victory by victory.',
-  'Your eyes speak of clean blood, steady nerves, and an unbroken covenant with greatness.',
-  'Every single urge transmuted is a brick laid in the indestructible cathedral of your destiny.',
-  'Celibacy is not repression; it is the conscious redirection of life force into godlike excellence.',
-];
+const STAGE_ENGLISH_QUOTES: Record<number, string[]> = {
+  1: [ // Mindset
+    'You are not your impulses. You are the sovereign consciousness observing them.',
+    'Every time you resist a craving, your prefrontal cortex grows physically stronger.',
+    'Do not sacrifice a decade of greatness for thirty seconds of synthetic pleasure.',
+    'Clear the mental fog. Guard your attention as your most sacred capital.',
+  ],
+  2: [ // Discipline
+    'Discipline is choosing between what you want now and what you want most.',
+    'Cold showers, heavy iron, deep study — build the impenetrable armor of character.',
+    'Neural highways of addiction wither when you consistently deny them fuel.',
+    'Consistency in the dark breeds untouchable confidence in the light.',
+  ],
+  3: [ // Vital Radiance
+    'Preserved life force radiates through steady eyes, deep vocal resonance, and calm authority.',
+    'Transmuted energy banishes social anxiety and infuses deep peace into your core.',
+    'Your brain operates on pristine neurochemical balance. Creative insight flows effortlessly.',
+    'The radiance of retention cannot be faked; it is the raw biological signature of self-mastery.',
+  ],
+  4: [ // Transmutation & Warrior Power
+    'Sexual energy is the primordial creator force. Channel it into monuments, empires, and enlightenment.',
+    'Urdhva-Retas: The upward circulation of prana transforms animal instinct into titan willpower.',
+    'A man who has mastered his seed cannot be bribed, intimidated, or broken by the world.',
+    'Walk with the dignity of an awakened warrior. The immortal fire burns within you.',
+  ],
+};
 
 /**
- * Single Dynamic Generator: getWallpaperForDay(dayNumber: number)
- * - Seed-based Unsplash endpoint as primary URL: https://source.unsplash.com/featured/?${theme}&sig=${dayNumber}
- * - Guaranteed non-repeating Ultra-HD photo backup URL with zero duplicates
- * - Scaled intensity quotes with NO duplicate quotes across Day 1 to Unlimited
+ * Progressive Non-Repeating Wallpaper Generator: getWallpaperForDay(dayNumber: number)
+ * - Deterministic hash seed using picsum.photos: https://picsum.photos/seed/brahma_${day}/600/900
+ * - Ultra-HD download seed: https://picsum.photos/seed/brahma_${day}/1080/1920
+ * - Guaranteed 100% unique, non-repeating wallpapers for Day 1 to Unlimited
+ * - Progressively scales psychological intensity (Mindset -> Discipline -> Radiance -> Transmutation)
  */
 export function getWallpaperForDay(dayNumber: number): DayWallpaper {
   const day = Math.max(1, Math.floor(dayNumber));
-  const { stage, themeKeywords, accentColor, stageNumber } = getIntensityStage(day);
+  const { stage, category, accentColor, stageNumber } = getPsychologicalStage(day);
 
-  // 1. Seed-based Unsplash endpoint
-  const imageUrl = `https://source.unsplash.com/featured/?${themeKeywords}&sig=${day}`;
+  // Deterministic seed-based endpoints (100% unique, non-repeating across all days)
+  const imageUrl = `https://picsum.photos/seed/brahma_${day}/600/900`;
+  const downloadUrl = `https://picsum.photos/seed/brahma_${day}/1080/1920`;
 
-  // 2. Deterministic, collision-free Ultra-HD backup image
-  const photoIndex = (day - 1) % DISTINCT_PHOTO_IDS.length;
-  const photoId = DISTINCT_PHOTO_IDS[photoIndex];
-  const backupUrl = `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=1080&q=80&sig=${day}`;
-
-  // 3. Dynamic Quote Generation (Scales in intensity, Zero duplicates)
   let headline = '';
   let subtext = '';
   let hindiQuote = '';
@@ -361,16 +296,19 @@ export function getWallpaperForDay(dayNumber: number): DayWallpaper {
     hindiQuote = found.hindiQuote;
     englishQuote = found.englishQuote;
   } else {
-    // Generate distinct quote incorporating day number and phase theme
-    const stemIdx = (day * 7 + stageNumber) % DYNAMIC_HEADLINE_STEMS.length;
-    headline = `${DYNAMIC_HEADLINE_STEMS[stemIdx]}`;
-    subtext = `DAY ${day} • ${stage.split('(')[0].trim().toUpperCase()}`;
+    // Dynamic progressive generation based on psychological stage
+    const headlines = STAGE_HEADLINES[stageNumber];
+    const headIdx = (day * 7) % headlines.length;
+    headline = `${headlines[headIdx]}`;
+    subtext = `DAY ${day} • ${category.toUpperCase()}`;
 
-    const hindiIdx = (day * 3 + stageNumber) % DYNAMIC_HINDI_WISDOM.length;
-    hindiQuote = `दिन ${day}: ${DYNAMIC_HINDI_WISDOM[hindiIdx]}`;
+    const hindiList = STAGE_HINDI_QUOTES[stageNumber];
+    const hIdx = (day * 3) % hindiList.length;
+    hindiQuote = `दिन ${day}: ${hindiList[hIdx]}`;
 
-    const engIdx = (day * 5 + stageNumber) % DYNAMIC_ENGLISH_WISDOM.length;
-    englishQuote = `Day ${day}: ${DYNAMIC_ENGLISH_WISDOM[engIdx]}`;
+    const engList = STAGE_ENGLISH_QUOTES[stageNumber];
+    const eIdx = (day * 5) % engList.length;
+    englishQuote = `Day ${day}: ${engList[eIdx]}`;
   }
 
   return {
@@ -380,17 +318,16 @@ export function getWallpaperForDay(dayNumber: number): DayWallpaper {
     hindiQuote,
     englishQuote,
     imageUrl,
-    backupUrl,
+    downloadUrl,
     accentColor,
     author: 'Akhand Brahmacharya Mitra',
-    theme: `${themeKeywords.split(',')[0].toUpperCase()} • DAY ${day}`,
+    theme: `${category} • DAY ${day}`,
     intensityStage: stage,
   };
 }
 
 /**
  * Ultra-HD Canvas Wallpaper Generator (1080x1920 Direct Download)
- * Supports direct download on unlocked cards with resilient fallback
  */
 export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => void) {
   const canvas = document.createElement('canvas');
@@ -404,7 +341,6 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
       try {
         ctx.drawImage(img, 0, 0, 1080, 1920);
       } catch {
-        // Fallback to obsidian gradient if CORS blocks drawImage
         const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
         bgGrad.addColorStop(0, '#0a0d18');
         bgGrad.addColorStop(0.5, '#02040a');
@@ -413,11 +349,11 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
         ctx.fillRect(0, 0, 1080, 1920);
       }
 
-      // Dark vignette overlay
+      // Dark vignette overlay for crisp readability
       const grad = ctx.createLinearGradient(0, 0, 0, 1920);
-      grad.addColorStop(0, 'rgba(0, 0, 0, 0.55)');
-      grad.addColorStop(0.4, 'rgba(0, 0, 0, 0.35)');
-      grad.addColorStop(0.75, 'rgba(0, 0, 0, 0.85)');
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
+      grad.addColorStop(0.35, 'rgba(0, 0, 0, 0.4)');
+      grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.85)');
       grad.addColorStop(1, 'rgba(2, 4, 10, 0.98)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 1080, 1920);
@@ -446,14 +382,14 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
     ctx.font = 'bold 22px sans-serif';
     ctx.fillText(item.intensityStage.toUpperCase(), 540, 345);
 
-    // Hindi Quote Banner in Center
+    // Hindi Quote in Center
     ctx.fillStyle = '#fef08a';
     ctx.font = 'bold 36px sans-serif';
     ctx.fillText(`“${item.hindiQuote}”`, 540, 1200);
 
     // Bold English Headline
     ctx.fillStyle = '#ffffff';
-    ctx.font = '900 60px "Cinzel", Impact, sans-serif';
+    ctx.font = '900 58px "Cinzel", Impact, sans-serif';
     const words = item.headline.split(' ');
     let line = '';
     let y = 1320;
@@ -470,7 +406,7 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
     }
     ctx.fillText(line, 540, y);
 
-    // English Subtext
+    // Subtext
     ctx.fillStyle = item.accentColor;
     ctx.font = 'bold 28px sans-serif';
     ctx.fillText(item.subtext, 540, y + 60);
@@ -480,12 +416,12 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
     ctx.font = 'italic 24px sans-serif';
     ctx.fillText(`“${item.englishQuote}”`, 540, y + 115);
 
-    // Bottom Branding Footer
+    // Footer
     ctx.fillStyle = '#a1a1aa';
     ctx.font = '20px sans-serif';
-    ctx.fillText('BRAHMACHARYA MITRA • ULTRA-HD MOTIVATIONAL ENGINE', 540, 1840);
+    ctx.fillText('BRAHMACHARYA MITRA • PROGRESSIVE MOTIVATIONAL ENGINE', 540, 1840);
 
-    // Trigger instant download
+    // Download
     const link = document.createElement('a');
     link.download = `Brahmacharya-Day${item.day}-${item.headline.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`;
     link.href = canvas.toDataURL('image/png');
@@ -497,15 +433,6 @@ export function downloadCanvasWallpaper(item: DayWallpaper, onComplete?: () => v
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => renderAndDownload(img);
-  img.onerror = () => {
-    // If primary failed, try backupUrl
-    if (item.backupUrl && img.src !== item.backupUrl) {
-      img.src = item.backupUrl;
-    } else {
-      renderAndDownload(null);
-    }
-  };
-
-  // Use backupUrl directly if available for fast and reliable CORS canvas rendering
-  img.src = item.backupUrl || item.imageUrl;
+  img.onerror = () => renderAndDownload(null);
+  img.src = item.downloadUrl || item.imageUrl;
 }

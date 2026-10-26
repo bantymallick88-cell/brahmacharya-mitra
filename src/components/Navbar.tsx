@@ -186,9 +186,9 @@ function ToolsDrawer({
       icon: Compass,
     },
     {
-      title: 'Ultra-HD Wallpaper Gallery',
-      subtitle: 'Dynamic active streak wallpapers',
-      href: '#wallpapers',
+      title: 'Daily Streak Wallpaper',
+      subtitle: 'Dynamic active streak wallpaper',
+      href: '#streak',
       icon: ImageIcon,
     },
   ];
