@@ -18,26 +18,43 @@ import BreatheView from './mdf/BreatheView';
 import GalleryView from './mdf/GalleryView';
 import SettingsView from './mdf/SettingsView';
 
+import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
+
 /* ─────────────────────────────────────────────────────────────
    App Brand Logo — Mahadev Divine Photo
-   Styling: width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #FF8C00; with gold glow
+   Exact Styling: width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: center top; border: 1.5px solid #FF8C00; flex-shrink: 0;
 ───────────────────────────────────────────────────────────── */
-export function MahadevLogo({ size = 38 }: { size?: number }) {
+export function MahadevLogo({ size = 36 }: { size?: number }) {
   return (
     <div
-      className="relative flex-shrink-0 rounded-full overflow-hidden group cursor-pointer"
+      className="relative flex-shrink-0 rounded-full overflow-hidden group cursor-pointer inline-flex items-center justify-center"
       style={{
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: '50%',
         border: '1.5px solid #FF8C00',
+        flexShrink: 0,
         boxShadow: '0 0 16px rgba(255, 140, 0, 0.55), 0 0 30px rgba(245, 158, 11, 0.3)',
       }}
+      aria-label="Lord Shiva Mahadev - Brahmacharya Mitra"
     >
       <img
         src="/photo_mahadev.jpg"
-        alt="Mahadev - Brahmacharya Mitra"
-        className="w-full h-full object-cover object-center rounded-full scale-[1.02] group-hover:scale-110 transition-transform duration-300"
+        alt=""
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = MAHADEV_IMAGE_DATA;
+        }}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: '50%',
+          objectFit: 'cover',
+          objectPosition: 'center top',
+          border: '1.5px solid #FF8C00',
+          flexShrink: 0,
+        }}
+        className="block select-none scale-[1.02] group-hover:scale-110 transition-transform duration-300"
         loading="eager"
         width={size}
         height={size}
@@ -222,7 +239,7 @@ function ToolsDrawer({
             <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 flex-shrink-0 border-b border-zinc-800/80 bg-zinc-950/40">
               {currentScreen === 'menu' ? (
                 <div className="flex items-center gap-3">
-                  <MahadevLogo size={38} />
+                  <MahadevLogo size={36} />
                   <div className="flex flex-col leading-none">
                     <div className="flex items-baseline gap-1.5">
                       <span className="font-cinzel font-black text-sm tracking-wider text-white">
@@ -529,7 +546,7 @@ export default function Navbar() {
             {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
             <a href="#" className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0">
               <div className="relative group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
-                <MahadevLogo size={38} />
+                <MahadevLogo size={36} />
               </div>
 
               <div className="flex flex-col leading-none min-w-0">

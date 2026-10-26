@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import LiquidAuroraCanvas from './LiquidAuroraCanvas';
+import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -56,9 +57,23 @@ export default function Hero() {
         >
           <img
             src="/photo_mahadev.jpg"
-            alt="Lord Shiva Mahadev"
-            className="w-5 h-5 rounded-full object-cover border border-[#FF8C00] shadow-[0_0_10px_rgba(255,140,0,0.5)] flex-shrink-0"
+            alt=""
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = MAHADEV_IMAGE_DATA;
+            }}
+            style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              border: '1px solid #FF8C00',
+              flexShrink: 0,
+            }}
             loading="eager"
+            width={20}
+            height={20}
           />
           <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
           <span className="truncate">{t.hero.badge}</span>
