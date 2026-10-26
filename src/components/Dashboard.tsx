@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Flame, Award, RotateCcw, AlertTriangle, Check, Plus,
+  Flame, Award, RotateCcw, AlertTriangle, Check, Plus, Minus,
   Dumbbell, BookOpen, Droplets, Sparkles, Clock, Calendar,
-  ShieldCheck, RefreshCw, ChevronRight, X
+  ShieldCheck, RefreshCw, ChevronRight, X, SlidersHorizontal
 } from 'lucide-react';
+import { getStoredStreak, updateGlobalStreak, logRelapse } from '../streakStore';
 
 interface HabitItem {
   id: string;
@@ -24,10 +25,12 @@ const INITIAL_HABITS: HabitItem[] = [
 ];
 
 export default function Dashboard() {
-  const [streakDays, setStreakDays] = useState(7);
-  const [bestDays, setBestDays] = useState(45);
-  const [attemptNumber, setAttemptNumber] = useState(3);
+  const initial = getStoredStreak();
+  const [streakDays, setStreakDays] = useState(initial.days);
+  const [bestDays, setBestDays] = useState(initial.bestDays);
+  const [attemptNumber, setAttemptNumber] = useState(initial.attemptNumber);
   const [confirmRelapseOpen, setConfirmRelapseOpen] = useState(false);
+  const [showQuickPresets, setShowQuickPresets] = useState(false);
 
   // Real-time Sobriety Timer: Days, Hours, Minutes, Seconds
   const [timeState, setTimeState] = useState({
@@ -46,29 +49,17 @@ export default function Dashboard() {
     }
   });
 
-  // Sync streak from localStorage & custom events
+  // Sync streak from global store & custom events
   useEffect(() => {
-    try {
-      const savedDays = localStorage.getItem('bm_streak_days');
-      if (savedDays) setStreakDays(parseInt(savedDays, 10));
-
-      const savedBest = localStorage.getItem('bm_best_days');
-      if (savedBest) setBestDays(parseInt(savedBest, 10));
-
-      const savedAttempt = localStorage.getItem('bm_attempt_num');
-      if (savedAttempt) setAttemptNumber(parseInt(savedAttempt, 10));
-
-      // Calculate timer offset from stored start time or synthesize clock
-      const startTimeStr = localStorage.getItem('bm_streak_start_time');
-      if (!startTimeStr) {
-        // Set a default start time based on streakDays
-        const defaultStart = new Date(Date.now() - (streakDays * 86400000 + 14 * 3600000 + 32 * 60000));
-        localStorage.setItem('bm_streak_start_time', defaultStart.toISOString());
-      }
-    } catch {}
+    const current = getStoredStreak();
+    setStreakDays(current.days);
+    setBestDays(current.bestDays);
+    setAttemptNumber(current.attemptNumber);
 
     const handleStreakChange = (e: any) => {
       if (e.detail?.days !== undefined) setStreakDays(e.detail.days);
+      if (e.detail?.bestDays !== undefined) setBestDays(e.detail.bestDays);
+      if (e.detail?.attemptNumber !== undefined) setAttemptNumber(e.detail.attemptNumber);
     };
     window.addEventListener('streak-updated', handleStreakChange);
 
@@ -88,7 +79,7 @@ export default function Dashboard() {
         const m = Math.floor((elapsed / (1000 * 60)) % 60);
         const s = Math.floor((elapsed / 1000) % 60);
 
-        setStreakDays(d);
+        // Keep days synced with stored streak
         setTimeState({ hours: h, minutes: m, seconds: s });
       } catch {
         setTimeState(prev => {
@@ -123,19 +114,12 @@ export default function Dashboard() {
   };
 
   const handleRelapseReset = () => {
-    try {
-      const newAttempt = attemptNumber + 1;
-      setAttemptNumber(newAttempt);
-      localStorage.setItem('bm_attempt_num', String(newAttempt));
+    logRelapse();
+    setConfirmRelapseOpen(false);
+  };
 
-      // Reset streak days
-      setStreakDays(0);
-      localStorage.setItem('bm_streak_days', '0');
-      localStorage.setItem('bm_streak_start_time', new Date().toISOString());
-
-      window.dispatchEvent(new CustomEvent('streak-updated', { detail: { days: 0 } }));
-      setConfirmRelapseOpen(false);
-    } catch {}
+  const handleSetStreak = (days: number) => {
+    updateGlobalStreak(days);
   };
 
   // Circular progress calculations (based on 90-day mastery cycle)
@@ -252,7 +236,7 @@ export default function Dashboard() {
           </div>
 
           {/* ── Stats Row Below Timer: BEST & ATTEMPT & Relapse Trigger Button ── */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 mt-4 mb-8 w-full max-w-md">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 mt-4 mb-4 w-full max-w-md">
             {/* BEST Record Card */}
             <div className="flex-1 min-w-[120px] p-2.5 sm:p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 text-center shadow-sm">
               <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider block">BEST</span>
@@ -277,6 +261,52 @@ export default function Dashboard() {
               <AlertTriangle className="w-4 h-4 text-red-400" />
               <span>Relapse Log</span>
             </motion.button>
+          </div>
+
+          {/* ── Quick Streak Adjuster & Milestone Test Bar ── */}
+          <div className="w-full max-w-lg mb-8 p-3 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-2 mb-2 text-xs font-semibold text-zinc-400">
+              <span className="flex items-center gap-1 text-amber-300">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>Adjust Streak & Unlock Wallpapers</span>
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handleSetStreak(Math.max(0, streakDays - 1))}
+                  className="p-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition"
+                  title="Minus 1 Day"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-bold font-mono">
+                  Day {streakDays}
+                </span>
+                <button
+                  onClick={() => handleSetStreak(streakDays + 1)}
+                  className="p-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition"
+                  title="Plus 1 Day"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Milestone presets */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] font-bold">
+              {[1, 2, 3, 5, 8, 14, 21, 30, 90, 125, 141].map((d) => (
+                <button
+                  key={d}
+                  onClick={() => handleSetStreak(d)}
+                  className={`px-2.5 py-1 rounded-xl whitespace-nowrap transition cursor-pointer ${
+                    streakDays === d
+                      ? 'bg-amber-400 text-zinc-950 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                      : 'bg-zinc-900/90 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800'
+                  }`}
+                >
+                  Day {d}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* ── Daily Habit Tracking Cards Section Below Timer ── */}

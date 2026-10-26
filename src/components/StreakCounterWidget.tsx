@@ -85,6 +85,15 @@ export default function StreakCounterWidget() {
         setPledgedToday(true);
       }
     } catch (e) {}
+
+    const handleStreak = (e: any) => {
+      if (e.detail?.days !== undefined) {
+        setDays(e.detail.days);
+        setCustomDays(String(e.detail.days));
+      }
+    };
+    window.addEventListener('streak-updated', handleStreak);
+    return () => window.removeEventListener('streak-updated', handleStreak);
   }, []);
 
   const updateStreak = (newDays: number) => {

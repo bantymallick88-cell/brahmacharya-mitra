@@ -4,6 +4,7 @@ import {
   Image as ImageIcon, Download, Eye, Sparkles, X,
   Check, Heart, Share2, Shield
 } from 'lucide-react';
+import { getStoredStreak } from '../../streakStore';
 
 interface Wallpaper {
   id: string;
@@ -87,16 +88,13 @@ const WALLPAPERS: Wallpaper[] = [
 ];
 
 export default function GalleryView() {
-  const [streakDays, setStreakDays] = useState(7);
+  const [streakDays, setStreakDays] = useState(() => getStoredStreak().days);
   const [filter, setFilter] = useState<'all' | 'hanuman' | 'shiva' | 'warrior' | 'quotes'>('all');
   const [previewItem, setPreviewItem] = useState<Wallpaper | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('bm_streak_days');
-      if (saved) setStreakDays(parseInt(saved, 10));
-    } catch {}
+    setStreakDays(getStoredStreak().days);
 
     const handleStreak = (e: any) => {
       if (e.detail?.days !== undefined) setStreakDays(e.detail.days);
