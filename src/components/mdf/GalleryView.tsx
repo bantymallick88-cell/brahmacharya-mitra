@@ -208,8 +208,9 @@ export default function GalleryView() {
         {filtered.map(item => (
           <motion.div
             key={item.id}
-            whileHover={{ scale: 1.02 }}
-            className={`relative rounded-2xl overflow-hidden border border-zinc-800 hover:border-amber-400/60 transition-all shadow-lg group bg-gradient-to-b ${item.bgGradient} flex flex-col justify-between p-3.5 min-h-[170px] cursor-pointer`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative rounded-2xl overflow-hidden border border-zinc-800 hover:border-amber-400/80 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all shadow-lg group bg-gradient-to-b ${item.bgGradient} flex flex-col justify-between p-3 min-h-[165px] cursor-pointer`}
             onClick={() => setPreviewItem(item)}
           >
             <div className="flex items-center justify-between">
@@ -228,13 +229,15 @@ export default function GalleryView() {
 
             <div className="flex items-center justify-between pt-1 border-t border-white/10">
               <span className="text-[9px] text-zinc-400 truncate">{item.subtitle}</span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={(e) => { e.stopPropagation(); handleDownload(item); }}
-                className="p-1 rounded-md bg-amber-500/20 text-amber-300 hover:bg-amber-400 hover:text-black transition"
+                className="p-1 rounded-md bg-amber-500/25 text-amber-300 hover:bg-amber-400 hover:text-black transition cursor-pointer shadow-sm"
                 title="Download Wallpaper"
               >
-                <Download className="w-3 h-3" />
-              </button>
+                <Download className="w-3.5 h-3.5" />
+              </motion.button>
             </div>
           </motion.div>
         ))}
