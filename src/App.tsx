@@ -4,7 +4,7 @@ import Hero from './components/Hero';
 import Dashboard from './components/Dashboard';
 import BookRecommendations from './components/BookRecommendations';
 import DonationSection from './components/DonationSection';
-import FAQ from './components/FAQ.tsx';
+import FAQ from './components/FAQ';
 import SEO from './components/SEO.tsx';
 import Footer from './components/Footer';
 import InstallPrompt from './components/InstallPrompt';
@@ -43,8 +43,10 @@ export default function App() {
         {/* Donation / Support Section */}
         <DonationSection />
 
-        {/* High-Traffic SEO FAQ Section with JSON-LD FAQPage Schema directly above Footer */}
-        <FAQ />
+        {/* FAQ Section */}
+        <section id="faq-section" className="py-12 px-4 max-w-4xl mx-auto">
+          <FAQ />
+        </section>
       </main>
 
       {/* ── Footer ── */}
