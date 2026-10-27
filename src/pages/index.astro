@@ -8,8 +8,9 @@ import CalculatorModal from '../components/CalculatorModal';
 import InstallPrompt from '../components/InstallPrompt';
 import Dashboard from '../components/Dashboard';
 import BookRecommendations from '../components/BookRecommendations';
-import FAQ from '../components/FAQ';
 import DonationSection from '../components/DonationSection';
+import FAQ from '../components/FAQ.tsx';
+import SEO from '../components/SEO.tsx';
 import Footer from '../components/Footer';
 ---
 
@@ -17,6 +18,9 @@ import Footer from '../components/Footer';
 	title="Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker"
 	description="Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, and transmute energy."
 >
+	<!-- SEO Metadata & Schema Component -->
+	<SEO client:load />
+
 	<!-- Fixed Header Navbar & Drawer -->
 	<Header client:load />
 
@@ -43,11 +47,11 @@ import Footer from '../components/Footer';
 		<!-- Essential Books & Scripture Studies -->
 		<BookRecommendations client:visible />
 
-		<!-- High-Traffic SEO FAQ Section with JSON-LD FAQPage Schema -->
-		<FAQ client:visible />
-
 		<!-- Donation / Support The Cause Box -->
 		<DonationSection client:visible />
+
+		<!-- High-Traffic SEO FAQ Section with JSON-LD FAQPage Schema directly above Footer -->
+		<FAQ client:load />
 	</main>
 
 	<!-- Footer -->
