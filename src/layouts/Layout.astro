@@ -7,9 +7,13 @@ interface Props {
 }
 
 const { 
-	title = "Brahmacharya Mitra (ब्रह्मचर्य मित्र) — Master Your Vitality & Transmute Your Energy",
-	description = "The premier spiritual & scientific platform for Brahmacharya, semen retention, dopamine detox, mental clarity, and energy transmutation. Grounded in Sanatan Dharma and modern neuroscience."
+	title = "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker",
+	description = "Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, and transmute energy."
 } = Astro.props;
+
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
+const ogImage = `${baseUrl}photo_mahadev.jpg`;
+const canonicalUrl = "https://bantymallick88-cell.github.io/brahmacharya-mitra/";
 ---
 
 <!doctype html>
@@ -17,30 +21,90 @@ const {
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/jpeg" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/photo_mahadev.jpg`} />
-		<link rel="shortcut icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/photo_mahadev.jpg`} />
-		<link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/photo_mahadev.jpg`} />
-		<link rel="manifest" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/manifest.json`} />
+		<link rel="icon" type="image/jpeg" href={`${baseUrl}photo_mahadev.jpg`} />
+		<link rel="shortcut icon" href={`${baseUrl}photo_mahadev.jpg`} />
+		<link rel="apple-touch-icon" href={`${baseUrl}photo_mahadev.jpg`} />
+		<link rel="manifest" href={`${baseUrl}manifest.json`} />
+		<link rel="canonical" href={canonicalUrl} />
 		<meta name="generator" content={Astro.generator} />
 
 		<!-- Primary Meta Tags -->
 		<title>{title}</title>
 		<meta name="title" content={title} />
 		<meta name="description" content={description} />
-		<meta name="keywords" content="Brahmacharya, Semen Retention, Dopamine Detox, Brain Fog, Ojas, Prana, Celibacy, Hanuman Ji, Shiva, Energy Transmutation, NoFap, Vedic Discipline, Meditation, Self Control" />
+		<meta name="keywords" content="brahmacharya, celibacy, nofap, porn addiction recovery, semen retention tracker, dopamine detox, brain fog recovery, ojas transmutation, quit porn, streak counter" />
 		<meta name="author" content="Brahmacharya Mitra" />
 		<meta name="theme-color" content="#02040a" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/og-image.jpg`} />
+		<meta property="og:image" content={ogImage} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalUrl} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={ogImage} />
+
+		<!-- Google FAQPage JSON-LD Structured Data for Rich Results -->
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "FAQPage",
+			"mainEntity": [
+				{
+					"@type": "Question",
+					"name": "What is Brahmacharya Mitra and how does it help with NoFap and Celibacy?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Brahmacharya Mitra (ब्रह्मचर्य मित्र) is a holistic spiritual-scientific platform engineered to help sadhaks break free from porn addiction, master celibacy, and sustain long-term semen retention. It features a reactive real-time streak timer, emergency Urge Breaker (Panic Mode) with 4-7-8 breathwork, daily habit transformation tracking, relapse cost diagnostics, and timeless Vedic scriptures backed by modern dopamine neuroscience."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "How does practicing celibacy and quitting porn cure Brain Fog and Dopamine Burnout?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "High-frequency ejaculation coupled with pixelated pornography floods the brain's reward center, desensitizing dopamine D2 receptors and sparking neuroinflammation in the prefrontal cortex—the core cause of brain fog, lethargy, and anhedonia. Abstaining from digital stimulation and conserving seminal vital fluid initiates neuroplastic reversal: dopamine receptors upregulate, cognitive clarity returns, and vital fluids are transmuted into Ojas (mental brilliance and radiant aura) within 30 to 90 days."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "What is the difference between Semen Retention, NoFap, and Brahmacharya?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "While 'NoFap' focuses primarily on abstaining from internet pornography and compulsive masturbation (PMO reboot), 'Semen Retention' is the physical practice of conserving seminal fluid to boost vitality, androgen sensitivity, and stamina. 'Brahmacharya' is the supreme Sanatan discipline: it transcends mere physical retention to encompass mind control, sensory mastery, pure speech, and the conscious upward transmutation of sexual energy (Virya) into spiritual potency (Ojas and Tejas)."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "How do I install the Brahmacharya Mitra app on my phone Home Screen?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Brahmacharya Mitra is a full-featured Progressive Web App (PWA). On Android (Chrome or Edge), tap the 'Add to Home Screen' or 'Install App' banner at the bottom or from the top-right menu (☰) to trigger the native 1-tap install prompt. On iPhone/iPad (Safari), tap the 'Share' icon (square with upward arrow), scroll down, and select 'Add to Home Screen' (➕). Once installed, it launches fullscreen with offline support."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "How do I restart my celibacy streak after a relapse?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "A relapse is an isolated setback, not the erasure of your neurological healing. First, guard against the 'chaser effect' (repeated binges) and take an immediate cold shower. In Brahmacharya Mitra, open the Streak Counter, reset your counter honestly, and log the trigger in your Journal notes. Remember: the physical resilience and neuroplastic upgrades earned during your previous clean days remain within you—forgive yourself and rise with renewed dedication."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "What are the best recommended books to quit porn addiction and master mind control?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Our curated foundational literature comprises: 1) 'Brahmacharya: Kab, Kyon Aur Kaise?' by Shri Hit Premanand Ji Maharaj; 2) 'The Practice of Brahmacharya' by Swami Sivananda; 3) 'Your Brain on Porn' by Gary Wilson; 4) 'Divya Prerana Prakash' by Sant Shri Asharamji Bapu; 5) 'The Coiled Serpent' by C.J. Van Vliet; and 6) 'Brahmacharya Sandesh' by Swami Dayanand Saraswati. You can review all 6 with direct affiliate study links in our Books section."
+					}
+				}
+			]
+		})} />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

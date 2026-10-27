@@ -5,7 +5,7 @@ import {
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
-  Share2, Check, Smartphone
+  Share2, Check, Smartphone, HelpCircle
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -181,6 +181,12 @@ function ToolsDrawer({
       subtitle: 'Brahmacharya & spiritual growth',
       href: '#books',
       icon: BookOpen,
+    },
+    {
+      title: 'Frequently Asked Questions (FAQ)',
+      subtitle: 'NoFap, celibacy, brain fog & app guide',
+      href: '#faq',
+      icon: HelpCircle,
     },
   ];
 
