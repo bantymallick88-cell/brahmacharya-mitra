@@ -1,6 +1,3 @@
-# Robots.txt for Brahmacharya Mitra
 User-agent: *
 Allow: /
-
-# Sitemap Location
 Sitemap: https://bantymallick88-cell.github.io/brahmacharya-mitra/sitemap.xml

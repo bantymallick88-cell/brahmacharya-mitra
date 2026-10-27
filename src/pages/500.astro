@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { RefreshCw, Home, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
+
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
+---
+
+<Layout 
+  title="500 - Server Error / System Disturbance — Brahmacharya Mitra"
+  description="An unexpected server disturbance occurred. Your local streak data is completely intact. Reload the sanctuary to continue."
+>
+  <main class="min-h-screen bg-[#02040a] text-zinc-100 flex items-center justify-center px-4 py-16 relative overflow-hidden selection:bg-amber-400 selection:text-black">
+    
+    {/* Ambient Cosmic Purple & Flame Orange Aura */}
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(239,68,68,0.12)_0%,rgba(245,158,11,0.14)_30%,rgba(109,40,217,0.14)_60%,rgba(2,4,10,0.95)_80%)] blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-xl w-full text-center relative z-10 space-y-8 p-8 sm:p-12 rounded-3xl bg-zinc-950/80 border border-red-500/30 backdrop-blur-2xl shadow-[0_0_60px_rgba(239,68,68,0.18)]">
+      
+      {/* Divine Alert Icon with Mahadev Glow */}
+      <div class="relative inline-block">
+        <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-gradient-to-br from-amber-500/20 via-zinc-900 to-red-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300 shadow-[0_0_35px_rgba(245,158,11,0.35)]">
+          <AlertTriangle class="w-10 h-10 sm:w-12 sm:h-12 text-amber-400 animate-pulse" />
+        </div>
+        <div class="absolute -top-2 -right-2 px-2.5 py-0.5 rounded-full bg-red-500/20 border border-red-500/50 text-red-300 text-[10px] font-bold tracking-widest uppercase">
+          500 Error
+        </div>
+      </div>
+
+      {/* Main 500 Heading */}
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-semibold uppercase tracking-wider">
+          <Sparkles class="w-3.5 h-3.5 text-amber-400" />
+          <span>System Disturbance</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-black font-cinzel text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-red-200 tracking-tight">
+          500 - Server Error / System Disturbance
+        </h1>
+
+        <p class="text-zinc-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+          An unexpected interruption occurred in the digital ether. Do not waver—your inner Tapasya and local device data remain unblemished.
+        </p>
+
+        <p class="text-xs text-amber-400/80 font-sanskrit italic">
+          “नैनं छिन्दन्ति शस्त्राणि — The eternal spirit cannot be shaken by temporary storms.”
+        </p>
+      </div>
+
+      {/* Action Navigation */}
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button 
+          onclick="window.location.reload()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 font-black text-sm transition-all duration-300 shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          <RefreshCw class="w-4 h-4 text-zinc-950" />
+          <span>Reload Page</span>
+        </button>
+
+        <a 
+          href="./"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 hover:border-amber-400/50 text-zinc-300 hover:text-white font-bold text-xs transition cursor-pointer"
+        >
+          <Home class="w-3.5 h-3.5 text-amber-400" />
+          <span>Return to Home</span>
+        </a>
+      </div>
+
+      {/* Local Safety Guarantee */}
+      <div class="pt-4 border-t border-zinc-800/80 text-[11px] text-zinc-500 flex items-center justify-center gap-2">
+        <ShieldCheck class="w-3.5 h-3.5 text-emerald-400/80" />
+        <span>All streak records, journals, and logs are 100% safe in your browser's local cache.</span>
+      </div>
+
+    </div>
+  </main>
+</Layout>
