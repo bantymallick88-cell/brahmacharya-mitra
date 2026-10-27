@@ -5,6 +5,7 @@ import Hero from '../components/Hero';
 import PanicModal from '../components/PanicModal';
 import BrainFogModal from '../components/BrainFogModal';
 import CalculatorModal from '../components/CalculatorModal';
+import PrivacyModal from '../components/PrivacyModal';
 import InstallPrompt from '../components/InstallPrompt';
 import Dashboard from '../components/Dashboard';
 import BookRecommendations from '../components/BookRecommendations';
@@ -35,6 +36,9 @@ import Footer from '../components/Footer';
 
 	<!-- Fullscreen Relapse Cost Calculator Modal (Triggerable from Navigation Drawer) -->
 	<CalculatorModal client:load />
+
+	<!-- Fullscreen Privacy Policy & Data Sovereignty Modal (Triggerable anywhere) -->
+	<PrivacyModal client:load />
 
 	<!-- Clean Landing Page: Strictly focused on Streak Counter, Habit Carousel & Books -->
 	<main class="flex-1 w-full max-w-full overflow-x-hidden">

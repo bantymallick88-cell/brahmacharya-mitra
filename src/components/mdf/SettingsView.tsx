@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Settings, Flame, Bell, ShieldAlert, Download,
-  Trash2, RotateCcw, Check, Globe, RefreshCw
+  Trash2, RotateCcw, Check, Globe, RefreshCw, ShieldCheck
 } from 'lucide-react';
 import LanguageSelector from '../LanguageSelector';
 
@@ -220,6 +220,14 @@ export default function SettingsView() {
         <p className="text-[11px] text-zinc-400">
           All your journals, streak counts, and notes are stored strictly on your local device.
         </p>
+
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-privacy-modal'))}
+          className="w-full py-2.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-semibold text-amber-300 flex items-center justify-center gap-2 transition cursor-pointer"
+        >
+          <ShieldCheck className="w-4 h-4 text-amber-400" />
+          <span>View Privacy Policy & Data Sovereignty</span>
+        </button>
 
         <div className="flex flex-col sm:flex-row gap-2 pt-1">
           <button

@@ -4,12 +4,17 @@ import {
   Heart, 
   Sparkles, 
   ShieldAlert, 
-  ArrowUp
+  ArrowUp,
+  ShieldCheck
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
 export default function Footer() {
   const { t } = useTranslation();
+
+  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) 
+    ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/') 
+    : '/';
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -17,6 +22,11 @@ export default function Footer() {
 
   const triggerPanic = () => {
     window.dispatchEvent(new CustomEvent('open-panic-modal'));
+  };
+
+  const openPrivacyModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('open-privacy-modal'));
   };
 
   return (
@@ -122,21 +132,45 @@ export default function Footer() {
             <p className="text-xs text-zinc-400 leading-relaxed mb-3">
               {t.footer.missionDesc}
             </p>
-            <a
-              href="#donate"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/30 hover:border-amber-400 transition shadow-sm"
-            >
-              <Heart className="w-3.5 h-3.5 fill-amber-400" />
-              <span>{t.footer.contributeSevaBtn}</span>
-            </a>
+            <div className="flex flex-col gap-2.5">
+              <a
+                href="#donate"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/30 hover:border-amber-400 transition shadow-sm w-fit"
+              >
+                <Heart className="w-3.5 h-3.5 fill-amber-400" />
+                <span>{t.footer.contributeSevaBtn}</span>
+              </a>
+
+              <button
+                onClick={openPrivacyModal}
+                className="text-xs text-amber-300/90 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit pt-1"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span>100% Private & Client-Side</span>
+              </button>
+            </div>
           </div>
 
         </div>
 
         {/* Bottom Disclaimers & Copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
-          <div className="text-center sm:text-left">
-            {t.footer.copyright.replace('{year}', String(new Date().getFullYear()))}
+          <div className="text-center sm:text-left flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
+            <span>{t.footer.copyright.replace('{year}', String(new Date().getFullYear()))}</span>
+            <span className="text-zinc-600 hidden sm:inline">•</span>
+            <button
+              onClick={openPrivacyModal}
+              className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition cursor-pointer font-medium"
+            >
+              Privacy Policy
+            </button>
+            <span className="text-zinc-600">•</span>
+            <a
+              href={`${baseUrl}privacy`}
+              className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition font-medium"
+            >
+              Terms & Legal
+            </a>
           </div>
 
           <div className="flex items-center gap-4">

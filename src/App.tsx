@@ -11,6 +11,7 @@ import InstallPrompt from './components/InstallPrompt';
 import PanicModal from './components/PanicModal';
 import BrainFogModal from './components/BrainFogModal';
 import CalculatorModal from './components/CalculatorModal';
+import PrivacyModal from './components/PrivacyModal';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
       <PanicModal />
       <BrainFogModal />
       <CalculatorModal />
+      <PrivacyModal />
 
       {/* ── Main Landing Content ── */}
       <main className="flex-1 w-full max-w-full overflow-x-hidden">
