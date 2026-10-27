@@ -36,6 +36,16 @@ const canonicalUrl = "https://bantymallick88-cell.github.io/brahmacharya-mitra/"
 		<meta name="author" content="Brahmacharya Mitra" />
 		<meta name="theme-color" content="#02040a" />
 
+		<!-- Google Analytics Tag (GA4) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-XXXXXXXXXX');
+		</script>
+
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalUrl} />
