@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Flame, ShieldAlert, Heart, Menu, X, Sparkles,
+  Flame, ShieldAlert, Menu, X, Sparkles,
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
@@ -451,26 +451,6 @@ function ToolsDrawer({
                       );
                     })}
                   </div>
-
-                  {/* Support & Donation card */}
-                  <motion.a
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    href="#donate"
-                    onClick={onClose}
-                    className="btn-shimmer flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-400/15 to-transparent border border-amber-500/30 hover:border-amber-400/60 transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400">
-                        <Heart className="w-4 h-4 fill-amber-400" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-amber-200">Support Brahmacharya Mitra</div>
-                        <div className="text-[10px] text-zinc-400">100% free & ad-free Sanatan platform</div>
-                      </div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-amber-400" />
-                  </motion.a>
 
                 </div>
               )}

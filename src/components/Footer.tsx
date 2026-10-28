@@ -1,11 +1,10 @@
 import React from 'react';
 import { 
   Flame, 
-  Heart, 
   Sparkles, 
   ShieldAlert, 
-  ArrowUp,
-  ShieldCheck
+  ArrowUp, 
+  ShieldCheck 
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
@@ -133,14 +132,6 @@ export default function Footer() {
               {t.footer.missionDesc}
             </p>
             <div className="flex flex-col gap-2.5">
-              <a
-                href="#donate"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/30 hover:border-amber-400 transition shadow-sm w-fit"
-              >
-                <Heart className="w-3.5 h-3.5 fill-amber-400" />
-                <span>{t.footer.contributeSevaBtn}</span>
-              </a>
-
               <button
                 onClick={openPrivacyModal}
                 className="text-xs text-amber-300/90 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit pt-1"
