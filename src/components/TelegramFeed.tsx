@@ -6,6 +6,9 @@ import {
   Search, RefreshCw, Check, Maximize2, X, MessageCircle,
   Flame, Shield, ChevronDown, ChevronUp, Quote, Copy
 } from 'lucide-react';
+import { cleanFeedText, sanitizeFeedItems } from '../utils/textCleaner';
+
+const DEFAULT_FALLBACK_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
 
 export interface TelegramFeedItem {
   telegram_message_id: number;
@@ -32,7 +35,7 @@ export default function TelegramFeed({
   initialPosts = [],
   apiUrl = 'http://localhost:5050/api/feed',
 }: TelegramFeedProps) {
-  const [posts, setPosts] = useState<TelegramFeedItem[]>(initialPosts);
+  const [posts, setPosts] = useState<TelegramFeedItem[]>(() => sanitizeFeedItems(initialPosts));
   const [activeTab, setActiveTab] = useState<'all' | 'video' | 'image' | 'text'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +56,7 @@ export default function TelegramFeed({
         const json = await res.json();
         const data = Array.isArray(json) ? json : json.data;
         if (Array.isArray(data) && data.length > 0) {
-          setPosts(data);
+          setPosts(sanitizeFeedItems(data));
           setSyncStatus('live');
           setIsLoading(false);
           showToast('Synced live feed from Telegram database! ✨');
@@ -71,7 +74,7 @@ export default function TelegramFeed({
       if (staticRes.ok) {
         const staticData = await staticRes.json();
         if (Array.isArray(staticData) && staticData.length > 0) {
-          setPosts(staticData);
+          setPosts(sanitizeFeedItems(staticData));
           setSyncStatus('cache');
           setIsLoading(false);
           showToast('Loaded latest telegram_feed.json archive! ✨');
@@ -81,7 +84,7 @@ export default function TelegramFeed({
     } catch {}
 
     if (initialPosts.length > 0) {
-      setPosts(initialPosts);
+      setPosts(sanitizeFeedItems(initialPosts));
       setSyncStatus('cache');
     }
     setIsLoading(false);
@@ -515,13 +518,31 @@ function VerticalSwipeReelsPlayer({
             >
               {/* Native HTML5 Video Player: Full Height, Object Cover, Auto-Looping */}
               <video
-                src={post.media_url}
-                className="w-full h-full object-cover select-none"
-                controls={true}
+                src={post.media_url || DEFAULT_FALLBACK_VIDEO}
+                className="w-full h-full object-cover select-none cursor-pointer"
+                controls
+                autoPlay
+                muted
                 loop
                 playsInline
-                preload="metadata"
-              />
+                preload="auto"
+                poster="photo_mahadev.jpg"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src !== DEFAULT_FALLBACK_VIDEO) {
+                    target.src = DEFAULT_FALLBACK_VIDEO;
+                    target.load();
+                    target.play().catch(() => {});
+                  }
+                }}
+                onClick={(e) => {
+                  const v = e.currentTarget;
+                  if (v.paused) v.play().catch(() => {});
+                  else v.pause();
+                }}
+              >
+                <source src={post.media_url || DEFAULT_FALLBACK_VIDEO} type="video/mp4" />
+              </video>
 
               {/* Right Side Vertical Action Rail */}
               <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-4.5 pointer-events-auto">

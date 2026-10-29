@@ -3,6 +3,8 @@
 // Connected to Telegram public channel @brahmacharyahelp (Topic: Motivation reels)
 // Converts posts into direct playable HTML5 streams without external app redirects or "View in Telegram" buttons.
 
+import { cleanFeedText } from '../utils/textCleaner';
+
 interface ReelItem {
   id: string;
   postId: number;
@@ -15,7 +17,7 @@ interface ReelItem {
   videoSrc?: string;
 }
 
-const REELS: ReelItem[] = [
+const RAW_REELS: ReelItem[] = [
   {
     id: "reel-637",
     postId: 637,
@@ -61,6 +63,13 @@ const REELS: ReelItem[] = [
     videoSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4"
   }
 ];
+
+const REELS: ReelItem[] = RAW_REELS.map(r => ({
+  ...r,
+  title: cleanFeedText(r.title),
+  caption: cleanFeedText(r.caption),
+  tags: r.tags.map(cleanFeedText)
+}));
 
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 ---
@@ -136,13 +145,17 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
             {/* HTML5 Native Video Tag: Full Height, Object Cover, Auto-Looping */}
             <video 
               class="reel-video w-full h-full object-cover select-none cursor-pointer"
+              controls
+              autoplay
               loop
               playsinline
               muted
-              preload="metadata"
+              preload="auto"
               poster={`${baseUrl}photo_mahadev.jpg`}
+              src={reel.videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}
             >
-              <source src={reel.videoSrc} type="video/mp4" />
+              <source src={reel.videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'} type="video/mp4" />
+              Your browser does not support HTML5 video.
             </video>
 
             {/* Tap To Play / Pause Ripple Indicator */}
@@ -317,7 +330,20 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
       threshold: [0.6]
     });
 
-    slides.forEach((slide) => observer.observe(slide));
+    const FALLBACK_VIDEO_URL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+    slides.forEach((slide) => {
+      const video = slide.querySelector<HTMLVideoElement>('.reel-video');
+      if (video) {
+        video.addEventListener('error', () => {
+          if (video.src !== FALLBACK_VIDEO_URL) {
+            video.src = FALLBACK_VIDEO_URL;
+            video.load();
+            video.play().catch(() => {});
+          }
+        });
+      }
+      observer.observe(slide);
+    });
 
     // Global Audio Toggle
     if (globalAudioToggle) {

@@ -1,5 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Heart, Share2, Volume2, VolumeX, Sparkles, Flame, Play } from 'lucide-react';
+import { cleanFeedText } from '../utils/textCleaner';
+
+const FALLBACK_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
 
 interface ReelItem {
   id: string;
@@ -12,7 +15,7 @@ interface ReelItem {
   videoSrc: string;
 }
 
-const REELS: ReelItem[] = [
+const RAW_REELS: ReelItem[] = [
   {
     id: 'reel-637',
     postId: 637,
@@ -54,6 +57,13 @@ const REELS: ReelItem[] = [
     videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
   },
 ];
+
+const REELS: ReelItem[] = RAW_REELS.map(r => ({
+  ...r,
+  title: cleanFeedText(r.title),
+  caption: cleanFeedText(r.caption),
+  tags: r.tags.map(cleanFeedText)
+}));
 
 export default function PrernaReels() {
   const [isMuted, setIsMuted] = useState(true);
@@ -193,18 +203,31 @@ export default function PrernaReels() {
                   className="reel-slide snap-start relative w-full h-full flex items-center justify-center bg-black shrink-0 overflow-hidden"
                 >
                   <video
+                    src={reel.videoSrc || FALLBACK_VIDEO}
                     className="w-full h-full object-cover select-none cursor-pointer"
+                    controls
+                    autoPlay
                     loop
                     playsInline
                     muted={isMuted}
-                    preload="metadata"
+                    preload="auto"
+                    poster="photo_mahadev.jpg"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('ForBiggerBlazes.mp4')) {
+                        target.src = FALLBACK_VIDEO;
+                        target.load();
+                        target.play().catch(() => {});
+                      }
+                    }}
                     onClick={(e) => {
                       const v = e.currentTarget;
-                      if (v.paused) v.play();
+                      if (v.paused) v.play().catch(() => {});
                       else v.pause();
                     }}
                   >
-                    <source src={reel.videoSrc} type="video/mp4" />
+                    <source src={reel.videoSrc || FALLBACK_VIDEO} type="video/mp4" />
+                    Your browser does not support HTML5 video.
                   </video>
 
                   {/* Right Actions */}
