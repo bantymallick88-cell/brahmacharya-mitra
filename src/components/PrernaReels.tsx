@@ -1,135 +1,293 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Heart, Share2, Volume2, VolumeX, Sparkles, Flame, Play } from 'lucide-react';
 
-interface Reel {
-  id: string | number;
-  src: string;
+interface ReelItem {
+  id: string;
+  postId: number;
   title: string;
-  creator: string;
+  caption: string;
+  tags: string[];
+  likes: number;
+  shares: number;
+  videoSrc: string;
 }
 
-const DEFAULT_REELS: Reel[] = [
+const REELS: ReelItem[] = [
   {
-    id: 1,
-    src: 'https://example.com/reel1.mp4',
+    id: 'reel-637',
+    postId: 637,
     title: 'Akhand Brahmacharya Power & Tapasya 🔥',
-    creator: '@brahmacharyahelp',
+    caption: 'Conservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱',
+    tags: ['#Brahmacharya', '#Ojas', '#NoFap', '#Tapasya'],
+    likes: 1240,
+    shares: 382,
+    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
   },
   {
-    id: 2,
-    src: 'https://example.com/reel2.mp4',
-    title: 'Daily Discipline Motivation 🙏',
-    creator: '@brahmacharyahelp',
+    id: 'reel-638',
+    postId: 638,
+    title: 'Dopamine Detox & Brain Fog Erasure ⚡',
+    caption: 'The moment you resist lust, your brain begins neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.',
+    tags: ['#BrainFog', '#DopamineDetox', '#Celibacy', '#SanatanPower'],
+    likes: 2190,
+    shares: 540,
+    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
   },
-  // To add more reels, add objects here:
-  // {
-  //   id: 3,
-  //   src: 'https://example.com/reel3.mp4',
-  //   title: 'Transmutation of Ojas & Tejas ⚡',
-  //   creator: '@brahmacharyahelp',
-  // },
+  {
+    id: 'reel-639',
+    postId: 639,
+    title: 'Conquer The Senses, Rule The Mind 🔱',
+    caption: '“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.',
+    tags: ['#MindControl', '#ShivaPower', '#SelfMastery', '#ViryaRaksha'],
+    likes: 3410,
+    shares: 890,
+    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+  },
+  {
+    id: 'reel-640',
+    postId: 640,
+    title: 'Urge Transmutation via Pranayama 🧘‍♂️',
+    caption: 'When an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.',
+    tags: ['#Pranayama', '#Transmutation', '#Kundalini', '#YogaSadhana'],
+    likes: 1870,
+    shares: 412,
+    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
+  },
 ];
 
 export default function PrernaReels() {
+  const [isMuted, setIsMuted] = useState(true);
+  const [likedReels, setLikedReels] = useState<Record<string, boolean>>({});
+  const [likesCount, setLikesCount] = useState<Record<string, number>>(
+    REELS.reduce((acc, r) => ({ ...acc, [r.id]: r.likes }), {})
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const videos = container.querySelectorAll<HTMLVideoElement>('video');
+    const slides = container.querySelectorAll<HTMLDivElement>('.reel-slide');
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
-          if (!entry.isIntersecting) {
+          const video = entry.target.querySelector<HTMLVideoElement>('video');
+          if (!video) return;
+
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            video.muted = isMuted;
+            video.play().catch(() => {
+              video.muted = true;
+              video.play().catch(() => {});
+            });
+          } else {
             video.pause();
+            video.currentTime = 0;
           }
         });
       },
       { root: container, threshold: 0.6 }
     );
 
-    videos.forEach((v) => observer.observe(v));
+    slides.forEach((slide) => observer.observe(slide));
     return () => observer.disconnect();
-  }, []);
+  }, [isMuted]);
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    if (containerRef.current) {
+      const videos = containerRef.current.querySelectorAll<HTMLVideoElement>('video');
+      videos.forEach((v) => {
+        v.muted = nextMuted;
+      });
+    }
+  };
+
+  const handleLike = (id: string) => {
+    setLikedReels((prev) => {
+      const currentlyLiked = !!prev[id];
+      setLikesCount((prevCount) => ({
+        ...prevCount,
+        [id]: currentlyLiked ? prevCount[id] - 1 : prevCount[id] + 1,
+      }));
+      return { ...prev, [id]: !currentlyLiked };
+    });
+  };
+
+  const handleShare = async (title: string) => {
+    const url = window.location.href.split('#')[0] + '#reels';
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: `Watch on Brahmacharya Mitra: ${title}`, url });
+        return;
+      } catch (e) {}
+    }
+    navigator.clipboard.writeText(url);
+    alert('Reel link copied to clipboard!');
+  };
 
   return (
-    <section id="reels" className="flex flex-col items-center justify-center py-12 sm:py-20 bg-[#02040a] text-white select-none relative overflow-hidden">
+    <section id="reels" className="relative py-12 sm:py-20 bg-[#02040a] text-white select-none overflow-hidden flex flex-col items-center justify-center">
       {/* Ambient Cosmic Purple & Amber Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(245,158,11,0.12)_0%,rgba(109,40,217,0.14)_45%,transparent_70%)] blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] bg-[radial-gradient(circle,rgba(245,158,11,0.14)_0%,rgba(109,40,217,0.16)_45%,rgba(2,4,10,0.95)_80%)] blur-3xl pointer-events-none -z-10 animate-aura-pulse" />
 
-      {/* Title Header */}
-      <div className="text-center mb-6 px-4">
-        <span className="bg-amber-500/20 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/30 uppercase tracking-wider inline-block shadow-[0_0_15px_rgba(245,158,11,0.15)]">
-          ✨ VEDIC SHORTS & DAILY INSPIRATION
-        </span>
-        <h2 className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-wide text-amber-100 font-cinzel">
+      {/* Header Section */}
+      <div className="text-center mb-6 sm:mb-8 px-4 max-w-xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+          <span>YOUTUBE SHORTS • VEDIC MOTIVATION REELS</span>
+        </div>
+
+        <h2 className="text-3xl sm:text-5xl font-black font-cinzel tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200">
           BRAHMACHARYA PRERNA REELS
         </h2>
-        <p className="text-xs text-zinc-400 mt-2 max-w-md mx-auto">
-          Swipe vertically to explore daily reels, celibacy reminders & masculine vitality clips.
+
+        <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
+          Synchronized from Telegram <span className="text-amber-300 font-semibold">@brahmacharyahelp</span> (Topic: Motivation reels). 100% playable on-site with seamless vertical swipe.
         </p>
       </div>
 
-      {/* Outer Glow Frame Wrapper */}
-      <div className="relative group px-4">
-        <div className="absolute -inset-1.5 bg-gradient-to-b from-amber-500/25 via-indigo-500/15 to-amber-500/25 rounded-[2.5rem] blur-lg opacity-70 group-hover:opacity-100 transition duration-500 pointer-events-none" />
+      {/* YouTube Shorts Vertical Container */}
+      <div className="relative w-full max-w-[380px] sm:max-w-[400px] h-[680px] sm:h-[720px] px-3">
+        {/* Outer Glow */}
+        <div className="absolute -inset-1 bg-gradient-to-b from-amber-500/30 via-purple-600/20 to-amber-500/30 rounded-[2.5rem] blur-xl opacity-80 pointer-events-none" />
 
-        {/* Swipable Reel Player Container */}
-        <div
-          ref={containerRef}
-          className="w-[320px] xs:w-[360px] h-[640px] bg-zinc-950 rounded-3xl overflow-y-scroll snap-y snap-mandatory border border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.15)] relative no-scrollbar"
-        >
-          {DEFAULT_REELS.map((reel, index) => (
-            <div
-              key={reel.id}
-              className="snap-start w-full h-full relative flex items-center justify-center bg-black shrink-0"
-            >
-              <video
-                className="w-full h-full object-cover rounded-3xl"
-                controls
-                loop
-                playsInline
-                preload="metadata"
-                poster="photo_mahadev.jpg"
-              >
-                <source src={reel.src} type="video/mp4" />
-              </video>
-
-              {/* Bottom Info Overlay */}
-              <div className="absolute bottom-6 left-4 right-4 flex justify-between items-end z-10 pointer-events-none">
-                <div className="pointer-events-auto bg-black/60 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 w-full shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold text-amber-400">{reel.creator}</p>
-                    <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">
-                      Reel {index + 1}
-                    </span>
-                  </div>
-                  <p className="text-xs text-zinc-200 mt-1 font-medium">{reel.title}</p>
+        {/* Mockup Shell */}
+        <div className="relative w-full h-full rounded-[2.2rem] bg-zinc-950 border-2 border-amber-500/40 shadow-[0_0_60px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.2)] flex flex-col overflow-hidden">
+          
+          {/* Top Floating App Bar */}
+          <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none">
+            <div className="flex items-center gap-2 pointer-events-auto">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center font-cinzel font-black text-black text-xs shadow-md">
+                ॐ
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white flex items-center gap-1">
+                  <span>@brahmacharyahelp</span>
+                  <span className="text-amber-400">✓</span>
                 </div>
+                <div className="text-[9px] text-amber-300/80 font-medium">Topic: Motivation reels</div>
               </div>
             </div>
-          ))}
+
+            <button
+              onClick={toggleMute}
+              className="pointer-events-auto p-2 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white hover:text-amber-300 hover:border-amber-400 transition cursor-pointer"
+              title={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted ? <VolumeX className="w-4 h-4 text-zinc-300" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            </button>
+          </div>
+
+          {/* Viewport */}
+          <div
+            ref={containerRef}
+            className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
+          >
+            {REELS.map((reel) => {
+              const liked = !!likedReels[reel.id];
+              return (
+                <div
+                  key={reel.id}
+                  className="reel-slide snap-start relative w-full h-full flex items-center justify-center bg-black shrink-0 overflow-hidden"
+                >
+                  <video
+                    className="w-full h-full object-cover select-none cursor-pointer"
+                    loop
+                    playsInline
+                    muted={isMuted}
+                    preload="metadata"
+                    onClick={(e) => {
+                      const v = e.currentTarget;
+                      if (v.paused) v.play();
+                      else v.pause();
+                    }}
+                  >
+                    <source src={reel.videoSrc} type="video/mp4" />
+                  </video>
+
+                  {/* Right Actions */}
+                  <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-4.5 pointer-events-auto">
+                    <button
+                      onClick={() => handleLike(reel.id)}
+                      className="flex flex-col items-center group cursor-pointer"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/15 group-hover:border-red-500/60 flex items-center justify-center transition-all duration-300 shadow-lg active:scale-90">
+                        <Heart
+                          className={`w-5 h-5 transition-colors ${
+                            liked ? 'text-red-500 fill-red-500' : 'text-white group-hover:text-red-500'
+                          }`}
+                        />
+                      </div>
+                      <span className="text-[10px] font-bold text-zinc-200 mt-1">
+                        {likesCount[reel.id] ?? reel.likes}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => handleShare(reel.title)}
+                      className="flex flex-col items-center group cursor-pointer"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/15 group-hover:border-amber-400/60 flex items-center justify-center transition-all duration-300 shadow-lg active:scale-90">
+                        <Share2 className="w-5 h-5 text-white group-hover:text-amber-300" />
+                      </div>
+                      <span className="text-[10px] font-bold text-zinc-200 mt-1">
+                        {reel.shares}
+                      </span>
+                    </button>
+
+                    <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shadow-lg">
+                      <span className="text-[10px] font-mono font-black text-amber-300">#{reel.postId}</span>
+                    </div>
+                  </div>
+
+                  {/* Glassmorphism Bottom Overlay */}
+                  <div className="absolute bottom-4 left-3 right-16 z-20 pointer-events-none">
+                    <div className="pointer-events-auto bg-black/55 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,0.8)] space-y-1.5 transition-all">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-amber-300 tracking-wide">
+                          @brahmacharyahelp
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[9px] font-bold border border-amber-500/30">
+                          Topic: Motivation
+                        </span>
+                      </div>
+
+                      <h3 className="text-xs sm:text-sm font-bold text-white leading-snug">
+                        {reel.title}
+                      </h3>
+
+                      <p className="text-[11px] text-zinc-300 leading-relaxed line-clamp-2">
+                        {reel.caption}
+                      </p>
+
+                      <div className="flex flex-wrap gap-1.5 pt-0.5">
+                        {reel.tags.map((t) => (
+                          <span key={t} className="text-[10px] text-amber-400/90 font-semibold">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Swipe Hint */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center gap-1 text-[10px] text-zinc-400 font-medium bg-black/60 px-2.5 py-0.5 rounded-full backdrop-blur-sm border border-white/10">
+            <span>↕</span> <span>Swipe up for next reel</span>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Helper Navigation & Telegram Link */}
-      <div className="mt-6 flex flex-col sm:flex-row items-center gap-3 text-center">
-        <span className="text-xs text-zinc-400 flex items-center gap-1.5 font-medium">
-          <span>↕</span> <span>Swipe up/down inside player to change reel</span>
-        </span>
-
-        <span className="text-zinc-600 hidden sm:inline">•</span>
-
-        <a
-          href="https://t.me/brahmacharyahelp"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs font-bold text-amber-400 hover:text-amber-300 transition flex items-center gap-1 hover:underline underline-offset-4"
-        >
-          <span>Join Telegram @brahmacharyahelp</span>
-          <span>↗</span>
-        </a>
+      <div className="mt-8 text-center px-4">
+        <div className="inline-flex items-center gap-2 text-xs text-zinc-400 bg-zinc-950/70 border border-zinc-800/80 px-4 py-2 rounded-2xl">
+          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>100% On-Site Native Stream — No Telegram App Required</span>
+        </div>
       </div>
 
       <style>{`
