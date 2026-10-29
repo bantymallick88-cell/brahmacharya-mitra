@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Heart, Share2, Volume2, VolumeX, Sparkles, Flame, Play } from 'lucide-react';
 import { cleanFeedText, filterVideoReels } from '../utils/textCleaner';
 
-const FALLBACK_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+const FALLBACK_VIDEO = '/brahmacharya-mitra/media/reel_1.mp4';
 
 interface ReelItem {
   id: string;
@@ -26,7 +26,9 @@ const RAW_REELS: ReelItem[] = [
     tags: ['#Brahmacharya', '#Ojas', '#NoFap', '#Tapasya'],
     likes: 1240,
     shares: 382,
-    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_1.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_1.mp4',
+    videoSrc: '/brahmacharya-mitra/media/reel_1.mp4',
   },
   {
     id: 'reel-638',
@@ -36,7 +38,9 @@ const RAW_REELS: ReelItem[] = [
     tags: ['#BrainFog', '#DopamineDetox', '#Celibacy', '#SanatanPower'],
     likes: 2190,
     shares: 540,
-    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_2.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_2.mp4',
+    videoSrc: '/brahmacharya-mitra/media/reel_2.mp4',
   },
   {
     id: 'reel-639',
@@ -46,7 +50,9 @@ const RAW_REELS: ReelItem[] = [
     tags: ['#MindControl', '#ShivaPower', '#SelfMastery', '#ViryaRaksha'],
     likes: 3410,
     shares: 890,
-    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_3.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_3.mp4',
+    videoSrc: '/brahmacharya-mitra/media/reel_3.mp4',
   },
   {
     id: 'reel-640',
@@ -56,7 +62,9 @@ const RAW_REELS: ReelItem[] = [
     tags: ['#Pranayama', '#Transmutation', '#Kundalini', '#YogaSadhana'],
     likes: 1870,
     shares: 412,
-    videoSrc: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_4.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_4.mp4',
+    videoSrc: '/brahmacharya-mitra/media/reel_4.mp4',
   },
 ];
 
@@ -247,7 +255,7 @@ export default function PrernaReels() {
                     poster="photo_mahadev.jpg"
                     onError={(e) => {
                       const target = e.currentTarget;
-                      if (!target.src.includes('ForBiggerBlazes.mp4')) {
+                      if (!target.src.includes('reel_1.mp4')) {
                         target.src = FALLBACK_VIDEO;
                         target.load();
                         target.play().catch(() => {});

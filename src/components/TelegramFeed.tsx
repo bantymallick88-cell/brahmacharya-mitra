@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { cleanFeedText, sanitizeFeedItem, filterVideoReels, isValidVideoUrl } from '../utils/textCleaner';
 
-const DEFAULT_FALLBACK_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+const DEFAULT_FALLBACK_VIDEO = '/brahmacharya-mitra/media/reel_1.mp4';
 
 export interface TelegramFeedItem {
   telegram_message_id: number;
@@ -31,8 +31,8 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
-    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_1.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_1.mp4',
     text_content: 'Akhand Brahmacharya Power & Tapasya 🔥\nConservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱',
     author_name: 'Sadhak Mentor',
     timestamp: '2026-10-29T15:00:00Z',
@@ -45,8 +45,8 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
-    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_2.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_2.mp4',
     text_content: 'Dopamine Detox & Brain Fog Erasure ⚡\nThe moment you resist lust, your brain initiates neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.',
     author_name: 'Veer Brahmachari',
     timestamp: '2026-10-29T15:10:00Z',
@@ -59,8 +59,8 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
-    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_3.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_3.mp4',
     text_content: 'Conquer The Senses, Rule The Mind 🔱\n“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.',
     author_name: 'Sanatan Rishi',
     timestamp: '2026-10-29T15:20:00Z',
@@ -73,8 +73,8 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
-    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
-    media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
+    video_url: '/brahmacharya-mitra/media/reel_4.mp4',
+    media_url: '/brahmacharya-mitra/media/reel_4.mp4',
     text_content: 'Urge Transmutation via Pranayama 🧘‍♂️\nWhen an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.',
     author_name: 'Dhyan Yogi',
     timestamp: '2026-10-29T15:30:00Z',
@@ -345,7 +345,7 @@ export default function TelegramFeed({
                     poster="photo_mahadev.jpg"
                     onError={(e) => {
                       const target = e.currentTarget;
-                      if (!target.src.includes('ForBiggerBlazes.mp4')) {
+                      if (!target.src.includes('reel_1.mp4')) {
                         target.src = DEFAULT_FALLBACK_VIDEO;
                         target.load();
                         target.play().catch(() => {});

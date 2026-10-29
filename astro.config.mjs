@@ -17,7 +17,13 @@ export default defineConfig({
         name: 'serve-root-public-assets',
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
-            if (req.url && (req.url === '/photo_mahadev.jpg' || req.url === '/photo_mahadev.png' || req.url.startsWith('/photo_mahadev.'))) {
+            if (req.url && (
+              req.url === '/photo_mahadev.jpg' ||
+              req.url === '/photo_mahadev.png' ||
+              req.url.startsWith('/photo_mahadev.') ||
+              req.url.startsWith('/media/') ||
+              req.url.startsWith('/data/')
+            )) {
               req.url = '/brahmacharya-mitra' + req.url;
             }
             next();
