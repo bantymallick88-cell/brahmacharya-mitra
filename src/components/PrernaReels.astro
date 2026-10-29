@@ -3,7 +3,9 @@
 // Connected to Telegram public channel @brahmacharyahelp (Topic: Motivation reels)
 // Converts posts into direct playable HTML5 streams without external app redirects or "View in Telegram" buttons.
 
-import { cleanFeedText } from '../utils/textCleaner';
+import fs from 'node:fs';
+import path from 'node:path';
+import { cleanFeedText, filterVideoReels, isValidVideoUrl } from '../utils/textCleaner';
 
 interface ReelItem {
   id: string;
@@ -64,7 +66,31 @@ const RAW_REELS: ReelItem[] = [
   }
 ];
 
-const REELS: ReelItem[] = RAW_REELS.map(r => ({
+let syncedReels: ReelItem[] = [];
+try {
+  const filePath = path.resolve('./public/data/telegram_feed.json');
+  if (fs.existsSync(filePath)) {
+    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const validVideos = filterVideoReels(raw);
+    if (validVideos.length > 0) {
+      syncedReels = validVideos.map((item: any, idx: number) => ({
+        id: `reel-${item.telegram_message_id || idx}`,
+        postId: item.telegram_message_id || 637 + idx,
+        title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
+        caption: cleanFeedText(item.text_content || ''),
+        tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+        duration: '0:45',
+        likes: item.likes || 1200,
+        shares: item.shares || 340,
+        videoSrc: item.media_url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+      }));
+    }
+  }
+} catch (e) {
+  console.warn('Could not read telegram_feed.json in PrernaReels.astro', e);
+}
+
+const REELS: ReelItem[] = syncedReels.length > 0 ? syncedReels : RAW_REELS.map(r => ({
   ...r,
   title: cleanFeedText(r.title),
   caption: cleanFeedText(r.caption),

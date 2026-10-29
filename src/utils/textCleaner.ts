@@ -112,3 +112,43 @@ export function sanitizeFeedItems<T extends { text_content?: string; author_name
   if (!Array.isArray(items)) return [];
   return items.map(sanitizeFeedItem);
 }
+
+/**
+ * Checks if a URL points to a playable direct video stream (MP4, WebM, Cloudinary, etc.)
+ */
+export function isValidVideoUrl(url: unknown): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) return false;
+  const lower = trimmed.toLowerCase();
+  return (
+    lower.endsWith('.mp4') ||
+    lower.endsWith('.webm') ||
+    lower.endsWith('.mov') ||
+    lower.includes('.mp4?') ||
+    lower.includes('.webm?') ||
+    lower.includes('gtv-videos-bucket') ||
+    lower.includes('commondatastorage.googleapis.com') ||
+    lower.includes('cloudinary.com') ||
+    lower.includes('res.cloudinary.com') ||
+    lower.includes('/video/') ||
+    lower.includes('video=')
+  );
+}
+
+/**
+ * Strictly filters synced feed items to only valid video Reels with sanitized UTF-8 text
+ */
+export function filterVideoReels<T extends { content_type?: string; media_url?: string; videoSrc?: string; text_content?: string; author_name?: string; tags?: string[] }>(
+  items: T[]
+): T[] {
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((item) => {
+      if (!item) return false;
+      const isVideo = item.content_type === 'video' || (!item.content_type && (item.videoSrc || item.media_url));
+      const url = item.media_url || item.videoSrc;
+      return Boolean(isVideo && isValidVideoUrl(url));
+    })
+    .map(sanitizeFeedItem);
+}

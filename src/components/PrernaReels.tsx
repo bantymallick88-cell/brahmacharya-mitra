@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Heart, Share2, Volume2, VolumeX, Sparkles, Flame, Play } from 'lucide-react';
-import { cleanFeedText } from '../utils/textCleaner';
+import { cleanFeedText, filterVideoReels } from '../utils/textCleaner';
 
 const FALLBACK_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
 
@@ -66,12 +66,43 @@ const REELS: ReelItem[] = RAW_REELS.map(r => ({
 }));
 
 export default function PrernaReels() {
+  const [reels, setReels] = useState<ReelItem[]>(REELS);
   const [isMuted, setIsMuted] = useState(true);
   const [likedReels, setLikedReels] = useState<Record<string, boolean>>({});
-  const [likesCount, setLikesCount] = useState<Record<string, number>>(
+  const [likesCount, setLikesCount] = useState<Record<string, number>>(() =>
     REELS.reduce((acc, r) => ({ ...acc, [r.id]: r.likes }), {})
   );
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    async function loadSyncedReels() {
+      try {
+        const base = typeof window !== 'undefined' && window.location.pathname.startsWith('/brahmacharya-mitra')
+          ? '/brahmacharya-mitra'
+          : '';
+        const res = await fetch(`${base}/data/telegram_feed.json?t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          const valid = filterVideoReels(data);
+          if (valid.length > 0) {
+            const mapped: ReelItem[] = valid.map((item: any, idx: number) => ({
+              id: `reel-${item.telegram_message_id || idx}`,
+              postId: item.telegram_message_id || 637 + idx,
+              title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
+              caption: cleanFeedText(item.text_content || ''),
+              tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+              likes: item.likes || 1200,
+              shares: item.shares || 340,
+              videoSrc: item.media_url || FALLBACK_VIDEO,
+            }));
+            setReels(mapped);
+            setLikesCount(mapped.reduce((acc, r) => ({ ...acc, [r.id]: r.likes }), {}));
+          }
+        }
+      } catch {}
+    }
+    loadSyncedReels();
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -195,7 +226,7 @@ export default function PrernaReels() {
             ref={containerRef}
             className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
           >
-            {REELS.map((reel) => {
+            {reels.map((reel) => {
               const liked = !!likedReels[reel.id];
               return (
                 <div

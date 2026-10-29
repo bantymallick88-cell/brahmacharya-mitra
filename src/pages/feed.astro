@@ -5,12 +5,14 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import TelegramFeedComponent from '../components/TelegramFeed.tsx';
+import { filterVideoReels } from '../utils/textCleaner';
 
 let initialPosts = [];
 try {
   const filePath = path.resolve('./public/data/telegram_feed.json');
   if (fs.existsSync(filePath)) {
-    initialPosts = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    initialPosts = filterVideoReels(raw);
   }
 } catch (e) {
   console.warn('Could not read public/data/telegram_feed.json at build time', e);
@@ -18,8 +20,8 @@ try {
 ---
 
 <Layout
-  title="Sadhak Prerna Feed — Brahmacharya Mitra"
-  description="Real-time synchronized motivational video reels, posters, and wisdom quotes from our Telegram brotherhood @brahmacharyahelp."
+  title="Sadhak Prerna Reels — Brahmacharya Mitra"
+  description="Real-time synchronized motivational video reels from our Telegram brotherhood @brahmacharyahelp."
 >
   <Header client:load />
 
