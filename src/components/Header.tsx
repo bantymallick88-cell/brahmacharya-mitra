@@ -5,7 +5,7 @@ import {
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
-  Share2, Check, Smartphone, HelpCircle
+  Share2, Check, Smartphone, HelpCircle, Film
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -181,6 +181,12 @@ function ToolsDrawer({
       subtitle: 'Brahmacharya & spiritual growth',
       href: '#books',
       icon: BookOpen,
+    },
+    {
+      title: 'Prerna Reels (प्रेरणा रील्स)',
+      subtitle: 'Vedic shorts & Telegram inspiration',
+      href: '#reels',
+      icon: Film,
     },
     {
       title: 'Frequently Asked Questions (FAQ)',
