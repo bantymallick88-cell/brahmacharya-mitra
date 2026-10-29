@@ -16,6 +16,8 @@ interface ReelItem {
   duration: string;
   likes: number;
   shares: number;
+  video_url?: string;
+  media_url?: string;
   videoSrc?: string;
 }
 
@@ -29,6 +31,8 @@ const RAW_REELS: ReelItem[] = [
     duration: "0:45",
     likes: 1240,
     shares: 382,
+    video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    media_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     videoSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
   },
   {
@@ -40,6 +44,8 @@ const RAW_REELS: ReelItem[] = [
     duration: "0:52",
     likes: 2190,
     shares: 540,
+    video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    media_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     videoSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
   },
   {
@@ -51,6 +57,8 @@ const RAW_REELS: ReelItem[] = [
     duration: "0:38",
     likes: 3410,
     shares: 890,
+    video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    media_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
     videoSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
   },
   {
@@ -62,6 +70,8 @@ const RAW_REELS: ReelItem[] = [
     duration: "1:00",
     likes: 1870,
     shares: 412,
+    video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4",
+    media_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4",
     videoSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4"
   }
 ];
@@ -73,17 +83,22 @@ try {
     const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     const validVideos = filterVideoReels(raw);
     if (validVideos.length > 0) {
-      syncedReels = validVideos.map((item: any, idx: number) => ({
-        id: `reel-${item.telegram_message_id || idx}`,
-        postId: item.telegram_message_id || 637 + idx,
-        title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
-        caption: cleanFeedText(item.text_content || ''),
-        tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
-        duration: '0:45',
-        likes: item.likes || 1200,
-        shares: item.shares || 340,
-        videoSrc: item.media_url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-      }));
+      syncedReels = validVideos.map((item: any, idx: number) => {
+        const directUrl = item.video_url || item.media_url || item.videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+        return {
+          id: `reel-${item.telegram_message_id || idx}`,
+          postId: item.telegram_message_id || 637 + idx,
+          title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
+          caption: cleanFeedText(item.text_content || ''),
+          tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+          duration: '0:45',
+          likes: item.likes || 1200,
+          shares: item.shares || 340,
+          video_url: directUrl,
+          media_url: directUrl,
+          videoSrc: directUrl,
+        };
+      });
     }
   }
 } catch (e) {
@@ -168,19 +183,17 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
             data-index={index}
             data-post-id={reel.postId}
           >
-            {/* HTML5 Native Video Tag: Full Height, Object Cover, Auto-Looping */}
+            {/* Standard Native HTML5 Video Tag: Direct URL binding, Controls, Loop, Playsinline, Preload */}
             <video 
-              class="reel-video w-full h-full object-cover select-none cursor-pointer"
-              controls
-              autoplay
-              loop
-              playsinline
-              muted
-              preload="auto"
+              src={reel.video_url || reel.media_url} 
+              controls 
+              loop 
+              playsinline 
+              preload="auto" 
+              class="w-full h-full object-cover select-none cursor-pointer reel-video"
               poster={`${baseUrl}photo_mahadev.jpg`}
-              src={reel.videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}
             >
-              <source src={reel.videoSrc || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'} type="video/mp4" />
+              <source src={reel.video_url || reel.media_url} type="video/mp4" />
               Your browser does not support HTML5 video.
             </video>
 

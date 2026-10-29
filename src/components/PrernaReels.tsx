@@ -12,6 +12,8 @@ interface ReelItem {
   tags: string[];
   likes: number;
   shares: number;
+  video_url?: string;
+  media_url?: string;
   videoSrc: string;
 }
 
@@ -228,20 +230,20 @@ export default function PrernaReels() {
           >
             {reels.map((reel) => {
               const liked = !!likedReels[reel.id];
+              const videoSrc = reel.video_url || reel.media_url || reel.videoSrc || FALLBACK_VIDEO;
               return (
                 <div
                   key={reel.id}
                   className="reel-slide snap-start relative w-full h-full flex items-center justify-center bg-black shrink-0 overflow-hidden"
                 >
                   <video
-                    src={reel.videoSrc || FALLBACK_VIDEO}
+                    src={videoSrc}
                     className="w-full h-full object-cover select-none cursor-pointer"
                     controls
-                    autoPlay
                     loop
                     playsInline
-                    muted={isMuted}
                     preload="auto"
+                    muted={isMuted}
                     poster="photo_mahadev.jpg"
                     onError={(e) => {
                       const target = e.currentTarget;

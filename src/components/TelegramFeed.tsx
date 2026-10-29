@@ -14,6 +14,7 @@ export interface TelegramFeedItem {
   topic_id: number;
   content_type: 'video' | 'image' | 'text';
   media_url: string;
+  video_url?: string;
   text_content: string;
   author_name: string;
   timestamp: string;
@@ -30,6 +31,7 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
+    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     text_content: 'Akhand Brahmacharya Power & Tapasya 🔥\nConservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱',
     author_name: 'Sadhak Mentor',
@@ -43,6 +45,7 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
+    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     text_content: 'Dopamine Detox & Brain Fog Erasure ⚡\nThe moment you resist lust, your brain initiates neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.',
     author_name: 'Veer Brahmachari',
@@ -56,6 +59,7 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
+    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     text_content: 'Conquer The Senses, Rule The Mind 🔱\n“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.',
     author_name: 'Sanatan Rishi',
@@ -69,6 +73,7 @@ const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
     group_id: -1003536137330,
     topic_id: 101,
     content_type: 'video',
+    video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
     media_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
     text_content: 'Urge Transmutation via Pranayama 🧘‍♂️\nWhen an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.',
     author_name: 'Dhyan Yogi',
@@ -320,7 +325,7 @@ export default function TelegramFeed({
           >
             {reels.map((post, index) => {
               const isLiked = !!likedPosts[post.telegram_message_id];
-              const videoSrc = post.media_url || DEFAULT_FALLBACK_VIDEO;
+              const videoSrc = post.video_url || post.media_url || DEFAULT_FALLBACK_VIDEO;
 
               return (
                 <div
@@ -333,11 +338,10 @@ export default function TelegramFeed({
                     src={videoSrc}
                     className="w-full h-full object-cover select-none cursor-pointer"
                     controls
-                    autoPlay
                     loop
                     playsInline
-                    muted={isMuted}
                     preload="auto"
+                    muted={isMuted}
                     poster="photo_mahadev.jpg"
                     onError={(e) => {
                       const target = e.currentTarget;
