@@ -1,0 +1,31 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import TelegramFeedComponent from '../components/TelegramFeed.tsx';
+
+let initialPosts = [];
+try {
+  const filePath = path.resolve('./public/data/telegram_feed.json');
+  if (fs.existsSync(filePath)) {
+    initialPosts = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  }
+} catch (e) {
+  console.warn('Could not read public/data/telegram_feed.json at build time', e);
+}
+---
+
+<Layout
+  title="Sadhak Prerna Feed — Brahmacharya Mitra"
+  description="Real-time synchronized motivational video reels, posters, and wisdom quotes from our Telegram brotherhood @brahmacharyahelp."
+>
+  <Header client:load />
+
+  <main class="min-h-screen bg-black pt-20 pb-16">
+    <TelegramFeedComponent client:load initialPosts={initialPosts} />
+  </main>
+
+  <Footer client:visible />
+</Layout>

@@ -1,0 +1,22 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import TelegramFeedComponent from './TelegramFeed.tsx';
+
+let initialPosts = [];
+try {
+  const filePath = path.resolve('./public/data/telegram_feed.json');
+  if (fs.existsSync(filePath)) {
+    initialPosts = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  }
+} catch (e) {
+  console.warn('Could not read public/data/telegram_feed.json at build time', e);
+}
+---
+
+<section id="telegram-feed" class="w-full py-8 sm:py-12 relative overflow-hidden bg-black text-zinc-100">
+  {/* Ambient glowing radial backdrop */}
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(245,158,11,0.08)_0%,rgba(109,40,217,0.1)_40%,transparent_70%)] rounded-full blur-[140px] pointer-events-none"></div>
+
+  <TelegramFeedComponent client:load initialPosts={initialPosts} />
+</section>

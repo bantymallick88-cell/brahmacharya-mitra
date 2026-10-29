@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import Dashboard from './components/Dashboard';
 import BookRecommendations from './components/BookRecommendations';
 import PrernaReels from './components/PrernaReels';
+import TelegramFeed from './components/TelegramFeed';
 import FAQ from './components/FAQ';
 import SEO from './components/SEO.tsx';
 import Footer from './components/Footer';
@@ -44,6 +45,9 @@ export default function App() {
 
         {/* Brahmacharya Prerna Reels (Telegram Shorts) */}
         <PrernaReels />
+
+        {/* Synchronized Telegram Group Feed (Shorts, Posters, Quotes) */}
+        <TelegramFeed />
 
         {/* FAQ Section */}
         <section id="faq-section" className="py-12 px-4 max-w-4xl mx-auto">
