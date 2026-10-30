@@ -7,6 +7,7 @@ import {
   BookOpen, Activity, Disc, Zap, Check, ChevronRight
 } from 'lucide-react';
 import type { UserProfile } from './OnboardingWizard';
+import { ALL_TASK_MAP } from './OnboardingWizard';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Brave Sadhak',
@@ -16,13 +17,16 @@ const DEFAULT_PROFILE: UserProfile = {
   city: 'Kashi',
   targetDays: 90,
   routines: {
-    morning: ['water', 'yoga', 'naam_jap', 'meditation'],
-    afternoon: ['water', 'walk', 'swadhyaya'],
-    night: ['naam_jap', 'gratitude', 'screen_off'],
+    morning: ['m_water', 'm_surya', 'm_jap'],
+    afternoon: ['a_satvik', 'a_walk', 'a_swadhyaya'],
+    night: ['n_digitalfast', 'n_coldfeet', 'n_brahmamuhurta'],
   },
 };
 
 const TASK_DEFINITIONS: Record<string, { label: string; icon: string; time: string }> = {
+  ...Object.fromEntries(
+    Object.entries(ALL_TASK_MAP).map(([id, t]) => [id, { label: t.label, icon: t.icon, time: '15 Mins' }])
+  ),
   water: { label: 'Surya Namaskar Water (1L)', icon: '💧', time: '5 Mins' },
   yoga: { label: 'Asana & Pranayama', icon: '🧘', time: '20 Mins' },
   naam_jap: { label: '108 Naam Jap Mala', icon: '📿', time: '15 Mins' },
@@ -155,13 +159,13 @@ export const DailyDashboard: React.FC = () => {
   // Routines calculation
   const morningList = profile.routines?.morning?.length
     ? profile.routines.morning
-    : ['water', 'yoga', 'naam_jap'];
+    : ['m_water', 'm_surya', 'm_jap'];
   const afternoonList = profile.routines?.afternoon?.length
     ? profile.routines.afternoon
-    : ['water', 'swadhyaya'];
+    : ['a_satvik', 'a_walk', 'a_swadhyaya'];
   const nightList = profile.routines?.night?.length
     ? profile.routines.night
-    : ['naam_jap', 'gratitude', 'screen_off'];
+    : ['n_digitalfast', 'n_coldfeet', 'n_brahmamuhurta'];
 
   const getCompletedCount = (items: string[]) =>
     items.filter((id) => todayCompletedTasks.includes(id)).length;
