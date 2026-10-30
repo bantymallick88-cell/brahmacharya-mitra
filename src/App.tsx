@@ -3,7 +3,6 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Dashboard from './components/Dashboard';
 import BookRecommendations from './components/BookRecommendations';
-import TelegramFeed from './components/TelegramFeed';
 import FAQ from './components/FAQ';
 import SEO from './components/SEO.tsx';
 import Footer from './components/Footer';
@@ -41,9 +40,6 @@ export default function App() {
 
         {/* Foundational Book Recommendations */}
         <BookRecommendations />
-
-        {/* Brahmacharya Prerna Reels (Synchronized Telegram Shorts) */}
-        <TelegramFeed />
 
         {/* FAQ Section */}
         <section id="faq-section" className="py-12 px-4 max-w-4xl mx-auto">
