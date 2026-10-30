@@ -10,6 +10,7 @@ import {
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
 import AuthModal from './AuthModal';
+import TelegramIcon from './TelegramIcon';
 
 // Feature Sub-Views
 import JournalNotesView from './mdf/JournalNotesView';
@@ -421,6 +422,29 @@ function ToolsDrawer({
                     <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
                   </button>
 
+                  {/* Official Telegram Community Quick Card */}
+                  <a
+                    href="https://t.me/+aeaMsRXfx0VhZDJl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full p-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/40 hover:border-amber-400 flex items-center justify-between transition-all duration-300 group shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                        <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-amber-200 group-hover:text-white block">
+                          Official Telegram Community
+                        </span>
+                        <span className="text-[10px] text-zinc-400">Daily vichar, updates & sadhak sangha</span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors">
+                      Join ↗
+                    </span>
+                  </a>
+
                   {/* Divider label */}
                   <div className="flex items-center gap-2.5 py-1">
                     <div className="flex-1 h-px bg-zinc-800/80" />
@@ -712,6 +736,18 @@ export default function Header() {
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>Setup Wizard</span>
               </button>
+
+              {/* ── Official Telegram Community Link ── */}
+              <a
+                href="https://t.me/+aeaMsRXfx0VhZDJl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer"
+                title="Join Official Telegram Community"
+              >
+                <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                <span className="font-extrabold tracking-wide">Join Telegram</span>
+              </a>
             </div>
 
             {/* ── Right: Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}

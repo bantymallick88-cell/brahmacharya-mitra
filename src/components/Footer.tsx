@@ -4,8 +4,11 @@ import {
   Sparkles, 
   ShieldAlert, 
   ArrowUp, 
-  ShieldCheck 
+  ShieldCheck,
+  Mail,
+  ExternalLink
 } from 'lucide-react';
+import TelegramIcon from './TelegramIcon';
 import { useTranslation } from '../i18n';
 
 export default function Footer() {
@@ -70,6 +73,53 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* ── Official Support & Community Card ── */}
+        <div className="p-6 sm:p-8 rounded-3xl backdrop-blur-3xl bg-zinc-950/85 border border-amber-500/35 hover:border-amber-400/60 relative overflow-hidden shadow-[0_0_40px_rgba(245,158,11,0.15)] mb-14 transition-all duration-500 group">
+          {/* Ambient Glow */}
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-500/15 via-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-amber-600/10 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="space-y-2.5 text-center lg:text-left max-w-2xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider shadow-[0_0_12px_rgba(245,158,11,0.15)]">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Official Sangha & Help</span>
+              </div>
+              <h4 className="text-xl sm:text-2xl lg:text-3xl font-black font-cinzel text-[#F59E0B] tracking-wide drop-shadow-[0_2px_12px_rgba(245,158,11,0.3)]">
+                Support & Community
+              </h4>
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-medium">
+                For any queries, feedback, or assistance, reach out via Email or join our official Telegram group.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3.5 w-full lg:w-auto shrink-0">
+              {/* Telegram Group Button */}
+              <a
+                href="https://t.me/+aeaMsRXfx0VhZDJl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-shimmer btn-metallic-glow px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <TelegramIcon className="w-4 h-4 text-zinc-950" />
+                <span>Join Official Telegram</span>
+                <ExternalLink className="w-3.5 h-3.5 text-zinc-900" />
+              </a>
+
+              {/* Support Email Button */}
+              <a
+                href="mailto:bantyxyz13@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <Mail className="w-4 h-4 text-amber-400" />
+                <span>bantyxyz13@gmail.com</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Footer Navigation Columns */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-zinc-800/80">
           
@@ -131,10 +181,28 @@ export default function Footer() {
             <p className="text-xs text-zinc-400 leading-relaxed mb-3">
               {t.footer.missionDesc}
             </p>
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://t.me/+aeaMsRXfx0VhZDJl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold group cursor-pointer"
+              >
+                <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span>Join Telegram Community ↗</span>
+              </a>
+              <a
+                href="mailto:bantyxyz13@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-zinc-300 hover:text-amber-300 transition flex items-center gap-1.5 font-medium group cursor-pointer"
+              >
+                <Mail className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span>bantyxyz13@gmail.com</span>
+              </a>
               <button
                 onClick={openPrivacyModal}
-                className="text-xs text-amber-300/90 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit pt-1"
+                className="text-xs text-amber-300/80 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit pt-1"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                 <span>100% Private & Client-Side</span>
