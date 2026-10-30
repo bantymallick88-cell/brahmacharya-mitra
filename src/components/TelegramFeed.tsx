@@ -313,18 +313,9 @@ export default function TelegramFeed({
                       if (v.paused) v.play().catch(() => {});
                       else v.pause();
                     }}
-                    onError={(e) => {
-                      const v = e.currentTarget;
-                      if (!v.getAttribute('data-error-handled')) {
-                        v.setAttribute('data-error-handled', 'true');
-                        const base = import.meta.env.BASE_URL || '/';
-                        const prefix = base.endsWith('/') ? base : `${base}/`;
-                        v.src = `${prefix}media/reel_1.mp4`;
-                        v.load();
-                      }
-                    }}
                   >
                     <source src={getVideoSrc(reel)} type="video/mp4" />
+                    Your browser does not support HTML5 video.
                   </video>
 
                   {/* Right Side Vertical Action Rail */}

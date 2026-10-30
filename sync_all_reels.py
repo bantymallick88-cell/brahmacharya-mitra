@@ -20,8 +20,8 @@ from dotenv import load_dotenv
 # Ensure stdout and stderr use UTF-8 on Windows
 if sys.stdout.encoding != "utf-8":
     try:
-        sys.stdout.reconfigure(encoding="utf-8")
-        sys.stderr.reconfigure(encoding="utf-8")
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
 
@@ -391,6 +391,10 @@ async def sync_all_reels(
             pct = (b_idx / total_batches) * 100
             print(f"[{b_idx:3d}/{total_batches}] {pct:5.1f}% | Scanned: {scanned_count:5d} msgs | Video Reels: {len(synced_reels):4d} | Downloaded: {downloaded_count}")
 
+        if download_media_files and max_downloads > 0 and downloaded_count >= max_downloads:
+            logger.info(f"Target download count of {max_downloads} files reached. Finalizing feed export...")
+            break
+
         # Sleep briefly between batches to avoid Telegram FloodWait
         await asyncio.sleep(0.35)
 
@@ -409,6 +413,13 @@ async def sync_all_reels(
 
     # Export to Astro public/data/telegram_feed.json with proper UTF-8 encoding
     synced_reels.sort(key=lambda x: x["telegram_message_id"], reverse=True)
+
+    for r in synced_reels:
+        mid = r["telegram_message_id"]
+        local_fn = f"reel_{mid}.mp4"
+        r["media_url"] = f"/media/{local_fn}"
+        r["video_url"] = f"/media/{local_fn}"
+        r["file_path"] = f"/media/{local_fn}"
 
     for old_id, old_doc in existing_items_dict.items():
         if not any(r["telegram_message_id"] == old_id for r in synced_reels):
