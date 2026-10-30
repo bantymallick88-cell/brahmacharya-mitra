@@ -1,54 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, Check, Download, Flame, Eye, X, Shield, Lock
+  Sparkles, Check, Download, Flame, Eye, X, Shield, Lock,
+  Award, Trophy, Zap, ChevronRight
 } from 'lucide-react';
 import { getStoredStreak } from '../streakStore';
 import { getWallpaperForDay, downloadCanvasWallpaper } from '../data/wallpapers';
 import type { DayWallpaper } from '../data/wallpapers';
 
-export interface HabitItem {
-  id: string;
-  name: string;
+export interface MilestoneBadge {
+  day: number;
+  title: string;
+  desc: string;
   icon: string;
-  completed: number;
-  total: number;
-  unit: string;
-  color: string;
+  highlight: string;
 }
 
-const DEFAULT_HABITS: HabitItem[] = [
-  { id: 'workout', name: 'WORKOUT', icon: '🏋️‍♂️', completed: 0, total: 7, unit: 'days', color: 'from-amber-400 to-yellow-500' },
-  { id: 'reading', name: 'READING', icon: '📚', completed: 0, total: 7, unit: 'days', color: 'from-purple-400 to-indigo-500' },
-  { id: 'cold_shower', name: 'COLD SHOWER', icon: '🧊', completed: 0, total: 7, unit: 'days', color: 'from-cyan-400 to-blue-500' },
-  { id: 'meditation', name: 'MEDITATION', icon: '🧘', completed: 0, total: 7, unit: 'days', color: 'from-emerald-400 to-teal-500' },
-  { id: 'pranayama', name: 'PRANAYAMA', icon: '💨', completed: 0, total: 7, unit: 'days', color: 'from-rose-400 to-pink-500' },
-  { id: 'sattvik_diet', name: 'SATTVIK DIET', icon: '🥗', completed: 0, total: 7, unit: 'days', color: 'from-lime-400 to-emerald-500' },
-  { id: 'japa_chanting', name: 'JAPA MANTRA', icon: '📿', completed: 0, total: 7, unit: 'days', color: 'from-amber-300 to-orange-500' },
+export const MILESTONES: MilestoneBadge[] = [
+  { day: 7, title: 'Day 7', desc: 'Dopamine Reset', icon: '🌱', highlight: 'Urges subside' },
+  { day: 21, title: 'Day 21', desc: 'Veerya Raksha', icon: '🛡️', highlight: 'Habit locks in' },
+  { day: 60, title: 'Day 60', desc: 'Tejas Awakening', icon: '🔥', highlight: 'Vital vigor' },
+  { day: 90, title: 'Day 90', desc: 'Ojas Transmutation', icon: '⚡', highlight: 'Crystal clarity' },
+  { day: 108, title: 'Day 108', desc: 'Brahmacharya Siddhi', icon: '👑', highlight: 'Divine bliss' },
+  { day: 365, title: 'Day 365', desc: 'Akhand Tapasya', icon: '🕉️', highlight: 'Supreme mastery' },
 ];
 
 export default function Habits() {
-  const [streakDays, setStreakDays] = useState(8);
+  const [streakDays, setStreakDays] = useState(14);
   const [isSavingWallpaper, setIsSavingWallpaper] = useState(false);
   const [wallpaperSaved, setWallpaperSaved] = useState(false);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
 
-  // Active streak wallpaper data (100% unique, non-repeating seeded image & dynamic quote)
+  // Active streak wallpaper data
   const activeWallpaper = getWallpaperForDay(streakDays);
-
-  const [habits, setHabits] = useState<HabitItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('bm_daily_habits');
-      return saved ? JSON.parse(saved) : DEFAULT_HABITS;
-    } catch {
-      return DEFAULT_HABITS;
-    }
-  });
 
   // Sync streak state
   useEffect(() => {
-    const current = getStoredStreak();
-    setStreakDays(current.days);
+    try {
+      const current = getStoredStreak();
+      if (current && current.days) setStreakDays(current.days);
+    } catch (e) {}
 
     const handleStreakChange = (e: any) => {
       if (e.detail?.days !== undefined) {
@@ -59,29 +50,7 @@ export default function Habits() {
     return () => window.removeEventListener('streak-updated', handleStreakChange);
   }, []);
 
-  // Save habits to localStorage
-  const saveHabits = (updated: HabitItem[]) => {
-    setHabits(updated);
-    try {
-      localStorage.setItem('bm_daily_habits', JSON.stringify(updated));
-    } catch (e) {
-      console.error('Failed to save habits:', e);
-    }
-  };
-
-  // Increment habit progress with micro-bounce
-  const handleIncrement = (id: string) => {
-    const updated = habits.map(h => {
-      if (h.id === id) {
-        const next = h.completed >= h.total ? 0 : h.completed + 1;
-        return { ...h, completed: next };
-      }
-      return h;
-    });
-    saveHabits(updated);
-  };
-
-  // Direct Save Wallpaper Trigger on 1st Card
+  // Direct Save Wallpaper Trigger
   const handleSaveActiveWallpaper = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setIsSavingWallpaper(true);
@@ -93,166 +62,157 @@ export default function Habits() {
   };
 
   return (
-    <div className="w-full pt-3 text-left">
-      {/* ── Carousel Header ── */}
-      <div className="flex items-center justify-between mb-2.5 px-0.5">
+    <div className="w-full pt-2 text-left space-y-4">
+      {/* ── Section Header ── */}
+      <div className="flex items-center justify-between px-1">
         <div>
           <h3 className="text-xs sm:text-sm font-bold text-white font-cinzel flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Daily Discipline & Active Wallpaper</span>
+            <span>Daily Motivational Wallpaper & Streak Badges</span>
           </h3>
           <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">
-            1st Card: Day {streakDays} HD Motivation • Followed by Daily Habit Trackers (0/7)
+            Daily unlocked inspirational wallpaper & milestone awards for your Tapasya
           </p>
         </div>
 
-        <span className="text-[10px] sm:text-xs font-bold text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 hidden xs:inline-block">
-          Day {streakDays} Unlocked
+        <span className="text-[10px] sm:text-xs font-bold text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center gap-1">
+          <Flame className="w-3 h-3 fill-amber-400" />
+          <span>Day {streakDays} Active</span>
         </span>
       </div>
 
-      {/* ── Compact Single-Line Horizontal Motion Carousel ── */}
-      {/* Exact CSS requested: display: flex; flex-direction: row; overflow-x: auto; gap: 12px; scroll-snap-type: x mandatory; */}
-      <div
-        className="w-full overflow-x-auto pb-2 pt-1 scrollbar-none flex flex-row items-stretch"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          overflowX: 'auto',
-          gap: '12px',
-          scrollSnapType: 'x mandatory',
-          WebkitOverflowScrolling: 'touch',
-        }}
-      >
-        {/* ════════════════════════════════════════════════════════════════
-            CARD 1: EMBEDDED SINGLE ACTIVE DAY WALLPAPER CARD
-            Render ONLY the current unlocked streak day's wallpaper & quote
-           ════════════════════════════════════════════════════════════════ */}
+      {/* ── High-Impact Showcase Layout ── */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        {/* Active Wallpaper Card (Featured Large Left Card, 7 cols) */}
         <motion.div
-          whileHover={{ scale: 1.04, y: -2 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.01 }}
           onClick={() => setPreviewModalOpen(true)}
-          className="rounded-2xl border border-amber-500/40 hover:border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] relative overflow-hidden flex flex-col justify-between p-3 select-none cursor-pointer group snap-start transition-all"
+          className="md:col-span-7 rounded-3xl border border-amber-500/40 hover:border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.2)] relative overflow-hidden flex flex-col justify-between p-5 sm:p-6 select-none cursor-pointer group transition-all min-h-[220px]"
           style={{
-            flex: '0 0 175px',
-            width: '175px',
-            minHeight: '135px',
-            scrollSnapAlign: 'start',
-            backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.96) 0%, rgba(2,4,10,0.65) 55%, rgba(2,4,10,0.4) 100%), url('${activeWallpaper.imageUrl}')`,
+            backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.96) 0%, rgba(2,4,10,0.7) 50%, rgba(2,4,10,0.35) 100%), url('${activeWallpaper.imageUrl}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
           {/* Top Row: Stamped Day Badge & Eye Preview Icon */}
           <div className="flex items-center justify-between w-full relative z-10">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-amber-400/50 text-amber-300 text-[9px] font-black uppercase tracking-wider shadow">
-              <Flame className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
-              <span>Day {streakDays}</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-black uppercase tracking-wider shadow">
+              <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" />
+              <span>Day {streakDays} Unlocked Wallpaper</span>
             </span>
 
-            <span className="p-1 rounded-full bg-black/60 text-zinc-300 group-hover:text-amber-400 transition shadow">
-              <Eye className="w-3 h-3" />
+            <span className="p-2 rounded-xl bg-black/60 text-zinc-300 group-hover:text-amber-400 transition shadow flex items-center gap-1 text-xs">
+              <Eye className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Preview</span>
             </span>
           </div>
 
           {/* Middle: Active Day Bold Motivational Headline & Quote */}
-          <div className="my-1 relative z-10 text-left">
-            <h4 className="text-[11px] font-black font-cinzel text-white leading-tight drop-shadow-md line-clamp-2">
+          <div className="my-3 relative z-10 text-left">
+            <h4 className="text-base sm:text-lg md:text-xl font-black font-cinzel text-white leading-snug drop-shadow-lg">
               {activeWallpaper.headline}
             </h4>
-            <p className="text-[8.5px] text-amber-200/90 font-medium line-clamp-1 italic mt-0.5">
+            <p className="text-xs sm:text-sm text-amber-200/95 font-serif italic mt-1 line-clamp-2 drop-shadow">
               “{activeWallpaper.hindiQuote}”
             </p>
+            <span className="text-[10px] text-zinc-400 block mt-1">
+              — {activeWallpaper.author || 'Ancient Wisdom'} • {activeWallpaper.intensityStage}
+            </span>
           </div>
 
-          {/* Bottom: Compact Direct "Save Wallpaper" Button */}
-          <div className="relative z-10 pt-1 border-t border-white/10 w-full">
+          {/* Bottom: Direct Actions */}
+          <div className="relative z-10 pt-3 border-t border-white/10 w-full flex items-center justify-between gap-3">
             <motion.button
-              whileHover={{ scale: 1.04 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSaveActiveWallpaper}
               disabled={isSavingWallpaper}
-              className={`w-full flex items-center justify-center gap-1 py-1 px-2 rounded-xl text-[9.5px] font-black transition cursor-pointer shadow-md ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold transition cursor-pointer shadow-lg ${
                 wallpaperSaved
-                  ? 'bg-emerald-500 text-zinc-950 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
-                  : 'bg-amber-400 hover:bg-amber-300 text-zinc-950 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
+                  ? 'bg-emerald-500 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.5)]'
+                  : 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
               }`}
-              title={`Save Day ${streakDays} Ultra-HD Wallpaper`}
             >
               {wallpaperSaved ? (
                 <>
-                  <Check className="w-3 h-3 stroke-[3]" />
-                  <span>Saved!</span>
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  <span>Wallpaper Saved!</span>
                 </>
               ) : (
                 <>
-                  <Download className="w-3 h-3" />
-                  <span>Save Wallpaper</span>
+                  <Download className="w-4 h-4" />
+                  <span>Save Ultra-HD Wallpaper</span>
                 </>
               )}
             </motion.button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreviewModalOpen(true);
+              }}
+              className="px-4 py-2.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 border border-white/10 text-xs font-bold transition"
+            >
+              Expand
+            </button>
           </div>
         </motion.div>
 
-        {/* ════════════════════════════════════════════════════════════════
-            HABIT CARDS (Workout, Reading, Cold Shower, Meditation, etc.)
-            flex: 0 0 150px, single-row, micro-bounce on click
-           ════════════════════════════════════════════════════════════════ */}
-        {habits.map((habit) => {
-          const progressPct = (habit.completed / habit.total) * 100;
-          const isMax = habit.completed >= habit.total;
+        {/* Milestone Streak Badges (5 cols right) */}
+        <div className="md:col-span-5 rounded-3xl bg-zinc-950/70 border border-zinc-800 p-4 sm:p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wider">
+              <Trophy className="w-4 h-4 text-amber-400" />
+              <span>Streak Milestone Badges</span>
+            </span>
+            <span className="text-[10px] text-zinc-500">
+              {MILESTONES.filter((m) => streakDays >= m.day).length} of {MILESTONES.length} Unlocked
+            </span>
+          </div>
 
-          return (
-            <motion.div
-              key={habit.id}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleIncrement(habit.id)}
-              className="p-3 rounded-2xl bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-800/80 hover:border-amber-400/80 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all cursor-pointer shadow-md group relative overflow-hidden select-none snap-start flex flex-col justify-between"
-              style={{
-                flex: '0 0 150px',
-                width: '150px',
-                minHeight: '135px',
-                scrollSnapAlign: 'start',
-              }}
-            >
-              {/* Top Row: Icon & Target Badge */}
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl sm:text-2xl">{habit.icon}</span>
-                <span
-                  className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border transition-all ${
-                    isMax
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
-                      : 'bg-zinc-900 text-zinc-400 border-zinc-800 group-hover:border-amber-500/40'
+          <div className="grid grid-cols-2 gap-2.5 py-3">
+            {MILESTONES.map((m) => {
+              const isUnlocked = streakDays >= m.day;
+              return (
+                <div
+                  key={m.day}
+                  className={`p-2.5 rounded-2xl border transition flex items-center gap-2.5 ${
+                    isUnlocked
+                      ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-sm'
+                      : 'bg-zinc-900/50 border-zinc-800/80 text-zinc-500 opacity-60'
                   }`}
                 >
-                  {habit.completed}/{habit.total}
-                </span>
-              </div>
+                  <div
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm ${
+                      isUnlocked
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        : 'bg-zinc-900 text-zinc-600 border border-zinc-800'
+                    }`}
+                  >
+                    {isUnlocked ? m.icon : <Lock className="w-3.5 h-3.5" />}
+                  </div>
 
-              {/* Habit Name */}
-              <div className="my-auto">
-                <h4 className="text-[11px] sm:text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate">
-                  {habit.name}
-                </h4>
-                <p className="text-[9px] text-zinc-400 mt-0.5">
-                  {isMax ? 'Target Completed!' : 'Tap to record discipline'}
-                </p>
-              </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-white flex items-center gap-1">
+                      <span>{m.title}</span>
+                      {isUnlocked && <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />}
+                    </div>
+                    <div className="text-[9px] text-zinc-400 truncate">{m.desc}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-              {/* Progress Bar */}
-              <div className="w-full h-1.5 rounded-full bg-zinc-900 overflow-hidden border border-zinc-800 mt-2">
-                <div
-                  className={`h-full bg-gradient-to-r ${habit.color} transition-all duration-300`}
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
-            </motion.div>
-          );
-        })}
+          <div className="pt-2 border-t border-zinc-800 text-[10px] text-zinc-500 flex items-center justify-between">
+            <span>Next Goal: {MILESTONES.find((m) => m.day > streakDays)?.title || 'Paramhansa Level'}</span>
+            <span className="text-amber-400 font-bold">Stay resolute!</span>
+          </div>
+        </div>
       </div>
 
-      {/* ── Fullscreen HD Wallpaper Preview Modal on Card 1 Tap ── */}
+      {/* ── Fullscreen HD Wallpaper Preview Modal ── */}
       <AnimatePresence>
         {previewModalOpen && (
           <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 bg-black/92 backdrop-blur-2xl">

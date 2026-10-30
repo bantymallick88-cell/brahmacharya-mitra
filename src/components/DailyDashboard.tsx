@@ -4,10 +4,13 @@ import {
   Flame, ShieldAlert, CheckCircle2, Circle, Trophy,
   Sunrise, Sun, Moon, Sparkles, Award, RotateCcw,
   Plus, Edit3, ArrowUpRight, Heart, Droplets,
-  BookOpen, Activity, Disc, Zap, Check, ChevronRight
+  BookOpen, Activity, Disc, Zap, Check, ChevronRight,
+  Download, Eye, X, Lock
 } from 'lucide-react';
 import type { UserProfile } from './OnboardingWizard';
 import { ALL_TASK_MAP } from './OnboardingWizard';
+import { getWallpaperForDay, downloadCanvasWallpaper } from '../data/wallpapers';
+import { MILESTONES } from './Habits';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Brave Sadhak',
@@ -47,6 +50,23 @@ export const DailyDashboard: React.FC = () => {
   const [japaCount, setJapaCount] = useState<number>(108);
   const [checkedInToday, setCheckedInToday] = useState<boolean>(false);
   const [copiedQuote, setCopiedQuote] = useState<boolean>(false);
+
+  // Daily Motivational Wallpaper State
+  const [isSavingWallpaper, setIsSavingWallpaper] = useState<boolean>(false);
+  const [wallpaperSaved, setWallpaperSaved] = useState<boolean>(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState<boolean>(false);
+
+  const activeWallpaper = getWallpaperForDay(streakDays);
+
+  const handleSaveActiveWallpaper = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setIsSavingWallpaper(true);
+    downloadCanvasWallpaper(activeWallpaper, () => {
+      setIsSavingWallpaper(false);
+      setWallpaperSaved(true);
+      setTimeout(() => setWallpaperSaved(false), 2400);
+    });
+  };
 
   const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -429,6 +449,155 @@ export const DailyDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* ── Daily Motivational Wallpaper & Streak Badge Showcase Module ── */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
+              Visual Tapasya Motivation
+            </span>
+            <h2 className="text-xl md:text-2xl font-black text-white font-cinzel flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              <span>Daily Motivational Wallpaper & Streak Badges</span>
+            </h2>
+          </div>
+          <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/30 hidden sm:inline-flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5 fill-amber-400" />
+            <span>Day {streakDays} Milestone</span>
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Active Day Wallpaper Card (7 cols) */}
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            onClick={() => setPreviewModalOpen(true)}
+            className="lg:col-span-7 rounded-3xl border-2 border-amber-500/35 hover:border-amber-400 shadow-[0_0_35px_rgba(245,158,11,0.25)] relative overflow-hidden flex flex-col justify-between p-6 select-none cursor-pointer group transition-all min-h-[260px]"
+            style={{
+              backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.96) 0%, rgba(2,4,10,0.7) 50%, rgba(2,4,10,0.3) 100%), url('${activeWallpaper.imageUrl}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {/* Top Row: Stamped Day Badge & Eye Preview Icon */}
+            <div className="flex items-center justify-between w-full relative z-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-black uppercase tracking-wider shadow">
+                <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" />
+                <span>Day {streakDays} Unlocked Wallpaper</span>
+              </span>
+
+              <span className="p-2 rounded-xl bg-black/60 text-zinc-300 group-hover:text-amber-400 transition shadow flex items-center gap-1.5 text-xs">
+                <Eye className="w-4 h-4" />
+                <span>Expand Fullscreen</span>
+              </span>
+            </div>
+
+            {/* Middle: Active Day Bold Motivational Headline & Quote */}
+            <div className="my-4 relative z-10 text-left">
+              <h4 className="text-lg sm:text-xl md:text-2xl font-black font-cinzel text-white leading-snug drop-shadow-lg">
+                {activeWallpaper.headline}
+              </h4>
+              <p className="text-sm sm:text-base text-amber-200/95 font-serif italic mt-1 line-clamp-2 drop-shadow">
+                “{activeWallpaper.hindiQuote}”
+              </p>
+              <span className="text-xs text-zinc-400 block mt-1.5">
+                — {activeWallpaper.author || 'Ancient Wisdom'} • {activeWallpaper.intensityStage}
+              </span>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="relative z-10 pt-3 border-t border-white/10 w-full flex items-center justify-between gap-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={handleSaveActiveWallpaper}
+                disabled={isSavingWallpaper}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-black transition cursor-pointer shadow-lg ${
+                  wallpaperSaved
+                    ? 'bg-emerald-500 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.5)]'
+                    : 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                }`}
+              >
+                {wallpaperSaved ? (
+                  <>
+                    <Check className="w-4 h-4 stroke-[3]" />
+                    <span>Wallpaper Saved to Device!</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    <span>Save Ultra-HD Wallpaper</span>
+                  </>
+                )}
+              </motion.button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPreviewModalOpen(true);
+                }}
+                className="px-4 py-3 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-white/15 text-xs font-bold transition"
+              >
+                Inspect
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Milestone Badges Module (5 cols) */}
+          <div className="lg:col-span-5 rounded-3xl bg-zinc-950/80 border border-amber-500/20 p-5 sm:p-6 backdrop-blur-xl flex flex-col justify-between shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wider font-cinzel">
+                <Trophy className="w-4 h-4 text-amber-400" />
+                <span>Streak Milestone Badges</span>
+              </span>
+              <span className="text-[11px] text-zinc-400 font-mono">
+                {MILESTONES.filter((m) => streakDays >= m.day).length}/{MILESTONES.length} Unlocked
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 py-3">
+              {MILESTONES.map((m) => {
+                const isUnlocked = streakDays >= m.day;
+                return (
+                  <div
+                    key={m.day}
+                    className={`p-3 rounded-2xl border transition flex items-center gap-2.5 ${
+                      isUnlocked
+                        ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-sm'
+                        : 'bg-zinc-900/40 border-zinc-800 text-zinc-500 opacity-60'
+                    }`}
+                  >
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 ${
+                        isUnlocked
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          : 'bg-zinc-900 text-zinc-600 border border-zinc-800'
+                      }`}
+                    >
+                      {isUnlocked ? m.icon : <Lock className="w-4 h-4" />}
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white flex items-center gap-1">
+                        <span>{m.title}</span>
+                        {isUnlocked && <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[3]" />}
+                      </div>
+                      <div className="text-[10px] text-zinc-400 truncate">{m.desc}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400 flex items-center justify-between">
+              <span>Next Milestone: <strong className="text-amber-300">{MILESTONES.find((m) => m.day > streakDays)?.title || 'Paramhansa Level'}</strong></span>
+              <span className="text-amber-400 font-bold">Unstoppable Tapasya</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Routine Cards: Morning, Afternoon, Night (Icon-heavy & Quick Checkable) */}
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -658,6 +827,83 @@ export const DailyDashboard: React.FC = () => {
           </div>
         </button>
       </div>
+      {/* Fullscreen HD Wallpaper Preview Modal */}
+      <AnimatePresence>
+        {previewModalOpen && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 bg-black/92 backdrop-blur-2xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-sm rounded-3xl border-2 border-amber-500/60 p-5 sm:p-6 shadow-[0_0_80px_rgba(0,0,0,0.95),0_0_40px_rgba(245,158,11,0.25)] relative overflow-hidden flex flex-col items-center text-center space-y-3"
+              style={{
+                backgroundImage: `linear-gradient(to top, rgba(2,4,10,0.98) 0%, rgba(2,4,10,0.7) 50%, rgba(2,4,10,0.5) 100%), url('${activeWallpaper.imageUrl}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setPreviewModalOpen(false)}
+                className="absolute top-3 right-3 p-2 rounded-full bg-black/70 text-zinc-300 hover:text-white transition shadow-md z-20 cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Day Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-zinc-950 font-black text-xs shadow-lg uppercase tracking-wider z-10">
+                <Flame className="w-3.5 h-3.5 fill-black" />
+                <span>DAY {activeWallpaper.day} UNLOCKED</span>
+              </div>
+
+              {/* Headline */}
+              <div className="z-10 pt-1">
+                <h3 className="text-xl sm:text-2xl font-black font-cinzel text-white tracking-tight drop-shadow-lg text-balance">
+                  {activeWallpaper.headline}
+                </h3>
+                <p className="text-xs font-bold text-amber-300 tracking-widest mt-1 uppercase">
+                  {activeWallpaper.subtext}
+                </p>
+              </div>
+
+              {/* Quotes Card */}
+              <div className="p-3.5 rounded-2xl bg-black/85 border border-white/10 backdrop-blur-md max-w-xs text-left z-10 space-y-2">
+                <p className="text-xs font-serif text-amber-200 italic leading-relaxed">
+                  “{activeWallpaper.hindiQuote}”
+                </p>
+                <p className="text-[11px] text-zinc-300 leading-relaxed border-t border-white/10 pt-1.5">
+                  “{activeWallpaper.englishQuote}”
+                </p>
+                <span className="text-[10px] font-bold text-amber-400 block pt-0.5">
+                  — {activeWallpaper.author}
+                </span>
+              </div>
+
+              {/* Direct Save Button */}
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSaveActiveWallpaper()}
+                disabled={isSavingWallpaper}
+                className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-zinc-950 font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.5)] transition cursor-pointer z-10"
+              >
+                {wallpaperSaved ? (
+                  <>
+                    <Check className="w-4 h-4 stroke-[3]" />
+                    <span>Wallpaper Downloaded!</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    <span>Download Ultra-HD Wallpaper</span>
+                  </>
+                )}
+              </motion.button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
