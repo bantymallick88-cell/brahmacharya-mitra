@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import LeaderboardView from '../components/LeaderboardView';
+import OnboardingWizard from '../components/OnboardingWizard';
+import PanicModal from '../components/PanicModal';
+import Footer from '../components/Footer';
+import SEO from '../components/SEO.tsx';
+---
+
+<Layout 
+	title="Global Sadhak Leaderboard — Brahmacharya Mitra"
+	description="Global Brahmacharya continence ranks, streak days, and Naam Jap counts. Unite with continent sadhaks across India, Nepal, USA, UK and worldwide."
+>
+	<!-- SEO Metadata & Schema -->
+	<SEO client:load />
+
+	<!-- Fixed Header Navbar & Drawer -->
+	<Header client:load />
+
+	<!-- Onboarding Setup Wizard (Accessible anytime to tune goals/routines) -->
+	<OnboardingWizard client:load />
+
+	<!-- Emergency Panic Modal Shield -->
+	<PanicModal client:load />
+
+	<!-- Main Content: Global Leaderboard View -->
+	<main class="flex-1 w-full min-h-screen pt-20 pb-16 bg-zinc-950">
+		<LeaderboardView client:load />
+	</main>
+
+	<!-- Footer -->
+	<Footer client:visible />
+</Layout>

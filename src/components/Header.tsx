@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Flame, ShieldAlert, Menu, X, Sparkles,
+  Flame, ShieldAlert, Menu, X, Sparkles, Trophy,
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
@@ -344,6 +344,72 @@ function ToolsDrawer({
                     </button>
                   </div>
 
+                  {/* ── Featured Core Pages: Daily Dashboard, Global Leaderboard, Onboarding Wizard ── */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <a
+                      href={baseUrl + "dashboard/"}
+                      onClick={onClose}
+                      className="p-3 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-900 to-zinc-950 border border-amber-500/40 hover:border-amber-400 text-left transition group shadow-md flex flex-col justify-between"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                          <Compass className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform" />
+                        </div>
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                          DIAL
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-extrabold text-white group-hover:text-amber-300">
+                          Daily Dashboard
+                        </h4>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">Speedometer & Dinacharya</p>
+                      </div>
+                    </a>
+
+                    <a
+                      href={baseUrl + "leaderboard/"}
+                      onClick={onClose}
+                      className="p-3 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-900 to-zinc-950 border border-amber-500/40 hover:border-amber-400 text-left transition group shadow-md flex flex-col justify-between"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                          <Trophy className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                          TOP 100
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-extrabold text-white group-hover:text-amber-300">
+                          Leaderboard
+                        </h4>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">Global podium & ranks</p>
+                      </div>
+                    </a>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('open-onboarding-wizard'));
+                      onClose();
+                    }}
+                    className="w-full p-2.5 rounded-2xl bg-zinc-950/80 hover:bg-zinc-900 border border-amber-500/30 hover:border-amber-400 flex items-center justify-between transition cursor-pointer group text-left shadow-sm"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-white group-hover:text-amber-300 block">
+                          Setup Wizard & Goal Selector
+                        </span>
+                        <span className="text-[10px] text-zinc-400">Custom target days, routines & country</span>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+                  </button>
+
                   {/* Divider label */}
                   <div className="flex items-center gap-2.5 py-1">
                     <div className="flex-1 h-px bg-zinc-800/80" />
@@ -609,6 +675,33 @@ export default function Header() {
                 </span>
               </div>
             </a>
+
+            {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup) ── */}
+            <div className="hidden lg:flex items-center gap-2">
+              <a
+                href={baseUrl + "dashboard/"}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
+              >
+                <Compass className="w-3.5 h-3.5 text-amber-400" />
+                <span>Dashboard</span>
+              </a>
+
+              <a
+                href={baseUrl + "leaderboard/"}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
+              >
+                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                <span>Leaderboard</span>
+              </a>
+
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Setup Wizard</span>
+              </button>
+            </div>
 
             {/* ── Right: Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
