@@ -30,3 +30,6 @@ pnpm-debug.log*
 # Telethon session files
 *.session
 *.session-journal
+
+# Large PDF library assets
+public/book/*.pdf
