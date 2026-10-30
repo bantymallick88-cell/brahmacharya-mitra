@@ -26,9 +26,11 @@ export const getVideoSrc = (item: any) => {
 };
 
 export interface TelegramFeedItem {
+  id?: string | number;
   telegram_message_id: number;
   group_id: number;
   topic_id: number;
+  group_username?: string;
   content_type: 'video' | 'image' | 'text';
   media_url: string;
   video_url?: string;
@@ -97,9 +99,11 @@ export default function TelegramFeed({
           const mapped: TelegramFeedItem[] = rawData.map((item: any, idx: number) => {
             const videoSrc = item.video_url || item.media_url || item.file_path || '';
             return {
+              id: item.id || item.telegram_message_id || idx + 1,
               telegram_message_id: item.telegram_message_id || idx + 1,
               group_id: item.group_id || -1003536137330,
               topic_id: item.topic_id || 14,
+              group_username: item.group_username || 'brahmacharyahelp',
               content_type: 'video',
               media_url: item.media_url || videoSrc,
               video_url: item.video_url || videoSrc,
@@ -140,19 +144,20 @@ export default function TelegramFeed({
         entries.forEach((entry) => {
           const video = entry.target.querySelector<HTMLVideoElement>('video');
           const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
-          if (!video) return;
 
           if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
             setActiveReelIndex(index);
-            video.muted = isMuted;
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(() => {
-                video.muted = true;
-                video.play().catch(() => {});
-              });
+            if (video) {
+              video.muted = isMuted;
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                  video.muted = true;
+                  video.play().catch(() => {});
+                });
+              }
             }
-          } else {
+          } else if (video) {
             video.pause();
             video.currentTime = 0;
           }
@@ -298,25 +303,12 @@ export default function TelegramFeed({
                   className="reel-slide snap-start relative w-full h-full min-h-[640px] sm:min-h-[680px] flex items-center justify-center bg-black shrink-0 overflow-hidden"
                   style={{ contentVisibility: 'auto', containIntrinsicSize: '680px' }}
                 >
-                  {/* Clean, High-Performance HTML5 <video> with controls, loop, playsinline, preload="metadata", object-cover */}
-                  <video
-                    src={getVideoSrc(reel)}
-                    controls
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className="w-full h-full object-cover"
-                    poster={`${(import.meta.env.BASE_URL || '/').endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`}photo_mahadev.jpg`}
-                    muted={isMuted}
-                    onClick={(e) => {
-                      const v = e.currentTarget;
-                      if (v.paused) v.play().catch(() => {});
-                      else v.pause();
-                    }}
-                  >
-                    <source src={getVideoSrc(reel)} type="video/mp4" />
-                    Your browser does not support HTML5 video.
-                  </video>
+                  {/* Official Telegram Post Widget Iframe */}
+                  <iframe 
+                    src={`https://t.me/${reel.group_username || 'brahmacharyahelp'}/${reel.telegram_message_id || reel.id}?embed=1`}
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                  ></iframe>
 
                   {/* Right Side Vertical Action Rail */}
                   <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-4.5 pointer-events-auto">
