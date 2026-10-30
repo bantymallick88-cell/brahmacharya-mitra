@@ -6,6 +6,13 @@ import {
 } from 'lucide-react';
 import { cleanFeedText } from '../utils/textCleaner';
 
+export const getVideoSrc = (item: any) => {
+  const path = item.video_url || item.media_url || item.file_path || item.link || '';
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) return path;
+  return `/${path}`;
+};
+
 export interface TelegramFeedItem {
   telegram_message_id: number;
   group_id: number;
@@ -14,6 +21,7 @@ export interface TelegramFeedItem {
   media_url: string;
   video_url?: string;
   file_path?: string;
+  link?: string;
   text_content: string;
   author_name: string;
   timestamp: string;
@@ -25,7 +33,7 @@ export interface TelegramFeedItem {
 }
 
 interface TelegramFeedProps {
-  initialPosts?: TelegramFeedItem[];
+  initialPosts?: any[];
   apiUrl?: string;
 }
 
@@ -33,7 +41,13 @@ export default function TelegramFeed({
   initialPosts = [],
 }: TelegramFeedProps) {
   // Direct state initialized from SSR/passed items without any mock fallback
-  const [reels, setReels] = useState<TelegramFeedItem[]>(initialPosts);
+  const [reels, setReels] = useState<any[]>(initialPosts);
+
+  useEffect(() => {
+    if (initialPosts && initialPosts.length > 0) {
+      setReels(initialPosts);
+    }
+  }, [initialPosts]);
 
   const [activeReelIndex, setActiveReelIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -258,43 +272,41 @@ export default function TelegramFeed({
           {/* Swipable Reel Viewport (snap-y snap-mandatory, overflow-y-scroll, no-scrollbar) */}
           <div
             ref={containerRef}
-            className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative"
+            className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative overscroll-y-contain will-change-scroll"
+            style={{ scrollBehavior: 'smooth' }}
           >
-            {reels.map((post, index) => {
-              const isLiked = !!likedPosts[post.telegram_message_id];
-              const videoSrc = post.video_url || post.media_url || post.file_path || '';
+            {reels.map((reel, index) => {
+              const isLiked = !!likedPosts[reel.telegram_message_id || index];
 
               return (
                 <div
-                  key={post.telegram_message_id}
+                  key={reel.telegram_message_id || index}
                   data-index={index}
-                  className="reel-slide snap-start relative w-full h-full flex items-center justify-center bg-black shrink-0 overflow-hidden"
+                  className="reel-slide snap-start relative w-full h-full min-h-[640px] sm:min-h-[680px] flex items-center justify-center bg-black shrink-0 overflow-hidden"
+                  style={{ contentVisibility: 'auto', containIntrinsicSize: '680px' }}
                 >
-                  {/* Clean, High-Performance HTML5 <video> with controls, loop, playsinline, muted, object-cover */}
+                  {/* Clean, High-Performance HTML5 <video> with controls, loop, playsinline, preload="metadata", object-cover */}
                   <video
-                    src={videoSrc}
-                    className="w-full h-full object-cover select-none cursor-pointer"
+                    src={getVideoSrc(reel)}
                     controls
                     loop
                     playsInline
                     preload="metadata"
-                    muted={isMuted}
+                    className="w-full h-full object-cover"
                     poster="photo_mahadev.jpg"
+                    muted={isMuted}
                     onClick={(e) => {
                       const v = e.currentTarget;
                       if (v.paused) v.play().catch(() => {});
                       else v.pause();
                     }}
-                  >
-                    <source src={videoSrc} type="video/mp4" />
-                    Your browser does not support HTML5 video.
-                  </video>
+                  />
 
                   {/* Right Side Vertical Action Rail */}
                   <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-4.5 pointer-events-auto">
                     {/* Like Button */}
                     <button
-                      onClick={() => handleToggleLike(post.telegram_message_id)}
+                      onClick={() => handleToggleLike(reel.telegram_message_id || index)}
                       className="flex flex-col items-center group cursor-pointer"
                     >
                       <div
@@ -307,20 +319,20 @@ export default function TelegramFeed({
                         <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                       </div>
                       <span className="text-[10px] font-bold text-zinc-200 mt-1">
-                        {(post.likes || 1200) + (isLiked ? 1 : 0)}
+                        {(reel.likes || 1200) + (isLiked ? 1 : 0)}
                       </span>
                     </button>
 
                     {/* Share Button */}
                     <button
-                      onClick={() => handleShare(post)}
+                      onClick={() => handleShare(reel)}
                       className="flex flex-col items-center group cursor-pointer"
                     >
                       <div className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/15 group-hover:border-amber-400/60 flex items-center justify-center transition-all duration-300 shadow-lg active:scale-90">
                         <Share2 className="w-5 h-5 text-white group-hover:text-amber-300" />
                       </div>
                       <span className="text-[10px] font-bold text-zinc-200 mt-1">
-                        {post.shares || 340}
+                        {reel.shares || 340}
                       </span>
                     </button>
 
@@ -330,7 +342,7 @@ export default function TelegramFeed({
                       title="Telegram Source ID"
                     >
                       <span className="text-[10px] font-mono font-black text-amber-300">
-                        #{post.telegram_message_id}
+                        #{reel.telegram_message_id || index + 1}
                       </span>
                     </div>
                   </div>
@@ -349,12 +361,12 @@ export default function TelegramFeed({
 
                       {/* Cleaned UTF-8 Devanagari / Sanskrit / Hindi Caption */}
                       <p className="text-[11px] text-zinc-200 leading-relaxed line-clamp-2">
-                        {post.text_content}
+                        {reel.text_content}
                       </p>
 
-                      {post.tags && post.tags.length > 0 && (
+                      {reel.tags && reel.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 pt-0.5">
-                          {post.tags.map((t, idx) => (
+                          {reel.tags.map((t: string, idx: number) => (
                             <span key={idx} className="text-[10px] text-amber-400 font-semibold">
                               {t}
                             </span>
