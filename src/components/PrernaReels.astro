@@ -34,7 +34,7 @@ if (fs.existsSync(filePath)) {
 
 // Map the complete array directly without demo fallbacks or slicing
 const REELS: ReelItem[] = rawFeed.map((item: any, idx: number) => {
-  const directUrl = item.video_url || item.media_url || item.videoSrc || '';
+  const directUrl = item.video_url || item.media_url || item.file_path || item.videoSrc || '';
   return {
     id: `reel-${item.telegram_message_id || idx}`,
     postId: item.telegram_message_id || idx + 1,

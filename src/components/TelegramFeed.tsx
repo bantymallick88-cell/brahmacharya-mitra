@@ -4,7 +4,7 @@ import {
   Film, Sparkles, Heart, Share2, Volume2, VolumeX,
   RefreshCw, Check, Flame, MessageCircle
 } from 'lucide-react';
-import { cleanFeedText, sanitizeFeedItem, filterVideoReels, isValidVideoUrl } from '../utils/textCleaner';
+import { cleanFeedText } from '../utils/textCleaner';
 
 export interface TelegramFeedItem {
   telegram_message_id: number;
@@ -13,6 +13,7 @@ export interface TelegramFeedItem {
   content_type: 'video' | 'image' | 'text';
   media_url: string;
   video_url?: string;
+  file_path?: string;
   text_content: string;
   author_name: string;
   timestamp: string;
@@ -30,9 +31,8 @@ interface TelegramFeedProps {
 
 export default function TelegramFeed({
   initialPosts = [],
-  apiUrl = 'http://localhost:5050/api/feed',
 }: TelegramFeedProps) {
-  // Bind all passed reels directly from telegram_feed.json without fallback arrays
+  // Direct state initialized from SSR/passed items without any mock fallback
   const [reels, setReels] = useState<TelegramFeedItem[]>(initialPosts);
 
   const [activeReelIndex, setActiveReelIndex] = useState(0);
@@ -49,56 +49,57 @@ export default function TelegramFeed({
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  // Fetch latest synced posts and strictly filter to valid videos
-  const fetchFeed = async () => {
+  // Fetch '/data/telegram_feed.json' directly on client mount and on manual sync
+  const loadFeed = async () => {
     setIsLoading(true);
     setSyncStatus('syncing');
-
-    // 1. Try local MongoDB / REST service
     try {
-      const res = await fetch(apiUrl, { mode: 'cors' });
-      if (res.ok) {
-        const json = await res.json();
-        const data = Array.isArray(json) ? json : json.data;
-        const validVideos = filterVideoReels(data);
-        if (validVideos.length > 0) {
-          setReels(validVideos);
-          setSyncStatus('live');
-          setIsLoading(false);
-          showToast(`Synced ${validVideos.length} live motivation reels! ✨`);
-          return;
-        }
-      }
-    } catch {}
-
-    // 2. Try static public/data/telegram_feed.json
-    try {
-      const base = typeof window !== 'undefined' && window.location.pathname.startsWith('/brahmacharya-mitra')
+      const basePath = typeof window !== 'undefined' && window.location.pathname.startsWith('/brahmacharya-mitra')
         ? '/brahmacharya-mitra'
         : '';
-      const staticRes = await fetch(`${base}/data/telegram_feed.json?t=${Date.now()}`);
-      if (staticRes.ok) {
-        const staticData = await staticRes.json();
-        const validVideos = filterVideoReels(staticData);
-        if (validVideos.length > 0) {
-          setReels(validVideos);
+
+      let res = await fetch(`${basePath}/data/telegram_feed.json?t=${Date.now()}`);
+      if (!res.ok && basePath) {
+        res = await fetch(`/data/telegram_feed.json?t=${Date.now()}`);
+      }
+
+      if (res.ok) {
+        const rawData = await res.json();
+        if (Array.isArray(rawData) && rawData.length > 0) {
+          // Map every item from telegram_feed.json into state without mock posts or filters
+          const mapped: TelegramFeedItem[] = rawData.map((item: any, idx: number) => {
+            const videoSrc = item.video_url || item.media_url || item.file_path || '';
+            return {
+              telegram_message_id: item.telegram_message_id || idx + 1,
+              group_id: item.group_id || -1003536137330,
+              topic_id: item.topic_id || 14,
+              content_type: 'video',
+              media_url: item.media_url || videoSrc,
+              video_url: item.video_url || videoSrc,
+              file_path: item.file_path || videoSrc,
+              text_content: cleanFeedText(item.text_content || ''),
+              author_name: cleanFeedText(item.author_name || 'Sadhak Brotherhood'),
+              timestamp: item.timestamp || new Date().toISOString(),
+              likes: item.likes || ((idx * 17) % 3800 + 450),
+              shares: item.shares || ((idx * 7) % 950 + 80),
+              tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+            };
+          });
+          setReels(mapped);
           setSyncStatus('cache');
-          setIsLoading(false);
-          showToast(`Loaded ${validVideos.length} synced reels from archive! ✨`);
+          showToast(`Loaded ${mapped.length} reels from telegram feed! ✨`);
           return;
         }
       }
-    } catch {}
-
-    if (initialVideos.length > 0) {
-      setReels(initialVideos);
-      setSyncStatus('cache');
+    } catch (err) {
+      console.warn('Could not fetch /data/telegram_feed.json on mount:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchFeed();
+    loadFeed();
   }, []);
 
   // IntersectionObserver: auto-play active video on vertical swipe, pause off-screen videos
@@ -207,7 +208,7 @@ export default function TelegramFeed({
             <span>{syncStatus === 'live' ? 'Live Telegram Sync' : 'Synced Feed Archive'}</span>
           </div>
           <button
-            onClick={fetchFeed}
+            onClick={loadFeed}
             disabled={isLoading}
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
             title="Sync Latest Reels"
@@ -261,7 +262,7 @@ export default function TelegramFeed({
           >
             {reels.map((post, index) => {
               const isLiked = !!likedPosts[post.telegram_message_id];
-              const videoSrc = post.video_url || post.media_url || '';
+              const videoSrc = post.video_url || post.media_url || post.file_path || '';
 
               return (
                 <div
