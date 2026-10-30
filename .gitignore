@@ -26,3 +26,7 @@ pnpm-debug.log*
 # deployment CLI folders
 .netlify/
 .vercel/
+
+# Telethon session files
+*.session
+*.session-journal

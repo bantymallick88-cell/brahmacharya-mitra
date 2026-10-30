@@ -1,42 +1,22 @@
 [
   {
-    "telegram_message_id": 9001,
+    "telegram_message_id": 9007,
     "group_id": -1003536137330,
     "topic_id": 101,
     "content_type": "video",
-    "media_url": "/brahmacharya-mitra/media/reel_1.mp4",
-    "video_url": "/brahmacharya-mitra/media/reel_1.mp4",
-    "text_content": "Akhand Brahmacharya Power & Tapasya 🔥\nConservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱 #Brahmacharya #Ojas #Tapasya",
-    "author_name": "Sadhak Brother 108",
+    "media_url": "/brahmacharya-mitra/media/reel_4.mp4",
+    "video_url": "/brahmacharya-mitra/media/reel_4.mp4",
+    "text_content": "Urge Transmutation via Pranayama 🧘‍♂️\nWhen an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra. #Pranayama #Transmutation #Kundalini",
+    "author_name": "Dhyan Yogi",
     "timestamp": "2026-10-29T15:38:13.725363+00:00",
-    "cloudinary_public_id": "reel_1",
+    "cloudinary_public_id": "reel_4",
     "synced_at": "2026-10-29T15:38:13.725363+00:00",
-    "likes": 1420,
-    "shares": 312,
+    "likes": 1870,
+    "shares": 412,
     "tags": [
-      "#Brahmacharya",
-      "#Ojas",
-      "#Tapasya"
-    ]
-  },
-  {
-    "telegram_message_id": 9004,
-    "group_id": -1003536137330,
-    "topic_id": 101,
-    "content_type": "video",
-    "media_url": "/brahmacharya-mitra/media/reel_2.mp4",
-    "video_url": "/brahmacharya-mitra/media/reel_2.mp4",
-    "text_content": "Dopamine Detox & Brain Fog Erasure ⚡\nThe moment you resist lust, your brain initiates neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine. #BrainFog #DopamineDetox #SanatanPower",
-    "author_name": "Brahmacharya Mentor",
-    "timestamp": "2026-10-29T15:38:13.725363+00:00",
-    "cloudinary_public_id": "reel_2",
-    "synced_at": "2026-10-29T15:38:13.725363+00:00",
-    "likes": 3210,
-    "shares": 650,
-    "tags": [
-      "#BrainFog",
-      "#DopamineDetox",
-      "#SanatanPower"
+      "#Pranayama",
+      "#Transmutation",
+      "#Kundalini"
     ]
   },
   {
@@ -60,23 +40,63 @@
     ]
   },
   {
-    "telegram_message_id": 9007,
+    "telegram_message_id": 9004,
     "group_id": -1003536137330,
     "topic_id": 101,
     "content_type": "video",
-    "media_url": "/brahmacharya-mitra/media/reel_4.mp4",
-    "video_url": "/brahmacharya-mitra/media/reel_4.mp4",
-    "text_content": "Urge Transmutation via Pranayama 🧘‍♂️\nWhen an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra. #Pranayama #Transmutation #Kundalini",
-    "author_name": "Dhyan Yogi",
+    "media_url": "/brahmacharya-mitra/media/reel_2.mp4",
+    "video_url": "/brahmacharya-mitra/media/reel_2.mp4",
+    "text_content": "Dopamine Detox & Brain Fog Erasure ⚡\nThe moment you resist lust, your brain initiates neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine. #BrainFog #DopamineDetox #SanatanPower",
+    "author_name": "Brahmacharya Mentor",
     "timestamp": "2026-10-29T15:38:13.725363+00:00",
-    "cloudinary_public_id": "reel_4",
+    "cloudinary_public_id": "reel_2",
     "synced_at": "2026-10-29T15:38:13.725363+00:00",
-    "likes": 1870,
-    "shares": 412,
+    "likes": 3210,
+    "shares": 650,
     "tags": [
-      "#Pranayama",
-      "#Transmutation",
-      "#Kundalini"
+      "#BrainFog",
+      "#DopamineDetox",
+      "#SanatanPower"
+    ]
+  },
+  {
+    "telegram_message_id": 9001,
+    "group_id": -1003536137330,
+    "topic_id": 101,
+    "content_type": "video",
+    "media_url": "/brahmacharya-mitra/media/reel_1.mp4",
+    "video_url": "/brahmacharya-mitra/media/reel_1.mp4",
+    "text_content": "Akhand Brahmacharya Power & Tapasya 🔥\nConservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱 #Brahmacharya #Ojas #Tapasya",
+    "author_name": "Sadhak Brother 108",
+    "timestamp": "2026-10-29T15:38:13.725363+00:00",
+    "cloudinary_public_id": "reel_1",
+    "synced_at": "2026-10-29T15:38:13.725363+00:00",
+    "likes": 1420,
+    "shares": 312,
+    "tags": [
+      "#Brahmacharya",
+      "#Ojas",
+      "#Tapasya"
+    ]
+  },
+  {
+    "telegram_message_id": 1088,
+    "group_id": -1003536137330,
+    "topic_id": 637,
+    "content_type": "video",
+    "media_url": "/brahmacharya-mitra/media/reel_1088.mp4",
+    "video_url": "/brahmacharya-mitra/media/reel_1088.mp4",
+    "text_content": "Brahmacharya Prerna Reel 🔥 Akhand Virya Raksha & Tapasya",
+    "author_name": "Sadhak Brotherhood",
+    "timestamp": "2026-01-08T11:24:14+00:00",
+    "cloudinary_public_id": "",
+    "synced_at": "2026-10-30T02:27:23.049594+00:00",
+    "likes": 3746,
+    "shares": 96,
+    "tags": [
+      "#Brahmacharya",
+      "#Ojas",
+      "#SelfMastery"
     ]
   }
 ]
