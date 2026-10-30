@@ -9,6 +9,8 @@ import PrivacyModal from '../components/PrivacyModal';
 import InstallPrompt from '../components/InstallPrompt';
 import Dashboard from '../components/Dashboard';
 import OnboardingWizard from '../components/OnboardingWizard';
+import PaymentModal from '../components/PaymentModal';
+import DonationSection from '../components/DonationSection';
 import BookRecommendations from '../components/BookRecommendations';
 import FAQ from '../components/FAQ';
 import SEO from '../components/SEO.tsx';
@@ -44,6 +46,9 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 	<!-- Fullscreen Privacy Policy & Data Sovereignty Modal (Triggerable anywhere) -->
 	<PrivacyModal client:load />
+
+	<!-- Fullscreen UPI Instant Seva Payment Modal (Triggerable anywhere) -->
+	<PaymentModal client:load />
 
 	<!-- Clean Landing Page: Strictly focused on Streak Counter, Habit Carousel & Books -->
 	<main class="flex-1 w-full max-w-full overflow-x-hidden">
@@ -144,6 +149,9 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 		<!-- Essential Books & Scripture Studies -->
 		<BookRecommendations client:visible />
+
+		<!-- Brahmacharya Seva & Web Development Contribution Section -->
+		<DonationSection client:visible />
 
 		<!-- FAQ Section -->
 		<section id="faq-section" class="py-12 px-4 max-w-4xl mx-auto">

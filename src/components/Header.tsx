@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Flame, ShieldAlert, Menu, X, Sparkles, Trophy,
+  Flame, ShieldAlert, Menu, X, Sparkles, Trophy, Heart,
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
@@ -163,6 +163,17 @@ function ToolsDrawer({
       color: 'border-red-500/50 text-red-300',
       action: () => {
         triggerPanic();
+        onClose();
+      },
+    },
+    {
+      title: 'Seva & Web Contribution',
+      subtitle: 'Direct UPI support for server & research',
+      icon: Heart,
+      badge: 'Contribute',
+      color: 'border-amber-500/50 text-amber-300',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-payment-modal', { detail: { amount: 108 } }));
         onClose();
       },
     },

@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import DailyDashboard from '../components/DailyDashboard';
 import OnboardingWizard from '../components/OnboardingWizard';
 import PanicModal from '../components/PanicModal';
+import PaymentModal from '../components/PaymentModal';
+import DonationSection from '../components/DonationSection';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO.tsx';
 ---
@@ -24,9 +26,15 @@ import SEO from '../components/SEO.tsx';
 	<!-- Emergency Panic Modal Shield -->
 	<PanicModal client:load />
 
-	<!-- Main Content: Daily Progress Dashboard -->
+	<!-- Fullscreen UPI Instant Seva Payment Modal -->
+	<PaymentModal client:load />
+
+	<!-- Main Content: Daily Progress Dashboard & Seva Section -->
 	<main class="flex-1 w-full min-h-screen pt-20 pb-16 bg-zinc-950">
 		<DailyDashboard client:load />
+
+		<!-- Brahmacharya Seva & Development Contribution Section -->
+		<DonationSection client:visible />
 	</main>
 
 	<!-- Footer -->
