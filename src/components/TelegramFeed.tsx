@@ -7,10 +7,12 @@ import {
 import { cleanFeedText } from '../utils/textCleaner';
 
 export const getVideoSrc = (item: any) => {
-  const path = item.video_url || item.media_url || item.file_path || item.link || '';
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) return path;
-  return `/${path}`;
+  const p = item?.video_url || item?.media_url || item?.file_path || item?.link || '';
+  if (!p) return '';
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+  const cleanPath = p.startsWith('/') ? p.slice(1) : p;
+  const base = import.meta.env.BASE_URL || '/';
+  return (base.endsWith('/') ? base : `${base}/`) + cleanPath;
 };
 
 export interface TelegramFeedItem {
@@ -49,6 +51,8 @@ export default function TelegramFeed({
     }
   }, [initialPosts]);
 
+  const postsToRender = initialPosts && initialPosts.length > 0 ? initialPosts : reels;
+
   const [activeReelIndex, setActiveReelIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,12 +72,11 @@ export default function TelegramFeed({
     setIsLoading(true);
     setSyncStatus('syncing');
     try {
-      const basePath = typeof window !== 'undefined' && window.location.pathname.startsWith('/brahmacharya-mitra')
-        ? '/brahmacharya-mitra'
-        : '';
+      const base = import.meta.env.BASE_URL || '/';
+      const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
 
-      let res = await fetch(`${basePath}/data/telegram_feed.json?t=${Date.now()}`);
-      if (!res.ok && basePath) {
+      let res = await fetch(`${cleanBase}/data/telegram_feed.json?t=${Date.now()}`);
+      if (!res.ok) {
         res = await fetch(`/data/telegram_feed.json?t=${Date.now()}`);
       }
 
@@ -150,7 +153,7 @@ export default function TelegramFeed({
 
     slides.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [reels, isMuted]);
+  }, [postsToRender, isMuted]);
 
   const toggleMute = () => {
     const nextMuted = !isMuted;
@@ -264,7 +267,7 @@ export default function TelegramFeed({
                 {isMuted ? <VolumeX className="w-4 h-4 text-zinc-300" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
               </button>
               <div className="px-2.5 py-1 rounded-full bg-black/60 border border-white/20 text-[10px] text-zinc-300 font-mono">
-                {activeReelIndex + 1} / {reels.length}
+                {activeReelIndex + 1} / {postsToRender.length}
               </div>
             </div>
           </div>
@@ -275,7 +278,7 @@ export default function TelegramFeed({
             className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black relative overscroll-y-contain will-change-scroll"
             style={{ scrollBehavior: 'smooth' }}
           >
-            {reels.map((reel, index) => {
+            {postsToRender.map((reel, index) => {
               const isLiked = !!likedPosts[reel.telegram_message_id || index];
 
               return (
@@ -293,7 +296,7 @@ export default function TelegramFeed({
                     playsInline
                     preload="metadata"
                     className="w-full h-full object-cover"
-                    poster="photo_mahadev.jpg"
+                    poster={`${(import.meta.env.BASE_URL || '/').endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`}photo_mahadev.jpg`}
                     muted={isMuted}
                     onClick={(e) => {
                       const v = e.currentTarget;
