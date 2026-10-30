@@ -10,9 +10,19 @@ export const getVideoSrc = (item: any) => {
   const p = item?.video_url || item?.media_url || item?.file_path || item?.link || '';
   if (!p) return '';
   if (p.startsWith('http://') || p.startsWith('https://')) return p;
-  const cleanPath = p.startsWith('/') ? p.slice(1) : p;
+
   const base = import.meta.env.BASE_URL || '/';
-  return (base.endsWith('/') ? base : `${base}/`) + cleanPath;
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  const baseWithoutSlash = prefix.replace(/\/$/, '');
+
+  // If already starts with base URL, do not duplicate
+  if (p.startsWith(prefix)) return p;
+  if (baseWithoutSlash && (p === baseWithoutSlash || p.startsWith(baseWithoutSlash + '/'))) {
+    return p;
+  }
+
+  const cleanPath = p.startsWith('/') ? p.slice(1) : p;
+  return `${prefix}${cleanPath}`;
 };
 
 export interface TelegramFeedItem {
@@ -46,12 +56,12 @@ export default function TelegramFeed({
   const [reels, setReels] = useState<any[]>(initialPosts);
 
   useEffect(() => {
-    if (initialPosts && initialPosts.length > 0) {
+    if (initialPosts && initialPosts.length > 0 && reels.length === 0) {
       setReels(initialPosts);
     }
   }, [initialPosts]);
 
-  const postsToRender = initialPosts && initialPosts.length > 0 ? initialPosts : reels;
+  const postsToRender = reels && reels.length > 0 ? reels : initialPosts;
 
   const [activeReelIndex, setActiveReelIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -303,7 +313,19 @@ export default function TelegramFeed({
                       if (v.paused) v.play().catch(() => {});
                       else v.pause();
                     }}
-                  />
+                    onError={(e) => {
+                      const v = e.currentTarget;
+                      if (!v.getAttribute('data-error-handled')) {
+                        v.setAttribute('data-error-handled', 'true');
+                        const base = import.meta.env.BASE_URL || '/';
+                        const prefix = base.endsWith('/') ? base : `${base}/`;
+                        v.src = `${prefix}media/reel_1.mp4`;
+                        v.load();
+                      }
+                    }}
+                  >
+                    <source src={getVideoSrc(reel)} type="video/mp4" />
+                  </video>
 
                   {/* Right Side Vertical Action Rail */}
                   <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-4.5 pointer-events-auto">

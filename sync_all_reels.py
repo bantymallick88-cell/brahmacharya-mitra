@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 sync_all_reels.py - Brahmacharya Mitra Telegram Reels Historical Backfill Engine
 Uses Telethon and PyMongo to synchronize historical video/MP4 media files from Telegram Group
@@ -83,9 +83,9 @@ POSSIBLE_MEDIA_PATHS = [
 
 def get_astro_feed_path() -> Path:
     for p in POSSIBLE_ASTRO_PATHS:
-        if p.parent.exists():
+        if p.exists() or p.parent.exists():
             return p
-    target = POSSIBLE_ASTRO_PATHS[1]
+    target = POSSIBLE_ASTRO_PATHS[0]
     target.parent.mkdir(parents=True, exist_ok=True)
     return target
 
@@ -93,7 +93,7 @@ def get_media_dir() -> Path:
     for p in POSSIBLE_MEDIA_PATHS:
         if p.exists():
             return p
-    target = POSSIBLE_MEDIA_PATHS[1]
+    target = POSSIBLE_MEDIA_PATHS[0]
     target.mkdir(parents=True, exist_ok=True)
     return target
 
@@ -233,8 +233,9 @@ async def sync_all_reels(
     target_topic_id: int = DEFAULT_TOPIC_ID,
     batch_size: int = 100,
     max_id_limit: int = 0,
-    download_media_files: bool = False,
-    include_all_topics: bool = False,
+    download_media_files: bool = True,
+    include_all_topics: bool = True,
+    max_downloads: int = 10,
 ):
     print("=" * 72)
     print("  BRAHMACHARYA MITRA - TELEGRAM REELS HISTORICAL BACKFILL ENGINE")
@@ -245,6 +246,8 @@ async def sync_all_reels(
     print(f"• MongoDB Target   : {MONGO_DB_NAME}.{MONGO_COLLECTION_NAME}")
     print(f"• Cloudinary Status: {'Active' if cloudinary_configured else 'Local / Relative CDN Link'}")
     print(f"• Astro Public Feed: {get_astro_feed_path()}")
+    print(f"• Media Directory  : {get_media_dir()}")
+    print(f"• Download Mode    : {'ACTIVE (Max ' + str(max_downloads if max_downloads > 0 else 'ALL') + ' files)' if download_media_files else 'OFF'}")
     print("=" * 72)
 
     # Initialize MongoDB
@@ -288,17 +291,21 @@ async def sync_all_reels(
             logger.warning(f"Could not parse existing feed: {e}")
 
     media_dir = get_media_dir()
+    media_dir.mkdir(parents=True, exist_ok=True)
+
     synced_reels = []
     scanned_count = 0
+    downloaded_count = 0
 
-    # Build ID batches
+    # Build ID batches starting from newest messages downwards
     id_batches = []
-    for start in range(1, high_watermark + 1, batch_size):
-        end = min(start + batch_size, high_watermark + 1)
-        id_batches.append(list(range(start, end)))
+    for start in range(high_watermark, 0, -batch_size):
+        batch = list(range(max(1, start - batch_size + 1), start + 1))
+        batch.reverse()  # Newest first
+        id_batches.append(batch)
 
     total_batches = len(id_batches)
-    logger.info(f"Scanning {total_batches} batches (IDs #1 to #{high_watermark})...")
+    logger.info(f"Scanning {total_batches} batches (IDs #{high_watermark} down to #1)...")
 
     for b_idx, batch in enumerate(id_batches, 1):
         try:
@@ -336,32 +343,27 @@ async def sync_all_reels(
             # Direct playable stream link resolution
             local_filename = f"reel_{msg_id}.mp4"
             local_file_path = media_dir / local_filename
-            astro_direct_url = f"/brahmacharya-mitra/media/{local_filename}"
+            clean_media_url = f"/media/{local_filename}"
 
             existing_entry = existing_items_dict.get(msg_id)
             cloudinary_pub_id = ""
-
-            if existing_entry and existing_entry.get("media_url"):
-                media_url = existing_entry["media_url"]
-                video_url = existing_entry.get("video_url") or media_url
+            if existing_entry:
                 cloudinary_pub_id = existing_entry.get("cloudinary_public_id", "")
-            elif local_file_path.exists():
-                media_url = astro_direct_url
-                video_url = astro_direct_url
-            else:
-                if download_media_files:
+
+            # Download actual MP4 binary to public/media/
+            is_downloaded = local_file_path.exists() and local_file_path.stat().st_size > 1024
+
+            if download_media_files and not is_downloaded:
+                if max_downloads == 0 or downloaded_count < max_downloads:
                     try:
-                        logger.info(f"Downloading video media for #{msg_id}...")
-                        await client.download_media(msg, file=str(local_file_path))
-                        media_url = astro_direct_url
-                        video_url = astro_direct_url
+                        logger.info(f"Downloading MP4 for #{msg_id} into public/media/{local_filename}...")
+                        dl_res = await client.download_media(msg, file=str(local_file_path))
+                        if dl_res and local_file_path.exists() and local_file_path.stat().st_size > 1024:
+                            downloaded_count += 1
+                            sz_kb = local_file_path.stat().st_size // 1024
+                            logger.info(f"✅ Downloaded #{msg_id}: {local_filename} ({sz_kb} KB) [{downloaded_count}/{max_downloads or 'ALL'}]")
                     except Exception as dl_err:
                         logger.warning(f"Could not download #{msg_id}: {dl_err}")
-                        media_url = astro_direct_url
-                        video_url = astro_direct_url
-                else:
-                    media_url = astro_direct_url
-                    video_url = astro_direct_url
 
             likes = (msg_id * 17) % 3800 + 450
             shares = (msg_id * 7) % 950 + 80
@@ -371,8 +373,9 @@ async def sync_all_reels(
                 "group_id": GROUP_ID,
                 "topic_id": topic_id,
                 "content_type": "video",
-                "media_url": media_url,
-                "video_url": video_url,
+                "media_url": clean_media_url,
+                "video_url": clean_media_url,
+                "file_path": clean_media_url,
                 "text_content": raw_text or "Brahmacharya Prerna Reel 🔥 Akhand Virya Raksha & Tapasya",
                 "author_name": "Sadhak Brotherhood",
                 "timestamp": date_str,
@@ -386,7 +389,7 @@ async def sync_all_reels(
 
         if b_idx % 10 == 0 or b_idx == total_batches:
             pct = (b_idx / total_batches) * 100
-            print(f"[{b_idx:3d}/{total_batches}] {pct:5.1f}% | Scanned: {scanned_count:5d} msgs | Filtered: {len(synced_reels):4d} Video Reels")
+            print(f"[{b_idx:3d}/{total_batches}] {pct:5.1f}% | Scanned: {scanned_count:5d} msgs | Video Reels: {len(synced_reels):4d} | Downloaded: {downloaded_count}")
 
         # Sleep briefly between batches to avoid Telegram FloodWait
         await asyncio.sleep(0.35)
@@ -395,7 +398,7 @@ async def sync_all_reels(
     logger.info("Telegram client disconnected.")
 
     print("\n" + "=" * 72)
-    print(f"Total Video Reels Synced: {len(synced_reels)}")
+    print(f"Total Video Reels Synced: {len(synced_reels)} (New downloads: {downloaded_count})")
     print("=" * 72)
 
     # Save to MongoDB
@@ -409,6 +412,10 @@ async def sync_all_reels(
 
     for old_id, old_doc in existing_items_dict.items():
         if not any(r["telegram_message_id"] == old_id for r in synced_reels):
+            local_fn = f"reel_{old_id}.mp4"
+            old_doc["media_url"] = f"/media/{local_fn}"
+            old_doc["video_url"] = f"/media/{local_fn}"
+            old_doc["file_path"] = f"/media/{local_fn}"
             synced_reels.append(old_doc)
 
     synced_reels.sort(key=lambda x: x.get("telegram_message_id", 0), reverse=True)
@@ -435,8 +442,10 @@ def main():
     parser.add_argument("--topic", type=int, default=DEFAULT_TOPIC_ID, help="Telegram Topic ID (default 14)")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size for message ID fetches (default 100)")
     parser.add_argument("--max-id", type=int, default=0, help="Maximum message ID limit to scan (default: scan all)")
-    parser.add_argument("--download", action="store_true", help="Download MP4 binaries to public/media/")
-    parser.add_argument("--all-topics", action="store_true", help="Include video reels from all topics in the group (All 1377+ reels)")
+    parser.add_argument("--download", action="store_true", default=True, help="Download MP4 binaries to public/media/")
+    parser.add_argument("--no-download", dest="download", action="store_false", help="Skip downloading media files")
+    parser.add_argument("--all-topics", action="store_true", default=True, help="Include video reels from all topics in the group (All 1377+ reels)")
+    parser.add_argument("--limit", type=int, default=10, help="Limit number of MP4 video files to download in this run (0 = all, default 10)")
     args = parser.parse_args()
 
     asyncio.run(
@@ -446,6 +455,7 @@ def main():
             max_id_limit=args.max_id,
             download_media_files=args.download,
             include_all_topics=args.all_topics,
+            max_downloads=args.limit,
         )
     )
 
