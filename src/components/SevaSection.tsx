@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart, QrCode, ShieldCheck, CheckCircle2,
   AlertCircle, ArrowRight, IndianRupee, Sparkles,
-  Smartphone, X, ExternalLink, Mail
+  Smartphone, X, ExternalLink, Mail, Lock
 } from 'lucide-react';
 import TelegramIcon from './TelegramIcon';
+import { useIsRegisteredUser } from '../utils/useRegisteredUser';
 
 export const UPI_ID = 'master1234567@ybl';
 export const PAYEE_NAME = 'Brahmacharya Mitra';
@@ -26,6 +27,7 @@ export const SevaSection: React.FC = () => {
   const [utrNumber, setUtrNumber] = useState<string>('');
   const [utrSuccess, setUtrSuccess] = useState<boolean>(false);
   const [utrError, setUtrError] = useState<string>('');
+  const isRegistered = useIsRegisteredUser();
 
   useEffect(() => {
     const handleOpenModal = (e: any) => {
@@ -230,15 +232,26 @@ export const SevaSection: React.FC = () => {
               For any queries, feedback, or assistance, reach out via Email or join our official Telegram group.
             </p>
             <div className="flex items-center gap-2 shrink-0">
-              <a
-                href="https://t.me/+aeaMsRXfx0VhZDJl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm"
-              >
-                <TelegramIcon className="w-3.5 h-3.5 text-amber-400" />
-                <span>Join Telegram</span>
-              </a>
+              {isRegistered ? (
+                <a
+                  href="https://t.me/+aeaMsRXfx0VhZDJl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm"
+                >
+                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Join Telegram</span>
+                </a>
+              ) : (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
+                  className="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-700 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  title="Complete Setup Wizard to unlock Telegram Community"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-500/70" />
+                  <span>Join Telegram 🔒</span>
+                </button>
+              )}
               <a
                 href="mailto:bantyxyz13@gmail.com"
                 target="_blank"

@@ -5,12 +5,13 @@ import {
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
-  Share2, Check, Smartphone, HelpCircle
+  Share2, Check, Smartphone, HelpCircle, Lock
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
 import AuthModal from './AuthModal';
 import TelegramIcon from './TelegramIcon';
+import { useIsRegisteredUser } from '../utils/useRegisteredUser';
 
 // Feature Sub-Views
 import JournalNotesView from './mdf/JournalNotesView';
@@ -69,6 +70,7 @@ function ToolsDrawer({
   onShare: () => void;
 }) {
   const [currentScreen, setCurrentScreen] = useState<DrawerScreen>('menu');
+  const isRegistered = useIsRegisteredUser();
 
   useEffect(() => {
     if (open) {
@@ -189,9 +191,9 @@ function ToolsDrawer({
       icon: Flame,
     },
     {
-      title: 'Essential Books & Scripture Studies',
-      subtitle: 'Brahmacharya & spiritual growth',
-      href: '#books',
+      title: 'Sacred Library (29+ Free Books)',
+      subtitle: 'Complete scriptures, PDF studies & science',
+      href: baseUrl + 'books/',
       icon: BookOpen,
     },
     {
@@ -422,28 +424,54 @@ function ToolsDrawer({
                     <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
                   </button>
 
-                  {/* Official Telegram Community Quick Card */}
-                  <a
-                    href="https://t.me/+aeaMsRXfx0VhZDJl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full p-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/40 hover:border-amber-400 flex items-center justify-between transition-all duration-300 group shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                        <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                  {/* Official Telegram Community Quick Card (Private to Registered Users) */}
+                  {isRegistered ? (
+                    <a
+                      href="https://t.me/+aeaMsRXfx0VhZDJl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full p-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/40 hover:border-amber-400 flex items-center justify-between transition-all duration-300 group shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                          <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-amber-200 group-hover:text-white block">
+                            Official Telegram Community
+                          </span>
+                          <span className="text-[10px] text-zinc-400">Daily vichar, updates & sadhak sangha</span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-xs font-bold text-amber-200 group-hover:text-white block">
-                          Official Telegram Community
-                        </span>
-                        <span className="text-[10px] text-zinc-400">Daily vichar, updates & sadhak sangha</span>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors">
+                        Join ↗
+                      </span>
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        window.dispatchEvent(new CustomEvent('open-onboarding-wizard'));
+                        onClose();
+                      }}
+                      className="w-full p-2.5 rounded-2xl bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 flex items-center justify-between transition-all group shadow-sm cursor-pointer text-left"
+                      title="Complete Setup Wizard to Join Telegram Community"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-amber-400">
+                          <Lock className="w-3.5 h-3.5 text-amber-500/80" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-zinc-300 group-hover:text-amber-200 block">
+                            Official Telegram Community
+                          </span>
+                          <span className="text-[10px] text-zinc-500">Private Sangha • Complete Setup to Unlock</span>
+                        </div>
                       </div>
-                    </div>
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors">
-                      Join ↗
-                    </span>
-                  </a>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                        Unlock 🔒
+                      </span>
+                    </button>
+                  )}
 
                   {/* Divider label */}
                   <div className="flex items-center gap-2.5 py-1">
@@ -600,6 +628,7 @@ export default function Header() {
   const [streakDays, setStreakDays] = useState(7);
   const [authOpen, setAuthOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const isRegistered = useIsRegisteredUser();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -737,17 +766,39 @@ export default function Header() {
                 <span>Setup Wizard</span>
               </button>
 
-              {/* ── Official Telegram Community Link ── */}
               <a
-                href="https://t.me/+aeaMsRXfx0VhZDJl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer"
-                title="Join Official Telegram Community"
+                href={baseUrl + "books/"}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
               >
-                <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
-                <span className="font-extrabold tracking-wide">Join Telegram</span>
+                <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                <span>Library</span>
               </a>
+
+              {/* ── Official Telegram Community Link (Restricted to Registered Users) ── */}
+              {isRegistered ? (
+                <a
+                  href="https://t.me/+aeaMsRXfx0VhZDJl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer"
+                  title="Join Official Telegram Community"
+                >
+                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                  <span className="font-extrabold tracking-wide">Join Telegram</span>
+                </a>
+              ) : (
+                <button
+                  onClick={() => {
+                    setToastMessage('Telegram Sangha is private for registered sadhaks. Complete your Setup Wizard to unlock!');
+                    window.dispatchEvent(new CustomEvent('open-onboarding-wizard'));
+                  }}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-750 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 text-xs font-bold transition-all duration-300 shadow-sm cursor-pointer group"
+                  title="Complete Setup Wizard to Join Telegram Community"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors flex-shrink-0" />
+                  <span>Join Telegram 🔒</span>
+                </button>
+              )}
             </div>
 
             {/* ── Right: Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}

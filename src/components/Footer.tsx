@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Flame, 
   Sparkles, 
@@ -6,13 +5,17 @@ import {
   ArrowUp, 
   ShieldCheck,
   Mail,
-  ExternalLink
+  ExternalLink,
+  Lock,
+  BookOpen
 } from 'lucide-react';
 import TelegramIcon from './TelegramIcon';
 import { useTranslation } from '../i18n';
+import { useIsRegisteredUser } from '../utils/useRegisteredUser';
 
 export default function Footer() {
   const { t } = useTranslation();
+  const isRegistered = useIsRegisteredUser();
 
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) 
     ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/') 
@@ -94,17 +97,28 @@ export default function Footer() {
             </div>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3.5 w-full lg:w-auto shrink-0">
-              {/* Telegram Group Button */}
-              <a
-                href="https://t.me/+aeaMsRXfx0VhZDJl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-shimmer btn-metallic-glow px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
-              >
-                <TelegramIcon className="w-4 h-4 text-zinc-950" />
-                <span>Join Official Telegram</span>
-                <ExternalLink className="w-3.5 h-3.5 text-zinc-900" />
-              </a>
+              {/* Telegram Group Button (Restricted to Registered Users) */}
+              {isRegistered ? (
+                <a
+                  href="https://t.me/+aeaMsRXfx0VhZDJl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-shimmer btn-metallic-glow px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <TelegramIcon className="w-4 h-4 text-zinc-950" />
+                  <span>Join Official Telegram</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-zinc-900" />
+                </a>
+              ) : (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
+                  className="px-5 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2.5 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+                  title="Telegram Community is private. Complete Setup Wizard to join."
+                >
+                  <Lock className="w-4 h-4 text-amber-400" />
+                  <span>Unlock Telegram (Complete Setup)</span>
+                </button>
+              )}
 
               {/* Support Email Button */}
               <a
@@ -169,7 +183,12 @@ export default function Footer() {
               <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (60D)</a></li>
               <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (100D)</a></li>
               <li><a href="#deities" className="hover:text-amber-300 transition">{t.nav.deities}</a></li>
-              <li><a href="#books" className="hover:text-amber-300 transition">{t.nav.books}</a></li>
+              <li>
+                <a href={`${baseUrl}books/`} className="hover:text-amber-300 transition flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{t.nav.books} (29 Books)</span>
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -182,15 +201,26 @@ export default function Footer() {
               {t.footer.missionDesc}
             </p>
             <div className="flex flex-col gap-2">
-              <a
-                href="https://t.me/+aeaMsRXfx0VhZDJl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold group cursor-pointer"
-              >
-                <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-                <span>Join Telegram Community ↗</span>
-              </a>
+              {isRegistered ? (
+                <a
+                  href="https://t.me/+aeaMsRXfx0VhZDJl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold group cursor-pointer"
+                >
+                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+                  <span>Join Telegram Community ↗</span>
+                </a>
+              ) : (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
+                  className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium group cursor-pointer text-left"
+                  title="Complete Setup Wizard to unlock Telegram Community"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors" />
+                  <span>Telegram Community 🔒</span>
+                </button>
+              )}
               <a
                 href="mailto:bantyxyz13@gmail.com"
                 target="_blank"

@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import LibraryView from '../components/LibraryView';
+import OnboardingWizard from '../components/OnboardingWizard';
+import PanicModal from '../components/PanicModal';
+import SevaSection from '../components/SevaSection';
+import Footer from '../components/Footer';
+import SEO from '../components/SEO.tsx';
+---
+
+<Layout 
+	title="Sacred Library & Books (29+ PDFs) — Brahmacharya Mitra"
+	description="Explore 29+ free authentic books and research papers on Brahmacharya, celibacy, neuroscience, mind mastery, and Vedic scriptures in Hindi and English."
+>
+	<!-- SEO Metadata & Schema -->
+	<SEO client:load />
+
+	<!-- Fixed Header Navbar & Drawer -->
+	<Header client:load />
+
+	<!-- Onboarding Setup Wizard -->
+	<OnboardingWizard client:load />
+
+	<!-- Emergency Panic Modal Shield -->
+	<PanicModal client:load />
+
+	<!-- Main Content: Library View -->
+	<main class="flex-1 w-full min-h-screen pt-20 pb-16 bg-zinc-950">
+		<LibraryView client:load />
+
+		<!-- Compact Unified Brahmacharya Seva & Contribution Card -->
+		<SevaSection client:load />
+	</main>
+
+	<!-- Footer -->
+	<Footer client:visible />
+</Layout>

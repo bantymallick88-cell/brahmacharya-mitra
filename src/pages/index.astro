@@ -10,7 +10,6 @@ import InstallPrompt from '../components/InstallPrompt';
 import Dashboard from '../components/Dashboard';
 import OnboardingWizard from '../components/OnboardingWizard';
 import SevaSection from '../components/SevaSection';
-import BookRecommendations from '../components/BookRecommendations';
 import FAQ from '../components/FAQ';
 import SEO from '../components/SEO.tsx';
 import Footer from '../components/Footer';
@@ -143,8 +142,61 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 		<!-- Animated Circular Streak Timer & Daily Habit Transformation Carousel -->
 		<Dashboard client:load />
 
-		<!-- Essential Books & Scripture Studies -->
-		<BookRecommendations client:visible />
+		<!-- Sacred Library Showcase Card -->
+		<section id="books" class="py-12 px-4 max-w-5xl mx-auto w-full">
+			<div class="relative overflow-hidden rounded-3xl bg-zinc-950/85 border border-amber-500/30 hover:border-amber-400/60 p-6 sm:p-10 backdrop-blur-2xl shadow-[0_0_45px_rgba(245,158,11,0.15)] transition-all duration-500 group">
+				<!-- Ambient Cosmic Gold Aura -->
+				<div class="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
+				<div class="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+
+				<div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+					<div class="space-y-3 text-center lg:text-left max-w-2xl">
+						<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider shadow-sm">
+							<span class="text-amber-400">📖</span>
+							<span>Sanatan & Modern Shastras</span>
+						</div>
+
+						<h2 class="text-2xl sm:text-3xl lg:text-4xl font-black font-cinzel text-white tracking-wide">
+							The Sacred <span class="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent">Brahmacharya Library</span>
+						</h2>
+
+						<p class="text-xs sm:text-sm text-zinc-300 leading-relaxed font-medium">
+							Access our curated repository of 29 authentic foundational books, ancient Vedic scriptures, Adi Shankaracharya's Viveka Chudamani, and modern neuroscience research on dopamine rewiring and celibacy mastery.
+						</p>
+
+						<!-- Highlights Tags -->
+						<div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-[11px] font-semibold text-zinc-400">
+							<span class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-amber-300/90">
+								✨ 29 Free Full PDF Books
+							</span>
+							<span class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300">
+								🕉️ Adi Shankaracharya & Swami Sivananda
+							</span>
+							<span class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300">
+								🧠 Neuroscience & Porn Recovery
+							</span>
+							<span class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300">
+								🌿 Ayurveda & Dincharya
+							</span>
+						</div>
+					</div>
+
+					<div class="flex flex-col sm:flex-row lg:flex-col items-center gap-3 shrink-0 w-full sm:w-auto">
+						<a
+							href={`${baseUrl}books/`}
+							class="btn-shimmer btn-metallic-glow w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 font-black text-sm transition-all duration-300 flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer text-center"
+						>
+							<span>Browse Full Library (29+ Books)</span>
+							<span class="text-base">→</span>
+						</a>
+
+						<span class="text-[10px] text-zinc-400 text-center font-medium">
+							100% Free • Read Online & Download
+						</span>
+					</div>
+				</div>
+			</div>
+		</section>
 
 		<!-- Compact Unified Brahmacharya Seva & Contribution Card -->
 		<SevaSection client:load />
