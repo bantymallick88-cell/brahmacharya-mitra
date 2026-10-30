@@ -21,96 +21,34 @@ interface ReelItem {
   videoSrc?: string;
 }
 
-const RAW_REELS: ReelItem[] = [
-  {
-    id: "reel-637",
-    postId: 637,
-    title: "Akhand Brahmacharya Power & Tapasya 🔥",
-    caption: "Conservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱",
-    tags: ["#Brahmacharya", "#Ojas", "#NoFap", "#Tapasya"],
-    duration: "0:45",
-    likes: 1240,
-    shares: 382,
-    video_url: "/brahmacharya-mitra/media/reel_1.mp4",
-    media_url: "/brahmacharya-mitra/media/reel_1.mp4",
-    videoSrc: "/brahmacharya-mitra/media/reel_1.mp4"
-  },
-  {
-    id: "reel-638",
-    postId: 638,
-    title: "Dopamine Detox & Brain Fog Erasure ⚡",
-    caption: "The moment you resist lust, your brain begins neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.",
-    tags: ["#BrainFog", "#DopamineDetox", "#Celibacy", "#SanatanPower"],
-    duration: "0:52",
-    likes: 2190,
-    shares: 540,
-    video_url: "/brahmacharya-mitra/media/reel_2.mp4",
-    media_url: "/brahmacharya-mitra/media/reel_2.mp4",
-    videoSrc: "/brahmacharya-mitra/media/reel_2.mp4"
-  },
-  {
-    id: "reel-639",
-    postId: 639,
-    title: "Conquer The Senses, Rule The Mind 🔱",
-    caption: "“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.",
-    tags: ["#MindControl", "#ShivaPower", "#SelfMastery", "#ViryaRaksha"],
-    duration: "0:38",
-    likes: 3410,
-    shares: 890,
-    video_url: "/brahmacharya-mitra/media/reel_3.mp4",
-    media_url: "/brahmacharya-mitra/media/reel_3.mp4",
-    videoSrc: "/brahmacharya-mitra/media/reel_3.mp4"
-  },
-  {
-    id: "reel-640",
-    postId: 640,
-    title: "Urge Transmutation via Pranayama 🧘‍♂️",
-    caption: "When an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.",
-    tags: ["#Pranayama", "#Transmutation", "#Kundalini", "#YogaSadhana"],
-    duration: "1:00",
-    likes: 1870,
-    shares: 412,
-    video_url: "/brahmacharya-mitra/media/reel_4.mp4",
-    media_url: "/brahmacharya-mitra/media/reel_4.mp4",
-    videoSrc: "/brahmacharya-mitra/media/reel_4.mp4"
+// Directly parse and bind the complete array from public/data/telegram_feed.json (all 1441 reels)
+const filePath = path.resolve('./public/data/telegram_feed.json');
+let rawFeed: any[] = [];
+if (fs.existsSync(filePath)) {
+  try {
+    rawFeed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (e) {
+    console.error('Error reading telegram_feed.json in PrernaReels.astro:', e);
   }
-];
-
-let syncedReels: ReelItem[] = [];
-try {
-  const filePath = path.resolve('./public/data/telegram_feed.json');
-  if (fs.existsSync(filePath)) {
-    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    const validVideos = filterVideoReels(raw);
-    if (validVideos.length > 0) {
-      syncedReels = validVideos.map((item: any, idx: number) => {
-        const directUrl = item.video_url || item.media_url || item.videoSrc || '/brahmacharya-mitra/media/reel_1.mp4';
-        return {
-          id: `reel-${item.telegram_message_id || idx}`,
-          postId: item.telegram_message_id || 637 + idx,
-          title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
-          caption: cleanFeedText(item.text_content || ''),
-          tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
-          duration: '0:45',
-          likes: item.likes || 1200,
-          shares: item.shares || 340,
-          video_url: directUrl,
-          media_url: directUrl,
-          videoSrc: directUrl,
-        };
-      });
-    }
-  }
-} catch (e) {
-  console.warn('Could not read telegram_feed.json in PrernaReels.astro', e);
 }
 
-const REELS: ReelItem[] = syncedReels.length > 0 ? syncedReels : RAW_REELS.map(r => ({
-  ...r,
-  title: cleanFeedText(r.title),
-  caption: cleanFeedText(r.caption),
-  tags: r.tags.map(cleanFeedText)
-}));
+// Map the complete array directly without demo fallbacks or slicing
+const REELS: ReelItem[] = rawFeed.map((item: any, idx: number) => {
+  const directUrl = item.video_url || item.media_url || item.videoSrc || '';
+  return {
+    id: `reel-${item.telegram_message_id || idx}`,
+    postId: item.telegram_message_id || idx + 1,
+    title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
+    caption: cleanFeedText(item.text_content || ''),
+    tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+    duration: item.duration || '0:45',
+    likes: item.likes || ((idx * 17) % 3800 + 450),
+    shares: item.shares || ((idx * 7) % 950 + 80),
+    video_url: directUrl,
+    media_url: directUrl,
+    videoSrc: directUrl,
+  };
+});
 
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 ---
@@ -185,12 +123,13 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
           >
             {/* Standard Native HTML5 Video Tag: Direct URL binding, Controls, Autoplay, Muted, Loop, Playsinline */}
             <video 
+              src={reel.video_url || reel.media_url}
               controls 
               autoplay 
               muted 
               loop 
               playsinline 
-              preload="auto" 
+              preload="metadata" 
               class="w-full h-full object-cover select-none cursor-pointer reel-video"
               poster={`${baseUrl}photo_mahadev.jpg`}
             >
@@ -370,18 +309,7 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
       threshold: [0.6]
     });
 
-    const FALLBACK_VIDEO_URL = '/brahmacharya-mitra/media/reel_1.mp4';
     slides.forEach((slide) => {
-      const video = slide.querySelector<HTMLVideoElement>('.reel-video');
-      if (video) {
-        video.addEventListener('error', () => {
-          if (!video.src.includes('reel_1.mp4')) {
-            video.src = FALLBACK_VIDEO_URL;
-            video.load();
-            video.play().catch(() => {});
-          }
-        });
-      }
       observer.observe(slide);
     });
 

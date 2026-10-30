@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Heart, Share2, Volume2, VolumeX, Sparkles, Flame, Play } from 'lucide-react';
 import { cleanFeedText, filterVideoReels } from '../utils/textCleaner';
 
-const FALLBACK_VIDEO = '/brahmacharya-mitra/media/reel_1.mp4';
-
 interface ReelItem {
   id: string;
   postId: number;
@@ -17,71 +15,11 @@ interface ReelItem {
   videoSrc: string;
 }
 
-const RAW_REELS: ReelItem[] = [
-  {
-    id: 'reel-637',
-    postId: 637,
-    title: 'Akhand Brahmacharya Power & Tapasya 🔥',
-    caption: 'Conservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱',
-    tags: ['#Brahmacharya', '#Ojas', '#NoFap', '#Tapasya'],
-    likes: 1240,
-    shares: 382,
-    video_url: '/brahmacharya-mitra/media/reel_1.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_1.mp4',
-    videoSrc: '/brahmacharya-mitra/media/reel_1.mp4',
-  },
-  {
-    id: 'reel-638',
-    postId: 638,
-    title: 'Dopamine Detox & Brain Fog Erasure ⚡',
-    caption: 'The moment you resist lust, your brain begins neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.',
-    tags: ['#BrainFog', '#DopamineDetox', '#Celibacy', '#SanatanPower'],
-    likes: 2190,
-    shares: 540,
-    video_url: '/brahmacharya-mitra/media/reel_2.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_2.mp4',
-    videoSrc: '/brahmacharya-mitra/media/reel_2.mp4',
-  },
-  {
-    id: 'reel-639',
-    postId: 639,
-    title: 'Conquer The Senses, Rule The Mind 🔱',
-    caption: '“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.',
-    tags: ['#MindControl', '#ShivaPower', '#SelfMastery', '#ViryaRaksha'],
-    likes: 3410,
-    shares: 890,
-    video_url: '/brahmacharya-mitra/media/reel_3.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_3.mp4',
-    videoSrc: '/brahmacharya-mitra/media/reel_3.mp4',
-  },
-  {
-    id: 'reel-640',
-    postId: 640,
-    title: 'Urge Transmutation via Pranayama 🧘‍♂️',
-    caption: 'When an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.',
-    tags: ['#Pranayama', '#Transmutation', '#Kundalini', '#YogaSadhana'],
-    likes: 1870,
-    shares: 412,
-    video_url: '/brahmacharya-mitra/media/reel_4.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_4.mp4',
-    videoSrc: '/brahmacharya-mitra/media/reel_4.mp4',
-  },
-];
-
-const REELS: ReelItem[] = RAW_REELS.map(r => ({
-  ...r,
-  title: cleanFeedText(r.title),
-  caption: cleanFeedText(r.caption),
-  tags: r.tags.map(cleanFeedText)
-}));
-
 export default function PrernaReels() {
-  const [reels, setReels] = useState<ReelItem[]>(REELS);
+  const [reels, setReels] = useState<ReelItem[]>([]);
   const [isMuted, setIsMuted] = useState(true);
   const [likedReels, setLikedReels] = useState<Record<string, boolean>>({});
-  const [likesCount, setLikesCount] = useState<Record<string, number>>(() =>
-    REELS.reduce((acc, r) => ({ ...acc, [r.id]: r.likes }), {})
-  );
+  const [likesCount, setLikesCount] = useState<Record<string, number>>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -93,23 +31,29 @@ export default function PrernaReels() {
         const res = await fetch(`${base}/data/telegram_feed.json?t=${Date.now()}`);
         if (res.ok) {
           const data = await res.json();
-          const valid = filterVideoReels(data);
-          if (valid.length > 0) {
-            const mapped: ReelItem[] = valid.map((item: any, idx: number) => ({
-              id: `reel-${item.telegram_message_id || idx}`,
-              postId: item.telegram_message_id || 637 + idx,
-              title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
-              caption: cleanFeedText(item.text_content || ''),
-              tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
-              likes: item.likes || 1200,
-              shares: item.shares || 340,
-              videoSrc: item.media_url || FALLBACK_VIDEO,
-            }));
+          if (Array.isArray(data) && data.length > 0) {
+            const mapped: ReelItem[] = data.map((item: any, idx: number) => {
+              const url = item.video_url || item.media_url || item.videoSrc || '';
+              return {
+                id: `reel-${item.telegram_message_id || idx}`,
+                postId: item.telegram_message_id || idx + 1,
+                title: cleanFeedText(item.text_content ? item.text_content.split('\n')[0].slice(0, 60) : 'Brahmacharya Prerna Reel 🔥'),
+                caption: cleanFeedText(item.text_content || ''),
+                tags: Array.isArray(item.tags) ? item.tags.map(cleanFeedText) : ['#Brahmacharya', '#Ojas'],
+                likes: item.likes || ((idx * 17) % 3800 + 450),
+                shares: item.shares || ((idx * 7) % 950 + 80),
+                video_url: url,
+                media_url: url,
+                videoSrc: url,
+              };
+            });
             setReels(mapped);
             setLikesCount(mapped.reduce((acc, r) => ({ ...acc, [r.id]: r.likes }), {}));
           }
         }
-      } catch {}
+      } catch (err) {
+        console.error('Error fetching reels in PrernaReels.tsx:', err);
+      }
     }
     loadSyncedReels();
   }, []);
@@ -238,7 +182,7 @@ export default function PrernaReels() {
           >
             {reels.map((reel) => {
               const liked = !!likedReels[reel.id];
-              const videoSrc = reel.video_url || reel.media_url || reel.videoSrc || FALLBACK_VIDEO;
+              const videoSrc = reel.video_url || reel.media_url || reel.videoSrc || '';
               return (
                 <div
                   key={reel.id}
@@ -250,24 +194,16 @@ export default function PrernaReels() {
                     controls
                     loop
                     playsInline
-                    preload="auto"
+                    preload="metadata"
                     muted={isMuted}
                     poster="photo_mahadev.jpg"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.src.includes('reel_1.mp4')) {
-                        target.src = FALLBACK_VIDEO;
-                        target.load();
-                        target.play().catch(() => {});
-                      }
-                    }}
                     onClick={(e) => {
                       const v = e.currentTarget;
                       if (v.paused) v.play().catch(() => {});
                       else v.pause();
                     }}
                   >
-                    <source src={reel.videoSrc || FALLBACK_VIDEO} type="video/mp4" />
+                    <source src={videoSrc} type="video/mp4" />
                     Your browser does not support HTML5 video.
                   </video>
 

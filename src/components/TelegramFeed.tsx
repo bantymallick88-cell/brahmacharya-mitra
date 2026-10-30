@@ -6,8 +6,6 @@ import {
 } from 'lucide-react';
 import { cleanFeedText, sanitizeFeedItem, filterVideoReels, isValidVideoUrl } from '../utils/textCleaner';
 
-const DEFAULT_FALLBACK_VIDEO = '/brahmacharya-mitra/media/reel_1.mp4';
-
 export interface TelegramFeedItem {
   telegram_message_id: number;
   group_id: number;
@@ -25,65 +23,6 @@ export interface TelegramFeedItem {
   tags?: string[];
 }
 
-const DEFAULT_VEDIC_REELS: TelegramFeedItem[] = [
-  {
-    telegram_message_id: 637,
-    group_id: -1003536137330,
-    topic_id: 101,
-    content_type: 'video',
-    video_url: '/brahmacharya-mitra/media/reel_1.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_1.mp4',
-    text_content: 'Akhand Brahmacharya Power & Tapasya 🔥\nConservation of seminal vital force directly upregulates dopamine D2 receptors and activates supreme mental clarity. Stay unbroken, Sadhak! 🔱',
-    author_name: 'Sadhak Mentor',
-    timestamp: '2026-10-29T15:00:00Z',
-    likes: 1240,
-    shares: 382,
-    tags: ['#Brahmacharya', '#Ojas', '#NoFap', '#Tapasya'],
-  },
-  {
-    telegram_message_id: 638,
-    group_id: -1003536137330,
-    topic_id: 101,
-    content_type: 'video',
-    video_url: '/brahmacharya-mitra/media/reel_2.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_2.mp4',
-    text_content: 'Dopamine Detox & Brain Fog Erasure ⚡\nThe moment you resist lust, your brain initiates neurogenesis. Virya transforms into Ojas (Spiritual Radiance). Never trade destiny for 5 seconds of pixelated dopamine.',
-    author_name: 'Veer Brahmachari',
-    timestamp: '2026-10-29T15:10:00Z',
-    likes: 2190,
-    shares: 540,
-    tags: ['#BrainFog', '#DopamineDetox', '#Celibacy', '#SanatanPower'],
-  },
-  {
-    telegram_message_id: 639,
-    group_id: -1003536137330,
-    topic_id: 101,
-    content_type: 'video',
-    video_url: '/brahmacharya-mitra/media/reel_3.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_3.mp4',
-    text_content: 'Conquer The Senses, Rule The Mind 🔱\n“जितेन्द्रियस्य धीरस्य... One who conquers his senses conquers the three worlds.” Real masculinity is self-mastery, not submission to urges.',
-    author_name: 'Sanatan Rishi',
-    timestamp: '2026-10-29T15:20:00Z',
-    likes: 3410,
-    shares: 890,
-    tags: ['#MindControl', '#ShivaPower', '#SelfMastery', '#ViryaRaksha'],
-  },
-  {
-    telegram_message_id: 640,
-    group_id: -1003536137330,
-    topic_id: 101,
-    content_type: 'video',
-    video_url: '/brahmacharya-mitra/media/reel_4.mp4',
-    media_url: '/brahmacharya-mitra/media/reel_4.mp4',
-    text_content: 'Urge Transmutation via Pranayama 🧘‍♂️\nWhen an intense urge hits, engage Mula Bandha and 4-7-8 deep breathing. Channel the downward sexual flow upward into the Sahasrara Chakra.',
-    author_name: 'Dhyan Yogi',
-    timestamp: '2026-10-29T15:30:00Z',
-    likes: 1870,
-    shares: 412,
-    tags: ['#Pranayama', '#Transmutation', '#Kundalini', '#YogaSadhana'],
-  },
-];
-
 interface TelegramFeedProps {
   initialPosts?: TelegramFeedItem[];
   apiUrl?: string;
@@ -93,11 +32,8 @@ export default function TelegramFeed({
   initialPosts = [],
   apiUrl = 'http://localhost:5050/api/feed',
 }: TelegramFeedProps) {
-  // Strictly filter initial posts to valid video items
-  const initialVideos = filterVideoReels(initialPosts);
-  const [reels, setReels] = useState<TelegramFeedItem[]>(
-    initialVideos.length > 0 ? initialVideos : DEFAULT_VEDIC_REELS
-  );
+  // Bind all passed reels directly from telegram_feed.json without fallback arrays
+  const [reels, setReels] = useState<TelegramFeedItem[]>(initialPosts);
 
   const [activeReelIndex, setActiveReelIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -325,7 +261,7 @@ export default function TelegramFeed({
           >
             {reels.map((post, index) => {
               const isLiked = !!likedPosts[post.telegram_message_id];
-              const videoSrc = post.video_url || post.media_url || DEFAULT_FALLBACK_VIDEO;
+              const videoSrc = post.video_url || post.media_url || '';
 
               return (
                 <div
@@ -340,17 +276,9 @@ export default function TelegramFeed({
                     controls
                     loop
                     playsInline
-                    preload="auto"
+                    preload="metadata"
                     muted={isMuted}
                     poster="photo_mahadev.jpg"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.src.includes('reel_1.mp4')) {
-                        target.src = DEFAULT_FALLBACK_VIDEO;
-                        target.load();
-                        target.play().catch(() => {});
-                      }
-                    }}
                     onClick={(e) => {
                       const v = e.currentTarget;
                       if (v.paused) v.play().catch(() => {});
