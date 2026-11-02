@@ -78,7 +78,7 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Bottom Navigation Bar"
-      className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 max-w-[96vw] sm:max-w-fit select-none"
+      className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-[96vw] sm:max-w-fit select-none"
     >
       <div className="relative group">
         {/* Ambient Cosmic Gold Pulse Aura */}

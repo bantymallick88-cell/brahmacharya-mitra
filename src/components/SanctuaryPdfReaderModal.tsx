@@ -89,11 +89,35 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   const [pageBaseWidth, setPageBaseWidth] = useState<number>(680);
 
   // Multi-Color Highlighter & Shloka States
+  const COLOR_PRESETS = [
+    { color: '#FACC15', name: 'Yellow' as const, bg: 'bg-[#FACC15]', ring: 'ring-[#FACC15]' },
+    { color: '#22C55E', name: 'Green' as const, bg: 'bg-[#22C55E]', ring: 'ring-[#22C55E]' },
+    { color: '#3B82F6', name: 'Blue' as const, bg: 'bg-[#3B82F6]', ring: 'ring-[#3B82F6]' },
+    { color: '#EC4899', name: 'Pink' as const, bg: 'bg-[#EC4899]', ring: 'ring-[#EC4899]' },
+  ];
+  const [activeHighlighterColor, setActiveHighlighterColor] = useState<string>('#FACC15');
+  const [activeHighlighterName, setActiveHighlighterName] = useState<'Yellow' | 'Green' | 'Blue' | 'Pink'>('Yellow');
+  const activeColorRef = useRef<string>('#FACC15');
+  const activeColorNameRef = useRef<'Yellow' | 'Green' | 'Blue' | 'Pink'>('Yellow');
+  const highlightsRef = useRef<HighlightItem[]>([]);
+
   const [highlights, setHighlights] = useState<HighlightItem[]>([]);
   const [currentSelection, setCurrentSelection] = useState<CurrentSelection | null>(null);
   const [sidebarTab, setSidebarTab] = useState<'shlokas' | 'notes'>('shlokas');
   const [copiedHighlightId, setCopiedHighlightId] = useState<string | null>(null);
   const [activeHighlightId, setActiveHighlightId] = useState<string | null>(null);
+
+  useEffect(() => {
+    highlightsRef.current = highlights;
+  }, [highlights]);
+
+  const selectHighlighterColor = (color: string, name: 'Yellow' | 'Green' | 'Blue' | 'Pink') => {
+    setActiveHighlighterColor(color);
+    setActiveHighlighterName(name);
+    activeColorRef.current = color;
+    activeColorNameRef.current = name;
+    setDrmToast(`Highlighter: ${name} active`);
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -246,10 +270,12 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   };
 
   // Sync and save a highlighted shloka into the Notes & Shlokas drawer
-  const syncHighlightToNotes = useCallback((h: HighlightItem) => {
-    setShowNotes(true);
-    setSidebarTab('shlokas');
-    setActiveHighlightId(h.id);
+  const syncHighlightToNotes = useCallback((h: HighlightItem, openDrawer = false) => {
+    if (openDrawer) {
+      setShowNotes(true);
+      setSidebarTab('shlokas');
+      setActiveHighlightId(h.id);
+    }
 
     const entryTag = `📌 [Page ${h.page} • ${h.colorName} Shloka]:\n"${h.text}"`;
     setNotes((prevNotes) => {
@@ -265,7 +291,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       return combined;
     });
 
-    setDrmToast(`Synced Page ${h.page} (${h.colorName}) to Sadhana Notes`);
+    if (openDrawer) {
+      setDrmToast(`Viewing Page ${h.page} (${h.colorName}) in Sadhana Notes`);
+    }
   }, [book]);
 
   // Add new highlight with chosen color preset
@@ -283,16 +311,17 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       rects: currentSelection.rects,
     };
 
-    const updated = [newHl, ...highlights];
+    const updated = [newHl, ...highlightsRef.current];
     saveHighlights(updated);
-    syncHighlightToNotes(newHl);
+    syncHighlightToNotes(newHl, false);
+    setDrmToast(`✨ Highlighted (${colorName}) & saved to Sadhana Notes`);
 
     // Clear active browser selection
     window.getSelection()?.removeAllRanges();
     setCurrentSelection(null);
   };
 
-  // Text Selection detection across PDF.js textLayer
+  // Text Selection detection across PDF.js textLayer: Auto-highlight with active color
   const handleSelectionCheck = useCallback(() => {
     setTimeout(() => {
       const selection = window.getSelection();
@@ -310,15 +339,25 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         if (containerNode.nodeType === Node.TEXT_NODE) {
           containerNode = containerNode.parentNode;
         }
+
+        // Only highlight text within a PDF page card (ignore search inputs, notes drawer, settings)
         const pageCard = (containerNode as HTMLElement)?.closest?.('[id^="sanctuary-page-card-"]') as HTMLElement | null;
-        const page = pageCard ? parseInt(pageCard.id.replace('sanctuary-page-card-', ''), 10) : pageNum;
+        if (!pageCard || !book) return;
+
+        const page = parseInt(pageCard.id.replace('sanctuary-page-card-', ''), 10) || pageNum;
+
+        // Avoid accidental immediate duplicates
+        const isDuplicate = highlightsRef.current.some(
+          (h) => h.page === page && h.text.trim() === text
+        );
+        if (isDuplicate) return;
 
         const relativeRects: { left: number; top: number; width: number; height: number }[] = [];
-        if (pageCard) {
-          const cardRect = pageCard.getBoundingClientRect();
-          const clientRects = Array.from(range.getClientRects());
-          const rectsList = clientRects.length > 0 ? clientRects : [rect];
-          for (const r of rectsList) {
+        const cardRect = pageCard.getBoundingClientRect();
+        const clientRects = Array.from(range.getClientRects());
+        const rectsList = clientRects.length > 0 ? clientRects : [rect];
+        for (const r of rectsList) {
+          if (r.width > 0 && r.height > 0) {
             relativeRects.push({
               left: Math.max(0, Math.min(100, ((r.left - cardRect.left) / cardRect.width) * 100)),
               top: Math.max(0, Math.min(100, ((r.top - cardRect.top) / cardRect.height) * 100)),
@@ -328,21 +367,35 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           }
         }
 
-        const toolbarX = Math.max(140, Math.min(window.innerWidth - 140, rect.left + rect.width / 2));
-        const toolbarY = Math.max(65, rect.top - 12);
+        if (relativeRects.length === 0) return;
 
-        setCurrentSelection({
+        const color = activeColorRef.current;
+        const colorName = activeColorNameRef.current;
+
+        const newHl: HighlightItem = {
+          id: `hl_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          bookId: book.id,
           text,
           page,
+          color,
+          colorName,
+          createdAt: Date.now(),
           rects: relativeRects,
-          toolbarX,
-          toolbarY,
-        });
+        };
+
+        const updated = [newHl, ...highlightsRef.current];
+        saveHighlights(updated);
+        syncHighlightToNotes(newHl, false);
+        setDrmToast(`✨ Highlighted (${colorName}) & saved to Sadhana Notes`);
+
+        // Clear active text selection range so the glowing overlay takes over smoothly
+        window.getSelection()?.removeAllRanges();
+        setCurrentSelection(null);
       } catch {
         // Selection range edge cases
       }
-    }, 20);
-  }, [pageNum]);
+    }, 25);
+  }, [pageNum, book, syncHighlightToNotes]);
 
   // Listen for selection completion across entire modal/document
   useEffect(() => {
@@ -774,6 +827,37 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           </button>
         </div>
 
+        {/* ── Always-Visible Multi-Color Highlighter Palette ── */}
+        <div
+          className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-zinc-900/90 border border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.15)] shrink-0"
+          title="Active Highlighter Palette — Drag or select text to auto-highlight"
+        >
+          <div className="flex items-center gap-1 text-amber-300 font-cinzel text-[10px] font-bold mr-0.5 sm:mr-1">
+            <Highlighter className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden xl:inline text-[9px] uppercase tracking-wider text-amber-300/90">Palette:</span>
+          </div>
+
+          {COLOR_PRESETS.map((preset) => {
+            const isSelected = activeHighlighterColor === preset.color;
+            return (
+              <button
+                key={preset.color}
+                onClick={() => selectHighlighterColor(preset.color, preset.name)}
+                className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-200 cursor-pointer flex items-center justify-center ${preset.bg} ${
+                  isSelected
+                    ? 'scale-115 ring-2 ring-white ring-offset-2 ring-offset-zinc-950 shadow-[0_0_12px_rgba(255,255,255,0.8)]'
+                    : 'opacity-70 hover:opacity-100 hover:scale-105 border border-zinc-900'
+                }`}
+                title={`Active Color: ${preset.name} (${preset.color}) — Select text to highlight`}
+              >
+                {isSelected && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-950 shadow-sm" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Right: Theme, Zoom, Continuous/Single Mode & Close */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           
@@ -1042,7 +1126,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               -webkit-user-select: text !important;
             }
             .pdf-page-container .textLayer ::selection {
-              background: rgba(250, 204, 21, 0.42) !important;
+              background: ${activeHighlighterColor}66 !important;
               color: transparent !important;
             }
           `}</style>
@@ -1094,7 +1178,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                       className="textLayer absolute inset-0 select-text"
                     />
 
-                    {/* Persistent Highlight Overlays */}
+                    {/* Persistent Glowing Highlight Overlays */}
                     <div className="absolute inset-0 pointer-events-none z-[4] overflow-hidden">
                       {highlights
                         .filter((h) => h.page === p && h.rects && h.rects.length > 0)
@@ -1105,19 +1189,19 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                                 key={rIdx}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  syncHighlightToNotes(h);
+                                  syncHighlightToNotes(h, true);
                                 }}
-                                title={`[${h.colorName}] Click to sync to Sadhana Notes (Page ${h.page})`}
-                                className="absolute rounded-sm transition-opacity duration-200 cursor-pointer hover:opacity-100 shadow-[0_0_8px_rgba(245,158,11,0.2)]"
+                                title={`[${h.colorName}] Click to view in Sadhana Notes (Page ${p})`}
+                                className="absolute rounded-sm transition-all duration-200 cursor-pointer hover:opacity-100 hover:scale-[1.01]"
                                 style={{
                                   left: `${r.left}%`,
                                   top: `${r.top}%`,
                                   width: `${r.width}%`,
                                   height: `${r.height}%`,
                                   backgroundColor: h.color,
-                                  opacity: 0.45,
-                                  borderBottom: `2px solid ${h.color}`,
-                                  boxShadow: `0 0 6px ${h.color}35`,
+                                  opacity: 0.52,
+                                  borderBottom: `2.5px solid ${h.color}`,
+                                  boxShadow: `0 0 10px ${h.color}80, 0 0 4px ${h.color}`,
                                 }}
                               />
                             ))}
@@ -1169,7 +1253,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                   className="textLayer absolute inset-0 select-text"
                 />
 
-                {/* Persistent Highlight Overlays */}
+                {/* Persistent Glowing Highlight Overlays */}
                 <div className="absolute inset-0 pointer-events-none z-[4] overflow-hidden">
                   {highlights
                     .filter((h) => h.page === pageNum && h.rects && h.rects.length > 0)
@@ -1180,19 +1264,19 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                             key={rIdx}
                             onClick={(e) => {
                               e.stopPropagation();
-                              syncHighlightToNotes(h);
+                              syncHighlightToNotes(h, true);
                             }}
-                            title={`[${h.colorName}] Click to sync to Sadhana Notes (Page ${pageNum})`}
-                            className="absolute rounded-sm transition-opacity duration-200 cursor-pointer hover:opacity-100 shadow-[0_0_8px_rgba(245,158,11,0.2)]"
+                            title={`[${h.colorName}] Click to view in Sadhana Notes (Page ${pageNum})`}
+                            className="absolute rounded-sm transition-all duration-200 cursor-pointer hover:opacity-100 hover:scale-[1.01]"
                             style={{
                               left: `${r.left}%`,
                               top: `${r.top}%`,
                               width: `${r.width}%`,
                               height: `${r.height}%`,
                               backgroundColor: h.color,
-                              opacity: 0.45,
-                              borderBottom: `2px solid ${h.color}`,
-                              boxShadow: `0 0 6px ${h.color}35`,
+                              opacity: 0.52,
+                              borderBottom: `2.5px solid ${h.color}`,
+                              boxShadow: `0 0 10px ${h.color}80, 0 0 4px ${h.color}`,
                             }}
                           />
                         ))}

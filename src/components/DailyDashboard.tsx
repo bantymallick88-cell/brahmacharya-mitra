@@ -799,7 +799,7 @@ export const DailyDashboard: React.FC = () => {
       </div>
 
       {/* Floating Emergency Action Button: "SOS Urge Killer" with Pulse Animation */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 z-40">
         <button
           id="btn-sos-urge-killer"
           onClick={() => {

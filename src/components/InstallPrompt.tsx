@@ -95,7 +95,7 @@ export default function InstallPrompt() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 z-50 sm:max-w-md w-auto"
+          className="fixed bottom-24 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 z-40 sm:max-w-md w-auto"
         >
           <div
             className="relative overflow-hidden rounded-2xl p-3.5 sm:p-4 backdrop-blur-2xl border border-amber-500/40 shadow-[0_10px_40px_rgba(0,0,0,0.95),0_0_25px_rgba(245,158,11,0.25)] flex items-center justify-between gap-3 text-white"
