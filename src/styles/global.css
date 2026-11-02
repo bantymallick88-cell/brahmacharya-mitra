@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-xs: 475px;
+}
+
 :root {
   --color-obsidian-base: #02040a;
   --color-obsidian-surface: #050508;

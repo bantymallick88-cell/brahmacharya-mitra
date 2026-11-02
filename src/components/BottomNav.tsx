@@ -78,14 +78,14 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Bottom Navigation Bar"
-      className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-[96vw] sm:max-w-fit select-none"
+      className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-[98vw] sm:max-w-fit select-none"
     >
       <div className="relative group">
         {/* Ambient Cosmic Gold Pulse Aura */}
         <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500/20 via-yellow-500/30 to-amber-600/20 blur-md opacity-70 group-hover:opacity-100 transition duration-500 pointer-events-none animate-aura-pulse" />
 
         {/* 3D Glassmorphic Floating Nav Shell */}
-        <div className="relative flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-2xl sm:rounded-3xl backdrop-blur-2xl bg-zinc-950/90 border border-amber-500/40 shadow-[0_12px_40px_rgba(0,0,0,0.85),0_0_25px_rgba(245,158,11,0.25)]">
+        <div className="relative flex items-center gap-1 sm:gap-2 px-1 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl backdrop-blur-2xl bg-zinc-950/90 border border-amber-500/40 shadow-[0_12px_40px_rgba(0,0,0,0.85),0_0_25px_rgba(245,158,11,0.25)]">
           
           {/* Main Route Nav Links */}
           {navItems.map((item) => {
@@ -98,7 +98,7 @@ export default function BottomNav() {
                 href={item.href}
                 whileHover={{ y: -2, scale: 1.04 }}
                 whileTap={{ scale: 0.95 }}
-                className={`relative flex flex-col items-center justify-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                className={`relative flex flex-col items-center justify-center px-1.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl transition-all duration-200 cursor-pointer flex-shrink-0 ${
                   active
                     ? 'text-amber-300 font-bold'
                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
@@ -131,14 +131,14 @@ export default function BottomNav() {
           })}
 
           {/* Divider */}
-          <div className="w-px h-6 bg-zinc-800/80 mx-0.5 sm:mx-1" />
+          <div className="w-px h-5 sm:h-6 bg-zinc-800/80 mx-0.5 sm:mx-1 flex-shrink-0" />
 
           {/* Setup Wizard Quick Action */}
           <motion.button
             onClick={triggerWizard}
             whileHover={{ y: -2, scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center justify-center px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-amber-300/90 hover:text-amber-200 hover:bg-zinc-900/60 transition cursor-pointer"
+            className="flex flex-col items-center justify-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-amber-300/90 hover:text-amber-200 hover:bg-zinc-900/60 transition cursor-pointer flex-shrink-0"
             title="Configure Setup & Goals"
           >
             <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-400" />
@@ -152,15 +152,15 @@ export default function BottomNav() {
             onClick={triggerPanic}
             whileHover={{ y: -2, scale: 1.05 }}
             whileTap={{ scale: 0.94 }}
-            className="btn-shimmer flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-[10px] sm:text-xs shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-red-400/80 cursor-pointer active:scale-95 ml-0.5 shrink-0"
+            className="btn-shimmer flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-[10px] sm:text-xs shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-red-400/80 cursor-pointer active:scale-95 ml-0.5 flex-shrink-0 shrink-0 whitespace-nowrap"
             title="Emergency Panic Mode Shield (4-7-8 Breathwork & Urge Breaker)"
           >
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
             </span>
-            <ShieldAlert className="w-3.5 h-3.5 text-white" />
-            <span className="hidden xs:inline uppercase tracking-wider font-extrabold">Panic 🚨</span>
+            <ShieldAlert className="w-3.5 h-3.5 text-white flex-shrink-0" />
+            <span className="hidden xs:inline uppercase tracking-wider font-extrabold whitespace-nowrap">Panic 🚨</span>
           </motion.button>
 
         </div>
