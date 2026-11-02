@@ -19,6 +19,23 @@ export default function LibraryView() {
   const [selectedLanguage, setSelectedLanguage] = useState<'All' | 'Hindi' | 'English'>('All');
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [activeBookForReader, setActiveBookForReader] = useState<LibraryBook | null>(null);
+  const [lastReadMap, setLastReadMap] = useState<Record<number, number>>({});
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const map: Record<number, number> = {};
+      for (const b of LIBRARY_BOOKS) {
+        const p = localStorage.getItem(`sanctuary_last_page_${b.id}`);
+        if (p) {
+          const parsed = parseInt(p, 10);
+          if (!isNaN(parsed) && parsed > 1) {
+            map[b.id] = parsed;
+          }
+        }
+      }
+      setLastReadMap(map);
+    }
+  }, [activeBookForReader]);
 
   const filteredBooks = useMemo(() => {
     return LIBRARY_BOOKS.filter((book) => {
@@ -312,6 +329,11 @@ export default function LibraryView() {
                       <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-amber-400/90">
                         {book.sizeMb} MB
                       </span>
+                      {lastReadMap[book.id] && (
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300">
+                          Pg {lastReadMap[book.id]}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -353,14 +375,18 @@ export default function LibraryView() {
 
                 {/* ── Action Buttons: PROTECTED IN-APP SANCTUARY READER ── */}
                 <div className="pt-4 border-t border-zinc-800/80 flex items-center gap-2">
-                  {/* Primary "Read Online in Sanctuary" Button (Replaces Direct Download) */}
+                  {/* Primary "Read Online in Sanctuary" / "Resume Page X" Button */}
                   <button
                     onClick={() => setActiveBookForReader(book)}
                     className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/25 active:scale-95 cursor-pointer group/readbtn"
                     title={`Read ${book.title} Online in Protected Sanctuary`}
                   >
                     <BookOpen className="w-3.5 h-3.5 text-zinc-950 group-hover/readbtn:scale-110 transition-transform" />
-                    <span>Read Online in Sanctuary</span>
+                    <span>
+                      {lastReadMap[book.id]
+                        ? `Resume Page ${lastReadMap[book.id]}`
+                        : 'Read Online in Sanctuary'}
+                    </span>
                   </button>
 
                   {/* Quick Preview Eye Icon */}

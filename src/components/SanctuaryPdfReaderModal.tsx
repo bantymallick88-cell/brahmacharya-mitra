@@ -317,7 +317,8 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         if (pageCard) {
           const cardRect = pageCard.getBoundingClientRect();
           const clientRects = Array.from(range.getClientRects());
-          for (const r of clientRects) {
+          const rectsList = clientRects.length > 0 ? clientRects : [rect];
+          for (const r of rectsList) {
             relativeRects.push({
               left: Math.max(0, Math.min(100, ((r.left - cardRect.left) / cardRect.width) * 100)),
               top: Math.max(0, Math.min(100, ((r.top - cardRect.top) / cardRect.height) * 100)),
@@ -327,7 +328,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           }
         }
 
-        const toolbarX = Math.max(130, Math.min(window.innerWidth - 130, rect.left + rect.width / 2));
+        const toolbarX = Math.max(140, Math.min(window.innerWidth - 140, rect.left + rect.width / 2));
         const toolbarY = Math.max(65, rect.top - 12);
 
         setCurrentSelection({
@@ -342,6 +343,54 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       }
     }, 20);
   }, [pageNum]);
+
+  // Listen for selection completion across entire modal/document
+  useEffect(() => {
+    const handleMouseUp = () => handleSelectionCheck();
+    const handleTouchEnd = () => handleSelectionCheck();
+
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handleSelectionCheck]);
+
+  // Smooth Scroll to specific page in Continuous or Single Page Mode
+  const scrollToPage = useCallback((targetPage: number) => {
+    const validPage = Math.max(1, Math.min(numPages || 1, targetPage));
+    setPageNum(validPage);
+
+    if (viewMode === 'continuous') {
+      const pageEl = document.getElementById(`sanctuary-page-card-${validPage}`);
+      if (pageEl && scrollContainerRef.current) {
+        pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [numPages, viewMode]);
+
+  // Auto-resume from last read page once PDF document is loaded
+  const hasResumedPageRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    hasResumedPageRef.current = false;
+  }, [book?.id]);
+
+  useEffect(() => {
+    if (!isLoading && pdfDocRef.current && !hasResumedPageRef.current && book) {
+      const savedPageStr = localStorage.getItem(`sanctuary_last_page_${book.id}`);
+      const savedP = savedPageStr ? parseInt(savedPageStr, 10) : 1;
+      hasResumedPageRef.current = true;
+      if (savedP > 1 && savedP <= (numPages || 1)) {
+        setTimeout(() => {
+          scrollToPage(savedP);
+          setDrmToast(`Resumed from Page ${savedP} (Saved reading position)`);
+        }, 300);
+      }
+    }
+  }, [isLoading, numPages, book, scrollToPage]);
 
   // Dismiss toolbar on clicks outside toolbar or when selection collapses
   useEffect(() => {
@@ -367,19 +416,6 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
     }
   };
-
-  // Smooth Scroll to specific page in Continuous or Single Page Mode
-  const scrollToPage = useCallback((targetPage: number) => {
-    const validPage = Math.max(1, Math.min(numPages || 1, targetPage));
-    setPageNum(validPage);
-
-    if (viewMode === 'continuous') {
-      const pageEl = document.getElementById(`sanctuary-page-card-${validPage}`);
-      if (pageEl && scrollContainerRef.current) {
-        pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  }, [numPages, viewMode]);
 
   // Dynamic PDF.js Loader
   const loadPdf = useCallback(async () => {
@@ -487,6 +523,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         textLayerEl.innerHTML = '';
         textLayerEl.style.width = `${Math.floor(targetWidth)}px`;
         textLayerEl.style.height = `${Math.floor(targetHeight)}px`;
+        textLayerEl.style.setProperty('--scale-factor', `${currentScale}`);
 
         try {
           const textContent = await page.getTextContent();

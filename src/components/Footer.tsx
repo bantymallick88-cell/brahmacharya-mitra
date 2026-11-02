@@ -177,11 +177,11 @@ export default function Footer() {
           <div className="space-y-4 md:col-span-1">
             <div className="flex items-center gap-3">
               <div className="relative shrink-0 flex items-center justify-center">
-                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 blur-[3px] opacity-75" />
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-[#F97316] blur-[4px] opacity-80" />
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-10 h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] shrink-0"
+                  className="relative w-11 h-11 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_18px_rgba(255,140,0,0.6)] shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -189,13 +189,23 @@ export default function Footer() {
                   }}
                 />
               </div>
-              <div>
-                <span className="font-cinzel font-black text-lg gold-to-indigo-text">Brahmacharya</span>{' '}
-                <span className="font-bold text-white">Mitra</span>
-                <div className="text-[10px] font-sanskrit text-amber-400/90 -mt-1 flex items-center gap-1">
-                  <span>ब्रह्मचर्य मित्र</span>
-                  <span className="text-indigo-400/70">•</span>
-                  <span className="text-amber-300/80">दिव्य पथ</span>
+              <div className="flex flex-col leading-none">
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="font-cinzel font-black text-lg sm:text-xl tracking-wider text-[#FFFFFF] drop-shadow-[0_1px_12px_rgba(255,255,255,0.45)] uppercase">
+                    BRAHMACHARYA
+                  </span>
+                  <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-[#F97316] bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_14px_rgba(249,115,22,0.65)] text-lg sm:text-xl font-black tracking-wide">
+                    MITRA
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[10px] font-sanskrit text-amber-300 font-bold tracking-wider">
+                    ब्रह्मचर्य मित्र
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-[#F97316]" />
+                  <span className="text-[9px] font-sans uppercase tracking-widest text-zinc-300 font-medium">
+                    Divine Sanctum
+                  </span>
                 </div>
               </div>
             </div>
