@@ -207,15 +207,6 @@ export default function Footer() {
             <p className="text-xs text-zinc-400 leading-relaxed">
               {t.footer.brandDesc}
             </p>
-
-            {/* Fair Use Badge */}
-            <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-200/90 leading-relaxed">
-              <div className="flex items-center gap-1.5 font-bold text-amber-300 mb-1">
-                <Scale className="w-3.5 h-3.5 text-amber-400" />
-                <span>Non-Profit Spiritual Seva</span>
-              </div>
-              All scriptures are hosted for non-commercial research & education.
-            </div>
           </div>
 
           {/* Quick Tools */}

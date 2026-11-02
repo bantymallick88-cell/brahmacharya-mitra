@@ -198,7 +198,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
                       {/* Privacy note */}
                       <p className="text-center text-[10px] text-zinc-600 pt-1 flex items-center justify-center gap-1">
-                        <Shield className="w-3 h-3" /> No data sold. 100% private. Sanatan Seva.
+                        <Shield className="w-3 h-3" /> No data sold. 100% private & free.
                       </p>
                     </motion.div>
                   )}

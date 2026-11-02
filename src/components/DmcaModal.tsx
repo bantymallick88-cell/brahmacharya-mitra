@@ -106,7 +106,7 @@ export default function DmcaModal() {
                 <span>Non-Profit Spiritual & Educational Fair Use</span>
               </div>
               <p className="text-xs text-amber-200/90 leading-relaxed">
-                Brahmacharya Mitra is an entirely non-profit educational and spiritual seva initiative dedicated to helping individuals overcome digital addiction, preserve vital energy, and achieve self-mastery. All literature, ancient scriptures, and research documents hosted in the Sacred Library are provided strictly under the principles of <strong>Fair Use</strong> (Section 107 of the U.S. Copyright Act & Section 52 of the Indian Copyright Act, 1957) for private study, scholarship, and spiritual research.
+                Brahmacharya Mitra is an entirely non-profit educational and spiritual initiative dedicated to helping individuals overcome digital addiction, preserve vital energy, and achieve self-mastery. All literature, ancient scriptures, and research documents hosted in the Sacred Library are provided strictly under the principles of <strong>Fair Use</strong> (Section 107 of the U.S. Copyright Act & Section 52 of the Indian Copyright Act, 1957) for private study, scholarship, and spiritual research.
               </p>
             </div>
 
