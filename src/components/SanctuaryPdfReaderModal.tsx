@@ -132,10 +132,74 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   const isHighlighterActiveRef = useRef<boolean>(true);
   const [drawMode, setDrawMode] = useState<'rect' | 'stroke'>('rect');
   const drawModeRef = useRef<'rect' | 'stroke'>('rect');
+  // Brush Sizes Configuration (Thin 4px / Medium 12px / Thick 24px)
+  const BRUSH_SIZES = [
+    {
+      id: 'thin' as const,
+      label: 'Thin 4px',
+      shortLabel: '4px',
+      px: 4,
+      desc: 'Precise Text Underline (4px)',
+    },
+    {
+      id: 'medium' as const,
+      label: 'Med 12px',
+      shortLabel: '12px',
+      px: 12,
+      desc: 'Standard Text Highlight (12px)',
+    },
+    {
+      id: 'thick' as const,
+      label: 'Thick 24px',
+      shortLabel: '24px',
+      px: 24,
+      desc: 'Full Block Highlight (24px)',
+    },
+  ] as const;
+
   const [brushSize, setBrushSize] = useState<'thin' | 'medium' | 'thick'>('medium');
   const brushSizeRef = useRef<'thin' | 'medium' | 'thick'>('medium');
   const [isEraserActive, setIsEraserActive] = useState<boolean>(false);
   const isEraserActiveRef = useRef<boolean>(false);
+
+  // Theme Filter Dropdown Menu State & Ref
+  const [showThemeMenu, setShowThemeMenu] = useState<boolean>(false);
+  const themeMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close theme filter dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (themeMenuRef.current && !themeMenuRef.current.contains(e.target as Node)) {
+        setShowThemeMenu(false);
+      }
+    };
+    if (showThemeMenu) {
+      document.addEventListener('pointerdown', handleOutsideClick);
+    }
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, [showThemeMenu]);
+
+  const handleThemeChange = (newTheme: ReaderTheme) => {
+    setTheme(newTheme);
+    setShowThemeMenu(false);
+    const messages = {
+      dark: '🌙 Dark Mode: invert(0.9) hue-rotate(180deg) filter applied',
+      sepia: '☕ Sepia Mode: warm vintage paper filter applied (sepia 0.4)',
+      light: '☀️ Normal / Light Mode: default crisp original page view',
+    };
+    setDrmToast(messages[newTheme]);
+  };
+
+  const selectBrushSize = (size: 'thin' | 'medium' | 'thick') => {
+    setBrushSize(size);
+    brushSizeRef.current = size;
+    setIsEraserActive(false);
+    isEraserActiveRef.current = false;
+    setIsHighlighterActive(true);
+    isHighlighterActiveRef.current = true;
+    const desc = size === 'thin' ? 'Thin 4px (Underline)' : size === 'medium' ? 'Medium 12px (Text Highlight)' : 'Thick 24px (Full Block Highlight)';
+    setDrmToast(`Brush Size: ${desc}`);
+  };
 
   // Undo & Redo History Stacks
   const [undoStack, setUndoStack] = useState<CanvasHighlight[][]>([]);
@@ -754,13 +818,11 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         const rh = (hl.rect.h / 100) * height;
         ctx.fillRect(rx, ry, rw, rh);
       } else if (hl.type === 'stroke' && hl.points && hl.points.length > 1) {
-        const sizeMultiplier = {
-          thin: 0.55,
-          medium: 1.0,
-          thick: 1.85,
-        }[hl.brushSize || 'medium'];
+        // Precise Brush Sizes (Thin 4px / Medium 12px / Thick 24px) proportional to page width
+        const sizePx = hl.brushSize === 'thin' ? 4 : hl.brushSize === 'thick' ? 24 : 12;
+        const responsiveLineWidth = Math.max(sizePx * 0.75, (width / 680) * sizePx);
 
-        ctx.lineWidth = Math.max(14, width * 0.024) * sizeMultiplier;
+        ctx.lineWidth = responsiveLineWidth;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -793,13 +855,10 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         ctx.lineWidth = 1.5;
         ctx.strokeRect(x, y, w, h);
       } else if (drawModeRef.current === 'stroke' && previewDrawing.points?.length > 1) {
-        const previewMultiplier = {
-          thin: 0.55,
-          medium: 1.0,
-          thick: 1.85,
-        }[brushSizeRef.current];
+        const currentSizePx = brushSizeRef.current === 'thin' ? 4 : brushSizeRef.current === 'thick' ? 24 : 12;
+        const responsivePreviewWidth = Math.max(currentSizePx * 0.75, (width / 680) * currentSizePx);
 
-        ctx.lineWidth = Math.max(14, width * 0.024) * previewMultiplier;
+        ctx.lineWidth = responsivePreviewWidth;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -826,10 +885,11 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         );
       }
       if (h.type === 'stroke' && h.points) {
+        const hitTol = h.brushSize === 'thick' ? tolerance + 5 : h.brushSize === 'thin' ? tolerance + 1 : tolerance + 3;
         return h.points.some((pt) => {
           const dx = pctX - pt.x;
           const dy = pctY - pt.y;
-          return Math.sqrt(dx * dx + dy * dy) <= tolerance + 2;
+          return Math.sqrt(dx * dx + dy * dy) <= hitTol;
         });
       }
       return false;
@@ -1211,9 +1271,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   const themeStyles = {
     dark: {
       bg: 'bg-[#03050c]',
-      headerBg: 'bg-zinc-950/90 border-amber-500/30 text-zinc-100',
+      headerBg: 'bg-zinc-950/95 border-amber-500/30 text-zinc-100',
       scrollAreaBg: 'bg-[#02040a]',
-      canvasFilter: `invert(0.92) hue-rotate(180deg) contrast(1.1) brightness(${brightness}%)`,
+      canvasFilter: `invert(0.9) hue-rotate(180deg) contrast(1.1) brightness(${brightness}%)`,
       cardBg: 'bg-zinc-900/90 border-zinc-800 text-zinc-200',
       pillBg: 'bg-zinc-950/85 border-amber-500/35 text-amber-300',
       pageShadow: 'shadow-[0_15px_45px_rgba(0,0,0,0.9)] border-amber-500/20',
@@ -1222,16 +1282,16 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       bg: 'bg-[#1b150e]',
       headerBg: 'bg-[#261d14]/95 border-amber-600/40 text-amber-100',
       scrollAreaBg: 'bg-[#18120b]',
-      canvasFilter: `sepia(0.68) contrast(0.96) brightness(${brightness * 0.98}%)`,
+      canvasFilter: `sepia(0.4) contrast(0.9) brightness(${brightness}%)`,
       cardBg: 'bg-[#2a2016]/95 border-amber-700/50 text-amber-100',
       pillBg: 'bg-[#221910]/90 border-amber-600/50 text-amber-200',
       pageShadow: 'shadow-[0_15px_45px_rgba(0,0,0,0.8)] border-amber-700/30',
     },
     light: {
       bg: 'bg-zinc-900',
-      headerBg: 'bg-zinc-950/90 border-amber-500/30 text-zinc-100',
+      headerBg: 'bg-zinc-950/95 border-amber-500/30 text-zinc-100',
       scrollAreaBg: 'bg-zinc-850',
-      canvasFilter: `brightness(${brightness}%)`,
+      canvasFilter: brightness === 100 ? 'none' : `brightness(${brightness}%)`,
       cardBg: 'bg-zinc-900 border-zinc-700 text-white',
       pillBg: 'bg-zinc-950/90 border-amber-500/40 text-amber-300',
       pageShadow: 'shadow-[0_15px_45px_rgba(0,0,0,0.7)] border-zinc-700',
@@ -1250,22 +1310,22 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       }}
       className={`fixed inset-0 z-[120] flex flex-col h-screen max-h-screen ${themeStyles.bg} select-none overflow-hidden transition-colors duration-300`}
     >
-      {/* ── Fixed/Sticky Glassmorphic Header Controls ── */}
-      <header className={`shrink-0 px-3 sm:px-6 py-2.5 sm:py-3 border-b backdrop-blur-2xl shadow-xl z-30 flex items-center justify-between gap-2 sm:gap-4 ${themeStyles.headerBg}`}>
+      {/* ── Fixed/Sticky Primary Header Controls (Book Meta, Page Nav & Quick Actions) ── */}
+      <header className={`shrink-0 px-3 sm:px-6 py-2 sm:py-2.5 border-b backdrop-blur-2xl shadow-md z-30 flex items-center justify-between gap-2 sm:gap-4 ${themeStyles.headerBg}`}>
         
         {/* Left: Book Meta & DRM Protected Badge */}
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <div className="p-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0">
             <BookOpen className="w-4 h-4 text-amber-400" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h2 className="text-xs sm:text-sm font-bold font-cinzel text-white truncate max-w-[160px] xs:max-w-[220px] sm:max-w-xs md:max-w-md">
+              <h2 className="text-xs sm:text-sm font-bold font-cinzel text-white truncate max-w-[130px] xs:max-w-[190px] sm:max-w-xs md:max-w-md">
                 {book.title}
               </h2>
               <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[9px] font-extrabold tracking-wider">
                 <Shield className="w-2.5 h-2.5 text-amber-400" />
-                Sanctuary DRM Protected
+                Sanctuary DRM
               </span>
             </div>
             <p className="text-[10px] text-zinc-400 truncate hidden sm:block">
@@ -1313,240 +1373,25 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           </button>
         </div>
 
-        {/* ── Always-Visible Multi-Color Highlighter Palette ── */}
-        <div
-          className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-zinc-900/90 border border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.15)] shrink-0"
-          title="Interactive Canvas Highlighter Palette — Drag over page text or scanned images to highlight"
-        >
-          <div className="flex items-center gap-1 text-amber-300 font-cinzel text-[10px] font-bold mr-0.5 sm:mr-1">
-            <Highlighter className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden xl:inline text-[9px] uppercase tracking-wider text-amber-300/90">Palette:</span>
-          </div>
-
-          {/* 4 Multi-Color Swatches */}
-          {COLOR_PRESETS.map((preset) => {
-            const isSelected = activeHighlighterColor === preset.color && isHighlighterActive;
-            return (
-              <button
-                key={preset.color}
-                onClick={() => selectHighlighterColor(preset.color, preset.name)}
-                className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-200 cursor-pointer flex items-center justify-center ${preset.bg} ${
-                  isSelected
-                    ? 'scale-115 ring-2 ring-white ring-offset-2 ring-offset-zinc-950 shadow-[0_0_12px_rgba(255,255,255,0.8)]'
-                    : 'opacity-65 hover:opacity-100 hover:scale-105 border border-zinc-900'
-                }`}
-                title={`Active Color: ${preset.name} (${preset.color}) — Drag to highlight`}
-              >
-                {isSelected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-950 shadow-sm" />
-                )}
-              </button>
-            );
-          })}
-
-          <div className="w-px h-4 bg-zinc-800 mx-0.5 sm:mx-1" />
-
-          {/* Draw Style: Box (rect) vs Pen (stroke) */}
-          <div className="hidden xs:flex items-center bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800/80 text-[9px] font-bold">
-            <button
-              onClick={() => {
-                setDrawMode('rect');
-                drawModeRef.current = 'rect';
-                setIsEraserActive(false);
-                isEraserActiveRef.current = false;
-                setIsHighlighterActive(true);
-                isHighlighterActiveRef.current = true;
-                setDrmToast('Highlighting Style: Box / Shloka Bar');
-              }}
-              className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
-                drawMode === 'rect' && isHighlighterActive && !isEraserActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
-              }`}
-              title="Box / Straight Line Highlighter (Ideal for Shlokas & Verses)"
-            >
-              Box
-            </button>
-            <button
-              onClick={() => {
-                setDrawMode('stroke');
-                drawModeRef.current = 'stroke';
-                setIsEraserActive(false);
-                isEraserActiveRef.current = false;
-                setIsHighlighterActive(true);
-                isHighlighterActiveRef.current = true;
-                setDrmToast('Highlighting Style: Freehand Pen Stroke');
-              }}
-              className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
-                drawMode === 'stroke' && isHighlighterActive && !isEraserActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
-              }`}
-              title="Freehand Highlighter Pen (Ideal for circles & custom marks)"
-            >
-              Pen
-            </button>
-          </div>
-
-          {/* Pen Brush Size Adjuster (Thin / Medium / Thick) */}
-          <div className="hidden md:flex items-center bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800/80 text-[9px] font-bold">
-            {(['thin', 'medium', 'thick'] as const).map((size) => {
-              const isSelected = brushSize === size && !isEraserActive;
-              const label = size === 'thin' ? 'Thin' : size === 'medium' ? 'Med' : 'Thick';
-              return (
-                <button
-                  key={size}
-                  onClick={() => {
-                    setBrushSize(size);
-                    brushSizeRef.current = size;
-                    setIsEraserActive(false);
-                    isEraserActiveRef.current = false;
-                    setIsHighlighterActive(true);
-                    isHighlighterActiveRef.current = true;
-                    setDrmToast(`Brush Size: ${label} (${size === 'thin' ? 'Underline' : size === 'medium' ? 'Standard' : 'Block'})`);
-                  }}
-                  className={`px-1.5 py-0.5 rounded transition cursor-pointer flex items-center gap-1 ${
-                    isSelected ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
-                  }`}
-                  title={`${label} Brush Size (${size === 'thin' ? 'Underline' : size === 'medium' ? 'Standard Highlight' : 'Full Block'})`}
-                >
-                  <span className={`rounded-full bg-current ${size === 'thin' ? 'w-1 h-1' : size === 'medium' ? 'w-1.5 h-1.5' : 'w-2 h-2'}`} />
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Eraser Tool */}
+        {/* Right: Sadhana Notes, Display Settings & Close */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {/* Sadhana Notes & Shlokas Toggle */}
           <button
-            onClick={() => {
-              const next = !isEraserActive;
-              setIsEraserActive(next);
-              isEraserActiveRef.current = next;
-              if (next) {
-                setIsHighlighterActive(true);
-                isHighlighterActiveRef.current = true;
-                setDrmToast('🧹 Eraser Active — Tap or drag over any highlight to delete');
-              } else {
-                setDrmToast('Highlighter active');
-              }
-            }}
-            className={`px-2 py-1 rounded-lg border transition cursor-pointer flex items-center gap-1 text-[10px] font-bold ${
-              isEraserActive
-                ? 'bg-rose-600 text-white border-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.6)] font-extrabold'
-                : 'bg-zinc-900/90 text-zinc-300 hover:text-white border-zinc-800 hover:bg-zinc-800'
-            }`}
-            title={isEraserActive ? 'Eraser active — Click to switch back to highlighter' : 'Eraser Tool — Tap/drag to delete specific highlights'}
-          >
-            <Eraser className="w-3.5 h-3.5 text-rose-300" />
-            <span className="hidden sm:inline uppercase tracking-wider text-[9px]">Eraser</span>
-          </button>
-
-          {/* Clear Current Page Highlights Button */}
-          <button
-            onClick={clearCurrentPageHighlights}
-            disabled={canvasHighlights.filter((h) => h.page === pageNum).length === 0}
-            className="p-1 sm:px-2 sm:py-1 rounded-lg border border-zinc-800 bg-zinc-900/90 hover:bg-red-950/80 hover:border-red-500/50 text-zinc-400 hover:text-red-200 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer flex items-center gap-1 text-[10px]"
-            title={`Clear All Highlights on Page ${pageNum}`}
-          >
-            <Trash2 className="w-3.5 h-3.5 text-red-400" />
-            <span className="hidden xl:inline text-[9px] uppercase tracking-wider font-bold">Clear Page</span>
-          </button>
-
-          {/* Undo (↩️) & Redo (↪️) Stroke Buttons */}
-          <div className="flex items-center gap-0.5 bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800">
-            <button
-              onClick={handleUndo}
-              disabled={undoStack.length === 0}
-              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
-              title="Undo Stroke (Ctrl+Z)"
-            >
-              <Undo2 className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={handleRedo}
-              disabled={redoStack.length === 0}
-              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
-              title="Redo Stroke (Ctrl+Y / Ctrl+Shift+Z)"
-            >
-              <Redo2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Right: Theme, Zoom, Continuous/Single Mode & Close */}
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-          
-          {/* View Mode Toggle (Continuous Vertical Scroll vs Single Page) */}
-          <button
-            onClick={() => setViewMode((m) => (m === 'continuous' ? 'single' : 'continuous'))}
-            className={`p-2 rounded-xl border transition cursor-pointer hidden md:flex items-center gap-1.5 text-xs font-bold ${
-              viewMode === 'continuous'
+            onClick={() => setShowNotes(!showNotes)}
+            className={`p-2 rounded-xl border transition cursor-pointer relative ${
+              showNotes
                 ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm'
                 : 'bg-zinc-900/80 hover:bg-zinc-800 border-zinc-800 text-amber-300'
             }`}
-            title={viewMode === 'continuous' ? 'Switch to Single Page Mode' : 'Switch to Continuous Vertical Scroll'}
+            title="Sadhana Notes & Highlighted Shlokas"
           >
-            {viewMode === 'continuous' ? (
-              <>
-                <Scroll className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">Continuous</span>
-              </>
-            ) : (
-              <>
-                <Layers className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">Single Page</span>
-              </>
+            <Highlighter className="w-4 h-4" />
+            {(highlights.length + canvasHighlights.length) > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-zinc-950 text-[9px] font-mono font-black flex items-center justify-center shadow-md">
+                {highlights.length + canvasHighlights.length}
+              </span>
             )}
           </button>
-
-          {/* Theme Quick Selector */}
-          <div className="hidden lg:flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
-            <button
-              onClick={() => setTheme('dark')}
-              className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                theme === 'dark' ? 'bg-amber-500 text-zinc-950 shadow-sm' : 'text-zinc-400 hover:text-white'
-              }`}
-              title="Dark Mode (Night Reading)"
-            >
-              <Moon className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setTheme('sepia')}
-              className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                theme === 'sepia' ? 'bg-amber-600 text-amber-100 shadow-sm' : 'text-zinc-400 hover:text-white'
-              }`}
-              title="Sepia Mode (Parchment)"
-            >
-              <Coffee className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setTheme('light')}
-              className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                theme === 'light' ? 'bg-amber-500 text-zinc-950 shadow-sm' : 'text-zinc-400 hover:text-white'
-              }`}
-              title="Light Mode"
-            >
-              <Sun className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Zoom Controls */}
-          <div className="hidden sm:flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
-            <button
-              onClick={() => setZoom((z) => Math.max(0.65, Math.round((z - 0.15) * 100) / 100))}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white transition cursor-pointer"
-              title="Zoom Out"
-            >
-              <ZoomOut className="w-3.5 h-3.5" />
-            </button>
-            <span className="text-[10px] font-mono font-bold text-amber-300 w-9 text-center">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={() => setZoom((z) => Math.min(2.5, Math.round((z + 0.15) * 100) / 100))}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white transition cursor-pointer"
-              title="Zoom In"
-            >
-              <ZoomIn className="w-3.5 h-3.5" />
-            </button>
-          </div>
 
           {/* Settings & Brightness Slider Toggle */}
           <button
@@ -1559,24 +1404,6 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
             title="Reader Display Settings & Brightness"
           >
             <Sliders className="w-4 h-4" />
-          </button>
-
-          {/* Sadhana Notes & Shlokas Toggle */}
-          <button
-            onClick={() => setShowNotes(!showNotes)}
-            className={`p-2 rounded-xl border transition cursor-pointer relative ${
-              showNotes
-                ? 'bg-amber-500 text-zinc-950 border-amber-400'
-                : 'bg-zinc-900/80 hover:bg-zinc-800 border-zinc-800 text-amber-300'
-            }`}
-            title="Sadhana Notes & Highlighted Shlokas"
-          >
-            <Highlighter className="w-4 h-4" />
-            {(highlights.length + canvasHighlights.length) > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-zinc-950 text-[9px] font-mono font-black flex items-center justify-center shadow-md">
-                {highlights.length + canvasHighlights.length}
-              </span>
-            )}
           </button>
 
           {/* Fullscreen Toggle */}
@@ -1599,6 +1426,353 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         </div>
 
       </header>
+
+      {/* ── Advanced Reading & Annotation Horizontal Toolbar (RESPONSIVE SCROLLABLE COMPATIBILITY) ── */}
+      <div className="shrink-0 w-full px-2.5 sm:px-4 py-1.5 border-b border-amber-500/20 bg-zinc-950/95 backdrop-blur-2xl z-25 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth flex-nowrap shadow-inner">
+        
+        {/* ── 1. Reading Filter Modes Dropdown & Toggle (Dark, Sepia, Light) ── */}
+        <div className="relative shrink-0" ref={themeMenuRef}>
+          <div className="flex items-center bg-zinc-900/90 p-0.5 rounded-xl border border-zinc-800 shadow-inner">
+            <button
+              onClick={() => setShowThemeMenu((prev) => !prev)}
+              className={`px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
+                showThemeMenu ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'text-zinc-200 hover:text-white hover:bg-zinc-800'
+              }`}
+              title="Reading Filter Modes (Dark, Sepia, Light)"
+            >
+              {theme === 'dark' && <Moon className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+              {theme === 'sepia' && <Coffee className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
+              {theme === 'light' && <Sun className="w-3.5 h-3.5 text-yellow-300 shrink-0" />}
+              <span className="text-[11px] font-bold whitespace-nowrap">
+                {theme === 'dark' ? 'Dark Filter' : theme === 'sepia' ? 'Sepia Filter' : 'Light (Original)'}
+              </span>
+              <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${showThemeMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Quick 1-click icon buttons */}
+            <div className="flex items-center border-l border-zinc-800 pl-1 ml-0.5 gap-0.5">
+              <button
+                onClick={() => handleThemeChange('dark')}
+                className={`p-1 rounded-lg text-xs transition cursor-pointer ${
+                  theme === 'dark' ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Dark Mode (Invert 0.9 + Hue-rotate 180° for night reading)"
+              >
+                <Moon className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => handleThemeChange('sepia')}
+                className={`p-1 rounded-lg text-xs transition cursor-pointer ${
+                  theme === 'sepia' ? 'bg-amber-600 text-amber-100 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Sepia Mode (Sepia 0.4 + Contrast 0.9 for warm vintage paper)"
+              >
+                <Coffee className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => handleThemeChange('light')}
+                className={`p-1 rounded-lg text-xs transition cursor-pointer ${
+                  theme === 'light' ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Light Mode (Default crisp original page view)"
+              >
+                <Sun className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Theme Filter Dropdown Menu */}
+          <AnimatePresence>
+            {showThemeMenu && (
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-0 top-full mt-2 z-50 w-72 p-2 rounded-2xl bg-zinc-950/95 border border-amber-500/40 shadow-2xl backdrop-blur-2xl space-y-1.5"
+              >
+                <div className="px-2.5 py-1.5 border-b border-zinc-800/80 flex items-center justify-between">
+                  <span className="text-[11px] font-bold font-cinzel text-amber-300 uppercase tracking-wider">
+                    Reading Filter Modes
+                  </span>
+                  <span className="text-[9px] text-zinc-400 font-mono">Live CSS</span>
+                </div>
+
+                {/* Option 1: Dark Mode */}
+                <button
+                  onClick={() => handleThemeChange('dark')}
+                  className={`w-full p-2 rounded-xl text-left flex items-start gap-2.5 transition cursor-pointer ${
+                    theme === 'dark' ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300' : 'hover:bg-zinc-900 border border-transparent text-zinc-300'
+                  }`}
+                >
+                  <div className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-amber-400 shrink-0 mt-0.5">
+                    <Moon className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white">Dark Mode</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-amber-400/90">
+                        invert(0.9)
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                      Applies invert(0.9) hue-rotate(180deg) for pure eye-strain-free reading on scanned pages.
+                    </p>
+                  </div>
+                </button>
+
+                {/* Option 2: Sepia Mode */}
+                <button
+                  onClick={() => handleThemeChange('sepia')}
+                  className={`w-full p-2 rounded-xl text-left flex items-start gap-2.5 transition cursor-pointer ${
+                    theme === 'sepia' ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300' : 'hover:bg-zinc-900 border border-transparent text-zinc-300'
+                  }`}
+                >
+                  <div className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-amber-500 shrink-0 mt-0.5">
+                    <Coffee className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white">Sepia Mode</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-amber-400/90">
+                        sepia(0.4)
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                      Warm vintage paper filter (sepia(0.4) contrast(0.9)) for parchment comfort.
+                    </p>
+                  </div>
+                </button>
+
+                {/* Option 3: Normal / Light Mode */}
+                <button
+                  onClick={() => handleThemeChange('light')}
+                  className={`w-full p-2 rounded-xl text-left flex items-start gap-2.5 transition cursor-pointer ${
+                    theme === 'light' ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300' : 'hover:bg-zinc-900 border border-transparent text-zinc-300'
+                  }`}
+                >
+                  <div className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-yellow-300 shrink-0 mt-0.5">
+                    <Sun className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white">Normal / Light</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
+                        original
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                      Default crisp original page view without optical color alteration.
+                    </p>
+                  </div>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="w-px h-5 bg-zinc-800 shrink-0" />
+
+        {/* ── 2. Always-Visible Multi-Color Highlighter Palette ── */}
+        <div className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 rounded-xl bg-zinc-900/90 border border-amber-500/30 shadow-inner shrink-0">
+          <div className="flex items-center gap-1 text-amber-300 font-cinzel text-[10px] font-bold mr-0.5">
+            <Highlighter className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="hidden lg:inline text-[9px] uppercase tracking-wider text-amber-300/90">Palette:</span>
+          </div>
+
+          {COLOR_PRESETS.map((preset) => {
+            const isSelected = activeHighlighterColor === preset.color && isHighlighterActive && !isEraserActive;
+            return (
+              <button
+                key={preset.color}
+                onClick={() => selectHighlighterColor(preset.color, preset.name)}
+                className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 ${preset.bg} ${
+                  isSelected
+                    ? 'scale-115 ring-2 ring-white ring-offset-2 ring-offset-zinc-950 shadow-[0_0_12px_rgba(255,255,255,0.8)]'
+                    : 'opacity-65 hover:opacity-100 hover:scale-105 border border-zinc-900'
+                }`}
+                title={`Active Color: ${preset.name} (${preset.color}) — Drag to highlight`}
+              >
+                {isSelected && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-950 shadow-sm" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── 3. Highlight Brush Size Control Button (Thin 4px / Medium 12px / Thick 24px) ── */}
+        <div className="flex items-center bg-zinc-900/90 p-0.5 rounded-xl border border-zinc-800 shadow-inner shrink-0" title="Brush Size: Underlines vs Text vs Full Block Highlights">
+          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider px-1.5 hidden xl:inline">Brush:</span>
+          {BRUSH_SIZES.map((b) => {
+            const isSelected = brushSize === b.id && !isEraserActive;
+            return (
+              <button
+                key={b.id}
+                onClick={() => selectBrushSize(b.id)}
+                className={`px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
+                  isSelected
+                    ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                }`}
+                title={`${b.label}: ${b.desc}`}
+              >
+                <span
+                  className="rounded-full bg-current shrink-0"
+                  style={{ width: `${b.px <= 4 ? 4 : b.px <= 12 ? 8 : 12}px`, height: `${b.px <= 4 ? 4 : b.px <= 12 ? 8 : 12}px` }}
+                />
+                <span className="whitespace-nowrap">{b.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="w-px h-5 bg-zinc-800 shrink-0" />
+
+        {/* ── 4. Drawing Mode: Box (rect) vs Pen (stroke) ── */}
+        <div className="flex items-center bg-zinc-900/90 p-0.5 rounded-xl border border-zinc-800 text-[10px] font-bold shrink-0">
+          <button
+            onClick={() => {
+              setDrawMode('rect');
+              drawModeRef.current = 'rect';
+              setIsEraserActive(false);
+              isEraserActiveRef.current = false;
+              setIsHighlighterActive(true);
+              isHighlighterActiveRef.current = true;
+              setDrmToast('Highlighting Style: Box / Shloka Bar');
+            }}
+            className={`px-2 py-1 rounded-lg transition cursor-pointer shrink-0 ${
+              drawMode === 'rect' && isHighlighterActive && !isEraserActive
+                ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+            title="Box / Straight Line Highlighter (Ideal for Shlokas & Verses)"
+          >
+            Box
+          </button>
+          <button
+            onClick={() => {
+              setDrawMode('stroke');
+              drawModeRef.current = 'stroke';
+              setIsEraserActive(false);
+              isEraserActiveRef.current = false;
+              setIsHighlighterActive(true);
+              isHighlighterActiveRef.current = true;
+              setDrmToast('Highlighting Style: Freehand Pen Stroke');
+            }}
+            className={`px-2 py-1 rounded-lg transition cursor-pointer shrink-0 ${
+              drawMode === 'stroke' && isHighlighterActive && !isEraserActive
+                ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+            title="Freehand Highlighter Pen (Underlines & circles)"
+          >
+            Pen
+          </button>
+        </div>
+
+        {/* ── 5. Eraser Tool ── */}
+        <button
+          onClick={() => {
+            const next = !isEraserActive;
+            setIsEraserActive(next);
+            isEraserActiveRef.current = next;
+            if (next) {
+              setIsHighlighterActive(true);
+              isHighlighterActiveRef.current = true;
+              setDrmToast('🧹 Eraser Active — Tap or drag over any highlight to delete');
+            } else {
+              setDrmToast('Highlighter active');
+            }
+          }}
+          className={`px-2 py-1 rounded-xl border transition cursor-pointer flex items-center gap-1.5 text-[10px] font-bold shrink-0 ${
+            isEraserActive
+              ? 'bg-rose-600 text-white border-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.6)] font-extrabold'
+              : 'bg-zinc-900/90 text-zinc-300 hover:text-white border-zinc-800 hover:bg-zinc-800'
+          }`}
+          title={isEraserActive ? 'Eraser active — Click to switch back to highlighter' : 'Eraser Tool — Tap/drag to delete specific highlights'}
+        >
+          <Eraser className="w-3.5 h-3.5 text-rose-300 shrink-0" />
+          <span className="uppercase tracking-wider text-[9px]">Eraser</span>
+        </button>
+
+        {/* ── 6. Clear Page Highlights Button ── */}
+        <button
+          onClick={clearCurrentPageHighlights}
+          disabled={canvasHighlights.filter((h) => h.page === pageNum).length === 0}
+          className="px-2 py-1 rounded-xl border border-zinc-800 bg-zinc-900/90 hover:bg-red-950/80 hover:border-red-500/50 text-zinc-400 hover:text-red-200 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer flex items-center gap-1 text-[10px] shrink-0"
+          title={`Clear All Highlights on Page ${pageNum}`}
+        >
+          <Trash2 className="w-3.5 h-3.5 text-red-400 shrink-0" />
+          <span className="text-[9px] uppercase tracking-wider font-bold whitespace-nowrap">Clear Page</span>
+        </button>
+
+        {/* ── 7. Undo (↩️) & Redo (↪️) Stroke Buttons ── */}
+        <div className="flex items-center gap-0.5 bg-zinc-900/90 p-0.5 rounded-xl border border-zinc-800 shrink-0">
+          <button
+            onClick={handleUndo}
+            disabled={undoStack.length === 0}
+            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer shrink-0"
+            title="Undo Stroke (Ctrl+Z)"
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={handleRedo}
+            disabled={redoStack.length === 0}
+            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer shrink-0"
+            title="Redo Stroke (Ctrl+Y / Ctrl+Shift+Z)"
+          >
+            <Redo2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="w-px h-5 bg-zinc-800 shrink-0" />
+
+        {/* ── 8. View Mode Toggle (Continuous vs Single) ── */}
+        <button
+          onClick={() => setViewMode((m) => (m === 'continuous' ? 'single' : 'continuous'))}
+          className={`px-2.5 py-1 rounded-xl border transition cursor-pointer flex items-center gap-1.5 text-xs font-bold shrink-0 ${
+            viewMode === 'continuous'
+              ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm'
+              : 'bg-zinc-900/90 hover:bg-zinc-800 border-zinc-800 text-amber-300'
+          }`}
+          title={viewMode === 'continuous' ? 'Switch to Single Page Mode' : 'Switch to Continuous Vertical Scroll'}
+        >
+          {viewMode === 'continuous' ? (
+            <>
+              <Scroll className="w-3.5 h-3.5 shrink-0" />
+              <span className="text-[10px] font-bold whitespace-nowrap">Continuous</span>
+            </>
+          ) : (
+            <>
+              <Layers className="w-3.5 h-3.5 shrink-0" />
+              <span className="text-[10px] font-bold whitespace-nowrap">Single Page</span>
+            </>
+          )}
+        </button>
+
+        {/* ── 9. Zoom Controls ── */}
+        <div className="flex items-center gap-1 bg-zinc-900/90 p-0.5 rounded-xl border border-zinc-800 shrink-0">
+          <button
+            onClick={() => setZoom((z) => Math.max(0.65, Math.round((z - 0.15) * 100) / 100))}
+            className="p-1 rounded-lg text-zinc-400 hover:text-white transition cursor-pointer"
+            title="Zoom Out"
+          >
+            <ZoomOut className="w-3.5 h-3.5" />
+          </button>
+          <span className="text-[10px] font-mono font-bold text-amber-300 w-9 text-center">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            onClick={() => setZoom((z) => Math.min(2.5, Math.round((z + 0.15) * 100) / 100))}
+            className="p-1 rounded-lg text-zinc-400 hover:text-white transition cursor-pointer"
+            title="Zoom In"
+          >
+            <ZoomIn className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
 
       {/* ── Settings Dropdown Popup (Brightness & View Mode) ── */}
       <AnimatePresence>
@@ -1642,7 +1816,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               <span className="text-xs text-zinc-300 block mb-1.5 font-medium">Color Palette</span>
               <div className="grid grid-cols-3 gap-1.5">
                 <button
-                  onClick={() => setTheme('dark')}
+                  onClick={() => handleThemeChange('dark')}
                   className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition ${
                     theme === 'dark' ? 'bg-amber-500 text-zinc-950' : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800'
                   }`}
@@ -1650,7 +1824,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                   <Moon className="w-3 h-3" /> Dark
                 </button>
                 <button
-                  onClick={() => setTheme('sepia')}
+                  onClick={() => handleThemeChange('sepia')}
                   className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition ${
                     theme === 'sepia' ? 'bg-amber-600 text-amber-100' : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800'
                   }`}
@@ -1658,7 +1832,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                   <Coffee className="w-3 h-3" /> Sepia
                 </button>
                 <button
-                  onClick={() => setTheme('light')}
+                  onClick={() => handleThemeChange('light')}
                   className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition ${
                     theme === 'light' ? 'bg-amber-500 text-zinc-950' : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800'
                   }`}
@@ -1695,7 +1869,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       </AnimatePresence>
 
       {/* ── Main Scrollable Reading Viewport (FIXED OVERFLOW & SMOOTH VERTICAL SCROLL) ── */}
-      <div className="flex-1 flex overflow-hidden relative w-full h-[calc(100vh-56px)]">
+      <div className="flex-1 min-h-0 flex overflow-hidden relative w-full">
         
         {/* Document Scroll Container */}
         <div
@@ -1803,7 +1977,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                         mixBlendMode: 'multiply',
                         touchAction: isHighlighterActive ? 'none' : 'auto',
                         pointerEvents: isHighlighterActive ? 'auto' : 'none',
-                        cursor: isHighlighterActive ? 'crosshair' : 'default',
+                        cursor: isEraserActive ? 'cell' : isHighlighterActive ? 'crosshair' : 'default',
                       }}
                     />
 
@@ -1895,7 +2069,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                     mixBlendMode: 'multiply',
                     touchAction: isHighlighterActive ? 'none' : 'auto',
                     pointerEvents: isHighlighterActive ? 'auto' : 'none',
-                    cursor: isHighlighterActive ? 'crosshair' : 'default',
+                    cursor: isEraserActive ? 'cell' : isHighlighterActive ? 'crosshair' : 'default',
                   }}
                 />
 
