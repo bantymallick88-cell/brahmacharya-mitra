@@ -5,6 +5,10 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  RotateCw,
+  Undo2,
+  Redo2,
+  Eraser,
   Maximize2,
   Minimize2,
   ChevronLeft,
@@ -53,6 +57,7 @@ export interface CanvasHighlight {
   type: 'rect' | 'stroke';
   color: string;
   colorName: 'Yellow' | 'Green' | 'Blue' | 'Pink';
+  brushSize?: 'thin' | 'medium' | 'thick';
   opacity: number;
   rect?: { x: number; y: number; w: number; h: number };
   points?: { x: number; y: number }[];
@@ -127,6 +132,16 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   const isHighlighterActiveRef = useRef<boolean>(true);
   const [drawMode, setDrawMode] = useState<'rect' | 'stroke'>('rect');
   const drawModeRef = useRef<'rect' | 'stroke'>('rect');
+  const [brushSize, setBrushSize] = useState<'thin' | 'medium' | 'thick'>('medium');
+  const brushSizeRef = useRef<'thin' | 'medium' | 'thick'>('medium');
+  const [isEraserActive, setIsEraserActive] = useState<boolean>(false);
+  const isEraserActiveRef = useRef<boolean>(false);
+
+  // Undo & Redo History Stacks
+  const [undoStack, setUndoStack] = useState<CanvasHighlight[][]>([]);
+  const [redoStack, setRedoStack] = useState<CanvasHighlight[][]>([]);
+  const undoStackRef = useRef<CanvasHighlight[][]>([]);
+  const redoStackRef = useRef<CanvasHighlight[][]>([]);
 
   const activeDrawingRef = useRef<{
     page: number;
@@ -145,11 +160,21 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     canvasHighlightsRef.current = canvasHighlights;
   }, [canvasHighlights]);
 
+  useEffect(() => {
+    undoStackRef.current = undoStack;
+  }, [undoStack]);
+
+  useEffect(() => {
+    redoStackRef.current = redoStack;
+  }, [redoStack]);
+
   const selectHighlighterColor = (color: string, name: 'Yellow' | 'Green' | 'Blue' | 'Pink') => {
     setActiveHighlighterColor(color);
     setActiveHighlighterName(name);
     activeColorRef.current = color;
     activeColorNameRef.current = name;
+    setIsEraserActive(false);
+    isEraserActiveRef.current = false;
     setIsHighlighterActive(true);
     isHighlighterActiveRef.current = true;
     setDrmToast(`✨ ${name} Highlighter active — Drag on page to highlight`);
@@ -223,10 +248,21 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       }
 
       // Undo Shortcut (Ctrl+Z / Cmd+Z)
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
         if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
           e.preventDefault();
-          undoLastHighlight();
+          handleUndo();
+        }
+      }
+
+      // Redo Shortcut (Ctrl+Y or Ctrl+Shift+Z / Cmd+Shift+Z)
+      if (
+        ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') ||
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'z')
+      ) {
+        if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+          e.preventDefault();
+          handleRedo();
         }
       }
 
@@ -292,6 +328,15 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     }
   }, [book, pageNum]);
 
+  // Push previous highlights snapshot to Undo stack
+  const pushToUndoHistory = (previousHighlights: CanvasHighlight[]) => {
+    const nextStack = [...undoStackRef.current.slice(-25), previousHighlights];
+    setUndoStack(nextStack);
+    undoStackRef.current = nextStack;
+    setRedoStack([]);
+    redoStackRef.current = [];
+  };
+
   // Save Canvas Highlights to LocalStorage
   const saveCanvasHighlights = (items: CanvasHighlight[]) => {
     setCanvasHighlights(items);
@@ -308,22 +353,64 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   // Remove a canvas highlight
   const removeCanvasHighlight = (id: string) => {
     const target = canvasHighlightsRef.current.find((h) => h.id === id);
+    if (!target) return;
+    pushToUndoHistory(canvasHighlightsRef.current);
     const updated = canvasHighlightsRef.current.filter((h) => h.id !== id);
     saveCanvasHighlights(updated);
     setDrmToast('Highlight removed from page.');
-    if (target) {
-      redrawCanvasForPage(target.page);
-    }
+    redrawCanvasForPage(target.page);
   };
 
-  // Undo last canvas highlight
-  const undoLastHighlight = () => {
-    if (canvasHighlightsRef.current.length === 0) return;
-    const last = canvasHighlightsRef.current[0];
-    const updated = canvasHighlightsRef.current.slice(1);
+  // Undo stroke action
+  const handleUndo = () => {
+    if (undoStackRef.current.length === 0) return;
+    const prevSnapshot = undoStackRef.current[undoStackRef.current.length - 1];
+    const newUndoStack = undoStackRef.current.slice(0, -1);
+
+    const newRedoStack = [...redoStackRef.current, canvasHighlightsRef.current];
+    setRedoStack(newRedoStack);
+    redoStackRef.current = newRedoStack;
+
+    setUndoStack(newUndoStack);
+    undoStackRef.current = newUndoStack;
+
+    saveCanvasHighlights(prevSnapshot);
+    renderedPages.forEach((p) => redrawCanvasForPage(p));
+    if (viewMode === 'single') redrawCanvasForPage(pageNum);
+    setDrmToast('↩️ Undid highlight action');
+  };
+
+  // Redo stroke action
+  const handleRedo = () => {
+    if (redoStackRef.current.length === 0) return;
+    const nextSnapshot = redoStackRef.current[redoStackRef.current.length - 1];
+    const newRedoStack = redoStackRef.current.slice(0, -1);
+
+    const newUndoStack = [...undoStackRef.current, canvasHighlightsRef.current];
+    setUndoStack(newUndoStack);
+    undoStackRef.current = newUndoStack;
+
+    setRedoStack(newRedoStack);
+    redoStackRef.current = newRedoStack;
+
+    saveCanvasHighlights(nextSnapshot);
+    renderedPages.forEach((p) => redrawCanvasForPage(p));
+    if (viewMode === 'single') redrawCanvasForPage(pageNum);
+    setDrmToast('↪️ Redid highlight action');
+  };
+
+  // Clear all highlights on the current page
+  const clearCurrentPageHighlights = () => {
+    const onCurrentPage = canvasHighlightsRef.current.filter((h) => h.page === pageNum);
+    if (onCurrentPage.length === 0) {
+      setDrmToast(`No canvas highlights on Page ${pageNum} to clear.`);
+      return;
+    }
+    pushToUndoHistory(canvasHighlightsRef.current);
+    const updated = canvasHighlightsRef.current.filter((h) => h.page !== pageNum);
     saveCanvasHighlights(updated);
-    setDrmToast(`Undid highlight on Page ${last.page}`);
-    redrawCanvasForPage(last.page);
+    redrawCanvasForPage(pageNum);
+    setDrmToast(`🧹 Cleared all ${onCurrentPage.length} highlights on Page ${pageNum}`);
   };
 
   // Save Notes handler
@@ -667,7 +754,13 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         const rh = (hl.rect.h / 100) * height;
         ctx.fillRect(rx, ry, rw, rh);
       } else if (hl.type === 'stroke' && hl.points && hl.points.length > 1) {
-        ctx.lineWidth = Math.max(14, width * 0.024);
+        const sizeMultiplier = {
+          thin: 0.55,
+          medium: 1.0,
+          thick: 1.85,
+        }[hl.brushSize || 'medium'];
+
+        ctx.lineWidth = Math.max(14, width * 0.024) * sizeMultiplier;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -700,7 +793,13 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         ctx.lineWidth = 1.5;
         ctx.strokeRect(x, y, w, h);
       } else if (drawModeRef.current === 'stroke' && previewDrawing.points?.length > 1) {
-        ctx.lineWidth = Math.max(14, width * 0.024);
+        const previewMultiplier = {
+          thin: 0.55,
+          medium: 1.0,
+          thick: 1.85,
+        }[brushSizeRef.current];
+
+        ctx.lineWidth = Math.max(14, width * 0.024) * previewMultiplier;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -714,7 +813,43 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     }
   }, []);
 
-  // Canvas Interactive Pointer Events (Universal Drag-to-Highlight)
+  // Check if a point hits an existing canvas highlight on a page
+  const findHitHighlight = (pctX: number, pctY: number, p: number, tolerance = 4) => {
+    return canvasHighlightsRef.current.find((h) => {
+      if (h.page !== p) return false;
+      if (h.type === 'rect' && h.rect) {
+        return (
+          pctX >= h.rect.x - tolerance &&
+          pctX <= h.rect.x + h.rect.w + tolerance &&
+          pctY >= h.rect.y - tolerance &&
+          pctY <= h.rect.y + h.rect.h + tolerance
+        );
+      }
+      if (h.type === 'stroke' && h.points) {
+        return h.points.some((pt) => {
+          const dx = pctX - pt.x;
+          const dy = pctY - pt.y;
+          return Math.sqrt(dx * dx + dy * dy) <= tolerance + 2;
+        });
+      }
+      return false;
+    });
+  };
+
+  const eraseHighlightAtPoint = (pctX: number, pctY: number, p: number) => {
+    const hit = findHitHighlight(pctX, pctY, p);
+    if (hit) {
+      pushToUndoHistory(canvasHighlightsRef.current);
+      const updated = canvasHighlightsRef.current.filter((h) => h.id !== hit.id);
+      saveCanvasHighlights(updated);
+      redrawCanvasForPage(p);
+      setDrmToast(`🧹 Erased ${hit.colorName} highlight on Page ${p}`);
+      return true;
+    }
+    return false;
+  };
+
+  // Canvas Interactive Pointer Events (Universal Drag-to-Highlight & Eraser)
   const handleCanvasPointerDown = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
     if (!isHighlighterActiveRef.current) return;
     e.preventDefault();
@@ -729,6 +864,14 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    // Handle Eraser mode
+    if (isEraserActiveRef.current) {
+      const pctX = (x / rect.width) * 100;
+      const pctY = (y / rect.height) * 100;
+      eraseHighlightAtPoint(pctX, pctY, p);
+      return;
+    }
+
     activeDrawingRef.current = {
       page: p,
       startX: x,
@@ -740,6 +883,18 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   };
 
   const handleCanvasPointerMove = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
+    // Handle Eraser dragging
+    if (isEraserActiveRef.current && (e.buttons === 1 || e.pressure > 0)) {
+      e.preventDefault();
+      e.stopPropagation();
+      const canvas = e.currentTarget;
+      const rect = canvas.getBoundingClientRect();
+      const pctX = ((e.clientX - rect.left) / rect.width) * 100;
+      const pctY = ((e.clientY - rect.top) / rect.height) * 100;
+      eraseHighlightAtPoint(pctX, pctY, p);
+      return;
+    }
+
     if (!activeDrawingRef.current || activeDrawingRef.current.page !== p) return;
     e.preventDefault();
     e.stopPropagation();
@@ -759,13 +914,15 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   };
 
   const handleCanvasPointerUp = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
-    if (!activeDrawingRef.current || activeDrawingRef.current.page !== p) return;
-    e.preventDefault();
-    e.stopPropagation();
-
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {}
+
+    if (isEraserActiveRef.current) return;
+
+    if (!activeDrawingRef.current || activeDrawingRef.current.page !== p) return;
+    e.preventDefault();
+    e.stopPropagation();
 
     const drawing = activeDrawingRef.current;
     activeDrawingRef.current = null;
@@ -793,6 +950,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           type: 'rect',
           color: activeColorRef.current,
           colorName: activeColorNameRef.current,
+          brushSize: brushSizeRef.current,
           opacity: 0.42,
           rect: {
             x: (rx / width) * 100,
@@ -812,6 +970,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
           type: 'stroke',
           color: activeColorRef.current,
           colorName: activeColorNameRef.current,
+          brushSize: brushSizeRef.current,
           opacity: 0.42,
           points: drawing.points.map((pt) => ({
             x: (pt.x / width) * 100,
@@ -823,6 +982,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     }
 
     if (newHl) {
+      pushToUndoHistory(canvasHighlightsRef.current);
       const updated = [newHl, ...canvasHighlightsRef.current];
       saveCanvasHighlights(updated);
       setDrmToast(`✨ Highlighted (${activeColorNameRef.current}) on Page ${p}`);
@@ -1192,12 +1352,14 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               onClick={() => {
                 setDrawMode('rect');
                 drawModeRef.current = 'rect';
+                setIsEraserActive(false);
+                isEraserActiveRef.current = false;
                 setIsHighlighterActive(true);
                 isHighlighterActiveRef.current = true;
                 setDrmToast('Highlighting Style: Box / Shloka Bar');
               }}
               className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
-                drawMode === 'rect' && isHighlighterActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
+                drawMode === 'rect' && isHighlighterActive && !isEraserActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
               }`}
               title="Box / Straight Line Highlighter (Ideal for Shlokas & Verses)"
             >
@@ -1207,12 +1369,14 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               onClick={() => {
                 setDrawMode('stroke');
                 drawModeRef.current = 'stroke';
+                setIsEraserActive(false);
+                isEraserActiveRef.current = false;
                 setIsHighlighterActive(true);
                 isHighlighterActiveRef.current = true;
                 setDrmToast('Highlighting Style: Freehand Pen Stroke');
               }}
               className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
-                drawMode === 'stroke' && isHighlighterActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
+                drawMode === 'stroke' && isHighlighterActive && !isEraserActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
               }`}
               title="Freehand Highlighter Pen (Ideal for circles & custom marks)"
             >
@@ -1220,15 +1384,90 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
             </button>
           </div>
 
-          {/* Quick Undo Button */}
+          {/* Pen Brush Size Adjuster (Thin / Medium / Thick) */}
+          <div className="hidden md:flex items-center bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800/80 text-[9px] font-bold">
+            {(['thin', 'medium', 'thick'] as const).map((size) => {
+              const isSelected = brushSize === size && !isEraserActive;
+              const label = size === 'thin' ? 'Thin' : size === 'medium' ? 'Med' : 'Thick';
+              return (
+                <button
+                  key={size}
+                  onClick={() => {
+                    setBrushSize(size);
+                    brushSizeRef.current = size;
+                    setIsEraserActive(false);
+                    isEraserActiveRef.current = false;
+                    setIsHighlighterActive(true);
+                    isHighlighterActiveRef.current = true;
+                    setDrmToast(`Brush Size: ${label} (${size === 'thin' ? 'Underline' : size === 'medium' ? 'Standard' : 'Block'})`);
+                  }}
+                  className={`px-1.5 py-0.5 rounded transition cursor-pointer flex items-center gap-1 ${
+                    isSelected ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
+                  }`}
+                  title={`${label} Brush Size (${size === 'thin' ? 'Underline' : size === 'medium' ? 'Standard Highlight' : 'Full Block'})`}
+                >
+                  <span className={`rounded-full bg-current ${size === 'thin' ? 'w-1 h-1' : size === 'medium' ? 'w-1.5 h-1.5' : 'w-2 h-2'}`} />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Eraser Tool */}
           <button
-            onClick={undoLastHighlight}
-            disabled={canvasHighlights.length === 0}
-            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
-            title="Undo Last Highlight (Ctrl+Z)"
+            onClick={() => {
+              const next = !isEraserActive;
+              setIsEraserActive(next);
+              isEraserActiveRef.current = next;
+              if (next) {
+                setIsHighlighterActive(true);
+                isHighlighterActiveRef.current = true;
+                setDrmToast('🧹 Eraser Active — Tap or drag over any highlight to delete');
+              } else {
+                setDrmToast('Highlighter active');
+              }
+            }}
+            className={`px-2 py-1 rounded-lg border transition cursor-pointer flex items-center gap-1 text-[10px] font-bold ${
+              isEraserActive
+                ? 'bg-rose-600 text-white border-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.6)] font-extrabold'
+                : 'bg-zinc-900/90 text-zinc-300 hover:text-white border-zinc-800 hover:bg-zinc-800'
+            }`}
+            title={isEraserActive ? 'Eraser active — Click to switch back to highlighter' : 'Eraser Tool — Tap/drag to delete specific highlights'}
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <Eraser className="w-3.5 h-3.5 text-rose-300" />
+            <span className="hidden sm:inline uppercase tracking-wider text-[9px]">Eraser</span>
           </button>
+
+          {/* Clear Current Page Highlights Button */}
+          <button
+            onClick={clearCurrentPageHighlights}
+            disabled={canvasHighlights.filter((h) => h.page === pageNum).length === 0}
+            className="p-1 sm:px-2 sm:py-1 rounded-lg border border-zinc-800 bg-zinc-900/90 hover:bg-red-950/80 hover:border-red-500/50 text-zinc-400 hover:text-red-200 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer flex items-center gap-1 text-[10px]"
+            title={`Clear All Highlights on Page ${pageNum}`}
+          >
+            <Trash2 className="w-3.5 h-3.5 text-red-400" />
+            <span className="hidden xl:inline text-[9px] uppercase tracking-wider font-bold">Clear Page</span>
+          </button>
+
+          {/* Undo (↩️) & Redo (↪️) Stroke Buttons */}
+          <div className="flex items-center gap-0.5 bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800">
+            <button
+              onClick={handleUndo}
+              disabled={undoStack.length === 0}
+              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
+              title="Undo Stroke (Ctrl+Z)"
+            >
+              <Undo2 className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleRedo}
+              disabled={redoStack.length === 0}
+              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
+              title="Redo Stroke (Ctrl+Y / Ctrl+Shift+Z)"
+            >
+              <Redo2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* Right: Theme, Zoom, Continuous/Single Mode & Close */}
