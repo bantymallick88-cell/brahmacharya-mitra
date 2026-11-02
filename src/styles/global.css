@@ -650,62 +650,119 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   Ultra-Deep Pitch Black Night Theme (#050505)
-   Smoothly activated when html.pitch-black is present.
-   Default warm dark aesthetic interface is 100% untouched when absent.
+   PURE PITCH-BLACK DARK MODE (Active when .dark class is on <html> / <body>)
+   1. Page background forced to absolute Pitch Black (#000000 !important).
+   2. All brown/warm background tints removed.
+   3. Card containers converted to deep dark glassmorphism:
+      background: rgba(12, 12, 14, 0.85), border: 1px solid rgba(255, 255, 255, 0.1), backdrop-filter: blur(12px).
+   4. Heading titles in crisp Pure White (#FFFFFF !important) & body text in Muted White (#E2E8F0 !important).
    ══════════════════════════════════════════════════════════════════ */
-html.pitch-black,
-html.pitch-black body,
-html.pitch-black footer,
-html.pitch-black .bg-\[\#02040a\],
-html.pitch-black [data-theme-bg="obsidian"] {
-  background-color: #050505 !important;
+html.dark,
+html.dark body,
+html.dark main,
+html.dark footer,
+html.dark section,
+html.dark header#navbar,
+html.dark .bg-\[\#02040a\],
+html.dark [data-theme-bg="obsidian"] {
+  background-color: #000000 !important;
 }
 
-html.pitch-black {
-  --color-obsidian-base: #050505;
-  --color-obsidian-surface: #07070a;
-  --color-dark-bg: #050505;
-  --color-card-bg: rgba(10, 10, 14, 0.75);
+html.dark {
+  --color-obsidian-base: #000000;
+  --color-obsidian-surface: #0a0a0c;
+  --color-dark-bg: #000000;
+  --color-card-bg: rgba(12, 12, 14, 0.85);
 }
 
-/* Subdued background aura pulse in pitch black mode for eye comfort */
-html.pitch-black .animate-aura-pulse {
-  opacity: 0.16 !important;
+/* Remove all brown/warm background aura tints in pitch-black dark mode */
+html.dark .theme-ambient-auras,
+html.dark .animate-aura-pulse {
+  display: none !important;
+  opacity: 0 !important;
 }
 
-/* Frosted glassmorphism cards in Pitch Black Night Mode (backdrop-filter: blur(12px), border: 1px solid rgba(255, 255, 255, 0.08)) */
-html.pitch-black .glass-panel,
-html.pitch-black .glass-card-lift,
-html.pitch-black .divine-emblem,
-html.pitch-black .pitch-black-card,
-html.pitch-black .bg-gradient-to-b.from-zinc-900\/90.to-zinc-950,
-html.pitch-black .bg-zinc-950\/70,
-html.pitch-black .bg-zinc-950\/60,
-html.pitch-black .bg-zinc-950\/90 {
-  background: rgba(10, 10, 14, 0.75) !important;
+html.dark .hero-tint {
+  background: #000000 !important;
+}
+
+html.dark .hero-bg-image {
+  opacity: 0.1 !important;
+}
+
+/* Deep dark glassmorphism for all card containers */
+html.dark .glass-panel,
+html.dark .glass-card-lift,
+html.dark .divine-emblem,
+html.dark .pitch-black-card,
+html.dark section a.rounded-3xl,
+html.dark section button.rounded-3xl,
+html.dark section div.rounded-3xl,
+html.dark .bg-gradient-to-b.from-zinc-900\/90.to-zinc-950,
+html.dark .bg-zinc-950\/85,
+html.dark .bg-zinc-950\/80,
+html.dark .bg-zinc-950\/90,
+html.dark .bg-zinc-950\/70,
+html.dark .bg-zinc-950\/60,
+html.dark .bg-zinc-900\/90,
+html.dark .bg-zinc-900\/80,
+html.dark [data-card="glass"] {
+  background: rgba(12, 12, 14, 0.85) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.9) !important;
 }
 
-html.pitch-black .glass-panel:hover,
-html.pitch-black .glass-card-lift:hover {
-  border-color: rgba(245, 158, 11, 0.45) !important;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.95), 0 0 20px rgba(245, 158, 11, 0.15) !important;
+/* Card hover in dark mode */
+html.dark .glass-panel:hover,
+html.dark .glass-card-lift:hover,
+html.dark section a.rounded-3xl:hover,
+html.dark section button.rounded-3xl:hover {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Navbar in Pitch Black Mode */
-html.pitch-black #navbar > div > div {
-  background: rgba(6, 6, 8, 0.92) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+/* Top Navbar in Pitch-Black Dark Mode */
+html.dark #navbar > div > div {
+  background: rgba(12, 12, 14, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95) !important;
 }
 
-/* Global Transitions for smooth theme switching */
+/* Bottom Navigation Dock in Dark Mode */
+html.dark .bottom-nav-dock,
+html.dark div.fixed.bottom-3 > div > div.backdrop-blur-2xl,
+html.dark div.fixed.bottom-4 > div > div.backdrop-blur-2xl {
+  background: rgba(12, 12, 14, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* Heading titles in crisp Pure White (#FFFFFF !important) */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+}
+
+/* Body text in Muted White (#E2E8F0 !important) */
+html.dark p,
+html.dark .text-zinc-400,
+html.dark .text-zinc-300,
+html.dark .text-zinc-200 {
+  color: #E2E8F0 !important;
+}
+
+/* Smooth transitions */
 html,
 body,
 footer,
@@ -714,8 +771,8 @@ footer,
 .glass-panel,
 .glass-card-lift,
 .divine-emblem {
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

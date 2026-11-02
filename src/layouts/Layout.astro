@@ -202,17 +202,17 @@ const faqJsonLd = {
 ---
 
 <!doctype html>
-<html lang="en" class="dark scroll-smooth" translate="no">
+<html lang="en" class="scroll-smooth" translate="no">
 	<head>
 		<!-- Instant Theme Mode Pre-Hydration (Prevents FOUC) -->
 		<script is:inline>
 			(function() {
 				try {
-					var savedTheme = localStorage.getItem('bm_theme_mode');
-					if (savedTheme === 'pitch-black') {
-						document.documentElement.classList.add('pitch-black');
+					var savedTheme = localStorage.getItem('bm_theme');
+					if (savedTheme === 'dark') {
+						document.documentElement.classList.add('dark');
 					} else {
-						document.documentElement.classList.remove('pitch-black');
+						document.documentElement.classList.remove('dark');
 					}
 				} catch (e) {}
 			})();
@@ -292,7 +292,7 @@ const faqJsonLd = {
 	</head>
 	<body class="bg-[#02040a] text-zinc-100 min-h-screen selection:bg-amber-400 selection:text-black overflow-x-hidden antialiased w-full max-w-full relative">
 		<!-- Mystic Deep Cosmic Purple & Indigo Aura Glow Mesh (21st.dev / Godly aesthetic) -->
-		<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden w-full max-w-full">
+		<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden w-full max-w-full theme-ambient-auras">
 			<!-- Top Navbar & Hero Aura: Deep Cosmic Purple & Indigo Aura -->
 			<div class="absolute -top-36 left-1/2 -translate-x-1/2 w-[1200px] max-w-none h-[700px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.18)_40%,rgba(245,158,11,0.12)_65%,transparent_80%)] blur-[100px] rounded-full pointer-events-none animate-aura-pulse"></div>
 			
