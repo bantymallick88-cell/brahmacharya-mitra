@@ -395,6 +395,7 @@ export default function LibraryView() {
       <SanctuaryPdfReaderModal
         book={activeBookForReader}
         onClose={() => setActiveBookForReader(null)}
+        onSelectBook={(b) => setActiveBookForReader(b)}
       />
     </div>
   );

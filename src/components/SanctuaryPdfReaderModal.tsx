@@ -24,13 +24,40 @@ import {
   Sliders,
   Sparkles,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Copy,
+  Check,
+  Trash2,
+  Palette,
+  FileText,
+  ExternalLink
 } from 'lucide-react';
 import type { LibraryBook } from '../data/libraryBooks';
+import { LIBRARY_BOOKS } from '../data/libraryBooks';
+
+export interface HighlightItem {
+  id: string;
+  bookId: number;
+  text: string;
+  page: number;
+  color: string; // '#FACC15' | '#22C55E' | '#3B82F6' | '#EC4899'
+  colorName: 'Yellow' | 'Green' | 'Blue' | 'Pink';
+  createdAt: number;
+  rects: { left: number; top: number; width: number; height: number }[];
+}
+
+interface CurrentSelection {
+  text: string;
+  page: number;
+  rects: { left: number; top: number; width: number; height: number }[];
+  toolbarX: number;
+  toolbarY: number;
+}
 
 interface SanctuaryPdfReaderModalProps {
   book: LibraryBook | null;
   onClose: () => void;
+  onSelectBook?: (book: LibraryBook) => void;
 }
 
 type ReaderTheme = 'dark' | 'sepia' | 'light';
@@ -42,7 +69,7 @@ declare global {
   }
 }
 
-export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfReaderModalProps) {
+export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }: SanctuaryPdfReaderModalProps) {
   const [theme, setTheme] = useState<ReaderTheme>('dark');
   const [viewMode, setViewMode] = useState<ViewMode>('continuous');
   const [zoom, setZoom] = useState<number>(1.15);
@@ -52,6 +79,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isHeavyArchive, setIsHeavyArchive] = useState<boolean>(false);
   const [drmToast, setDrmToast] = useState<string | null>(null);
   const [notes, setNotes] = useState<string>('');
   const [showNotes, setShowNotes] = useState<boolean>(false);
@@ -60,6 +88,13 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
   const [aspectRatio, setAspectRatio] = useState<number>(0.707); // Default A4 ratio (1 / 1.414)
   const [pageBaseWidth, setPageBaseWidth] = useState<number>(680);
 
+  // Multi-Color Highlighter & Shloka States
+  const [highlights, setHighlights] = useState<HighlightItem[]>([]);
+  const [currentSelection, setCurrentSelection] = useState<CurrentSelection | null>(null);
+  const [sidebarTab, setSidebarTab] = useState<'shlokas' | 'notes'>('shlokas');
+  const [copiedHighlightId, setCopiedHighlightId] = useState<string | null>(null);
+  const [activeHighlightId, setActiveHighlightId] = useState<string | null>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pdfDocRef = useRef<any>(null);
@@ -67,6 +102,17 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
   const lastTapRef = useRef<number>(0);
   const touchDistanceRef = useRef<number>(0);
   const initialPinchZoomRef = useRef<number>(1);
+
+  // Load PDF.js Viewer CSS once for accurate textLayer alignment
+  useEffect(() => {
+    if (!document.getElementById('pdfjs-viewer-css')) {
+      const link = document.createElement('link');
+      link.id = 'pdfjs-viewer-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css';
+      document.head.appendChild(link);
+    }
+  }, []);
 
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL)
     ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/')
@@ -131,12 +177,19 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [book, numPages, pageNum, onClose, triggerDrmWarning]);
 
-  // Load saved notes & last page for this book
+  // Load saved notes, highlights & last page for this book
   useEffect(() => {
     if (!book) return;
     try {
       const savedNotes = localStorage.getItem(`sanctuary_notes_${book.id}`);
-      if (savedNotes) setNotes(savedNotes);
+      setNotes(savedNotes || '');
+
+      const savedHl = localStorage.getItem(`sanctuary_highlights_${book.id}`);
+      if (savedHl) {
+        setHighlights(JSON.parse(savedHl));
+      } else {
+        setHighlights([]);
+      }
 
       const savedPage = localStorage.getItem(`sanctuary_last_page_${book.id}`);
       if (savedPage) {
@@ -173,6 +226,138 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
     }
   };
 
+  // Save Highlights array to localStorage
+  const saveHighlights = (items: HighlightItem[]) => {
+    setHighlights(items);
+    if (book) {
+      try {
+        localStorage.setItem(`sanctuary_highlights_${book.id}`, JSON.stringify(items));
+      } catch {
+        // storage quota failsafe
+      }
+    }
+  };
+
+  // Remove a single highlight
+  const removeHighlight = (id: string) => {
+    const updated = highlights.filter((h) => h.id !== id);
+    saveHighlights(updated);
+    setDrmToast('Highlight removed from sanctuary record.');
+  };
+
+  // Sync and save a highlighted shloka into the Notes & Shlokas drawer
+  const syncHighlightToNotes = useCallback((h: HighlightItem) => {
+    setShowNotes(true);
+    setSidebarTab('shlokas');
+    setActiveHighlightId(h.id);
+
+    const entryTag = `📌 [Page ${h.page} • ${h.colorName} Shloka]:\n"${h.text}"`;
+    setNotes((prevNotes) => {
+      if (prevNotes.includes(`"${h.text}"`)) {
+        return prevNotes; // already present
+      }
+      const combined = prevNotes.trim() ? `${prevNotes.trim()}\n\n${entryTag}` : entryTag;
+      if (book) {
+        try {
+          localStorage.setItem(`sanctuary_notes_${book.id}`, combined);
+        } catch {}
+      }
+      return combined;
+    });
+
+    setDrmToast(`Synced Page ${h.page} (${h.colorName}) to Sadhana Notes`);
+  }, [book]);
+
+  // Add new highlight with chosen color preset
+  const addHighlight = (color: string, colorName: 'Yellow' | 'Green' | 'Blue' | 'Pink') => {
+    if (!currentSelection || !book) return;
+
+    const newHl: HighlightItem = {
+      id: `hl_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      bookId: book.id,
+      text: currentSelection.text,
+      page: currentSelection.page,
+      color,
+      colorName,
+      createdAt: Date.now(),
+      rects: currentSelection.rects,
+    };
+
+    const updated = [newHl, ...highlights];
+    saveHighlights(updated);
+    syncHighlightToNotes(newHl);
+
+    // Clear active browser selection
+    window.getSelection()?.removeAllRanges();
+    setCurrentSelection(null);
+  };
+
+  // Text Selection detection across PDF.js textLayer
+  const handleSelectionCheck = useCallback(() => {
+    setTimeout(() => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) return;
+
+      const text = selection.toString().trim();
+      if (text.length < 2) return;
+
+      try {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+
+        let containerNode: Node | null = range.commonAncestorContainer;
+        if (containerNode.nodeType === Node.TEXT_NODE) {
+          containerNode = containerNode.parentNode;
+        }
+        const pageCard = (containerNode as HTMLElement)?.closest?.('[id^="sanctuary-page-card-"]') as HTMLElement | null;
+        const page = pageCard ? parseInt(pageCard.id.replace('sanctuary-page-card-', ''), 10) : pageNum;
+
+        const relativeRects: { left: number; top: number; width: number; height: number }[] = [];
+        if (pageCard) {
+          const cardRect = pageCard.getBoundingClientRect();
+          const clientRects = Array.from(range.getClientRects());
+          for (const r of clientRects) {
+            relativeRects.push({
+              left: Math.max(0, Math.min(100, ((r.left - cardRect.left) / cardRect.width) * 100)),
+              top: Math.max(0, Math.min(100, ((r.top - cardRect.top) / cardRect.height) * 100)),
+              width: Math.max(0, Math.min(100, (r.width / cardRect.width) * 100)),
+              height: Math.max(0, Math.min(100, (r.height / cardRect.height) * 100)),
+            });
+          }
+        }
+
+        const toolbarX = Math.max(130, Math.min(window.innerWidth - 130, rect.left + rect.width / 2));
+        const toolbarY = Math.max(65, rect.top - 12);
+
+        setCurrentSelection({
+          text,
+          page,
+          rects: relativeRects,
+          toolbarX,
+          toolbarY,
+        });
+      } catch {
+        // Selection range edge cases
+      }
+    }, 20);
+  }, [pageNum]);
+
+  // Dismiss toolbar on clicks outside toolbar or when selection collapses
+  useEffect(() => {
+    const handleDocumentPointerDown = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (target?.closest?.('.sanctuary-highlight-toolbar')) return;
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) {
+        setCurrentSelection(null);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleDocumentPointerDown);
+    return () => document.removeEventListener('pointerdown', handleDocumentPointerDown);
+  }, []);
+
   // Fullscreen Toggle
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
@@ -201,6 +386,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
     if (!pdfUrl) return;
     setIsLoading(true);
     setErrorMsg(null);
+    setIsHeavyArchive(false);
     setRenderedPages(new Set());
     renderingQueueRef.current.clear();
 
@@ -250,12 +436,17 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
       setIsLoading(false);
     } catch (err: any) {
       console.warn('PDF.js load warning:', err);
-      setErrorMsg('Direct canvas rendering unavailable. Switching to protected reader view.');
+      const isLargeAsset = parseFloat(book?.sizeMb || '0') > 25;
+      if (isLargeAsset) {
+        setIsHeavyArchive(true);
+      } else {
+        setErrorMsg('Direct canvas rendering unavailable. Switching to protected reader view.');
+      }
       setIsLoading(false);
     }
-  }, [pdfUrl]);
+  }, [pdfUrl, book]);
 
-  // Render individual page canvas
+  // Render individual page canvas & text layer
   const renderCanvasPage = useCallback(async (pageIndex: number) => {
     if (!pdfDocRef.current || renderingQueueRef.current.has(pageIndex)) return;
 
@@ -274,11 +465,12 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
       const unscaledViewport = page.getViewport({ scale: 1 });
       const currentScale = targetWidth / unscaledViewport.width;
       const viewport = page.getViewport({ scale: currentScale * dpr });
+      const targetHeight = targetWidth / (unscaledViewport.width / unscaledViewport.height);
 
       canvas.width = Math.floor(viewport.width);
       canvas.height = Math.floor(viewport.height);
       canvas.style.width = `${Math.floor(targetWidth)}px`;
-      canvas.style.height = `${Math.floor(targetWidth / (unscaledViewport.width / unscaledViewport.height))}px`;
+      canvas.style.height = `${Math.floor(targetHeight)}px`;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
@@ -288,6 +480,36 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
       };
 
       await page.render(renderContext).promise;
+
+      // Render TextLayer for selectable text & multi-color highlighter
+      const textLayerEl = document.getElementById(`text-layer-${pageIndex}`) as HTMLDivElement | null;
+      if (textLayerEl) {
+        textLayerEl.innerHTML = '';
+        textLayerEl.style.width = `${Math.floor(targetWidth)}px`;
+        textLayerEl.style.height = `${Math.floor(targetHeight)}px`;
+
+        try {
+          const textContent = await page.getTextContent();
+          const textViewport = page.getViewport({ scale: currentScale });
+
+          if (window.pdfjsLib && window.pdfjsLib.renderTextLayer) {
+            await window.pdfjsLib.renderTextLayer({
+              textContentSource: textContent,
+              container: textLayerEl,
+              viewport: textViewport,
+            }).promise;
+          } else if (window.pdfjsLib && window.pdfjsLib.TextLayer) {
+            const textLayer = new window.pdfjsLib.TextLayer({
+              textContentSource: textContent,
+              container: textLayerEl,
+              viewport: textViewport,
+            });
+            await textLayer.render();
+          }
+        } catch (textErr) {
+          // Scanned pages or empty text streams
+        }
+      }
 
       setRenderedPages((prev) => {
         const next = new Set(prev);
@@ -606,17 +828,22 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
             <Sliders className="w-4 h-4" />
           </button>
 
-          {/* Sadhana Notes Toggle */}
+          {/* Sadhana Notes & Shlokas Toggle */}
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className={`p-2 rounded-xl border transition cursor-pointer ${
+            className={`p-2 rounded-xl border transition cursor-pointer relative ${
               showNotes
                 ? 'bg-amber-500 text-zinc-950 border-amber-400'
                 : 'bg-zinc-900/80 hover:bg-zinc-800 border-zinc-800 text-amber-300'
             }`}
-            title="Sadhana Notes & Highlights"
+            title="Sadhana Notes & Highlighted Shlokas"
           >
             <Highlighter className="w-4 h-4" />
+            {highlights.length > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-zinc-950 text-[9px] font-mono font-black flex items-center justify-center shadow-md">
+                {highlights.length}
+              </span>
+            )}
           </button>
 
           {/* Fullscreen Toggle */}
@@ -742,7 +969,12 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
           ref={scrollContainerRef}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
-          onTouchEnd={handleDoubleTap}
+          onTouchEnd={(e) => {
+            handleDoubleTap(e);
+            handleSelectionCheck();
+          }}
+          onMouseUp={handleSelectionCheck}
+          onKeyUp={handleSelectionCheck}
           style={{
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',
@@ -750,6 +982,34 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
           }}
           className={`flex-1 w-full h-full overflow-y-auto overflow-x-auto flex flex-col items-center justify-start pt-6 pb-28 px-2 sm:px-6 relative scroll-smooth ${themeStyles.scrollAreaBg}`}
         >
+          {/* Custom style overrides for PDF.js selectable textLayer */}
+          <style>{`
+            .pdf-page-container .textLayer {
+              position: absolute;
+              inset: 0;
+              overflow: hidden;
+              opacity: 1 !important;
+              line-height: 1;
+              transform-origin: 0 0;
+              z-index: 6;
+              user-select: text !important;
+              -webkit-user-select: text !important;
+            }
+            .pdf-page-container .textLayer :is(span, br) {
+              color: transparent !important;
+              position: absolute;
+              white-space: pre;
+              cursor: text;
+              transform-origin: 0 0;
+              user-select: text !important;
+              -webkit-user-select: text !important;
+            }
+            .pdf-page-container .textLayer ::selection {
+              background: rgba(250, 204, 21, 0.42) !important;
+              color: transparent !important;
+            }
+          `}</style>
+
           {/* Subtle Watermark Overlay */}
           <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-10 opacity-[0.035] select-none text-center">
             <span className="font-cinzel text-4xl sm:text-7xl font-black text-amber-400 rotate-[-25deg] tracking-widest uppercase">
@@ -775,31 +1035,68 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
                   <div
                     id={`sanctuary-page-card-${p}`}
                     key={p}
-                    className={`relative rounded-xl overflow-hidden border transition-all duration-300 ${themeStyles.pageShadow}`}
+                    className={`relative rounded-xl overflow-hidden border transition-all duration-300 pdf-page-container select-text ${themeStyles.pageShadow}`}
                     style={{
                       width: `${scaledPageWidth}px`,
                       maxWidth: '100%',
                       minHeight: `${Math.min(scaledPageHeight, 950)}px`,
                       aspectRatio: `${aspectRatio}`,
-                      filter: themeStyles.canvasFilter,
                       willChange: 'transform',
                     }}
                   >
+                    {/* Rendered Canvas Page */}
                     <canvas
                       id={`canvas-page-${p}`}
-                      className="block w-full h-auto"
+                      className="block w-full h-auto pointer-events-none"
+                      style={{ filter: themeStyles.canvasFilter }}
                     />
+
+                    {/* Selectable PDF.js Text Layer for Multi-Color Highlighting */}
+                    <div
+                      id={`text-layer-${p}`}
+                      className="textLayer absolute inset-0 select-text"
+                    />
+
+                    {/* Persistent Highlight Overlays */}
+                    <div className="absolute inset-0 pointer-events-none z-[4] overflow-hidden">
+                      {highlights
+                        .filter((h) => h.page === p && h.rects && h.rects.length > 0)
+                        .map((h) => (
+                          <div key={h.id} className="contents pointer-events-auto">
+                            {h.rects.map((r, rIdx) => (
+                              <div
+                                key={rIdx}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  syncHighlightToNotes(h);
+                                }}
+                                title={`[${h.colorName}] Click to sync to Sadhana Notes (Page ${h.page})`}
+                                className="absolute rounded-sm transition-opacity duration-200 cursor-pointer hover:opacity-100 shadow-[0_0_8px_rgba(245,158,11,0.2)]"
+                                style={{
+                                  left: `${r.left}%`,
+                                  top: `${r.top}%`,
+                                  width: `${r.width}%`,
+                                  height: `${r.height}%`,
+                                  backgroundColor: h.color,
+                                  opacity: 0.38,
+                                  mixBlendMode: 'multiply',
+                                }}
+                              />
+                            ))}
+                          </div>
+                        ))}
+                    </div>
 
                     {/* Page Placeholder before rendering */}
                     {!renderedPages.has(p) && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/40 text-zinc-500 font-mono text-xs">
+                      <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/40 text-zinc-500 font-mono text-xs pointer-events-none z-10">
                         <Loader2 className="w-5 h-5 animate-spin text-amber-500/50 mr-2" />
                         <span>Rendering Page {p}...</span>
                       </div>
                     )}
 
                     {/* Page Number Pill */}
-                    <div className="absolute bottom-2 right-3 px-2 py-0.5 rounded-md bg-zinc-950/80 border border-zinc-800 text-[10px] font-mono font-bold text-amber-300/80 backdrop-blur-md select-none pointer-events-none">
+                    <div className="absolute bottom-2 right-3 px-2 py-0.5 rounded-md bg-zinc-950/80 border border-zinc-800 text-[10px] font-mono font-bold text-amber-300/80 backdrop-blur-md select-none pointer-events-none z-10">
                       {p} / {numPages}
                     </div>
                   </div>
@@ -813,36 +1110,132 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
             <div className="my-auto flex flex-col items-center justify-center py-4 w-full">
               <div
                 id={`sanctuary-page-card-${pageNum}`}
-                className={`relative rounded-xl overflow-hidden border transition-all duration-300 ${themeStyles.pageShadow}`}
+                className={`relative rounded-xl overflow-hidden border transition-all duration-300 pdf-page-container select-text ${themeStyles.pageShadow}`}
                 style={{
                   width: `${scaledPageWidth}px`,
                   maxWidth: '100%',
                   aspectRatio: `${aspectRatio}`,
-                  filter: themeStyles.canvasFilter,
                   willChange: 'transform',
                 }}
               >
+                {/* Rendered Canvas Page */}
                 <canvas
                   id={`canvas-page-${pageNum}`}
-                  className="block w-full h-auto"
+                  className="block w-full h-auto pointer-events-none"
+                  style={{ filter: themeStyles.canvasFilter }}
                 />
 
+                {/* Selectable PDF.js Text Layer for Multi-Color Highlighting */}
+                <div
+                  id={`text-layer-${pageNum}`}
+                  className="textLayer absolute inset-0 select-text"
+                />
+
+                {/* Persistent Highlight Overlays */}
+                <div className="absolute inset-0 pointer-events-none z-[4] overflow-hidden">
+                  {highlights
+                    .filter((h) => h.page === pageNum && h.rects && h.rects.length > 0)
+                    .map((h) => (
+                      <div key={h.id} className="contents pointer-events-auto">
+                        {h.rects.map((r, rIdx) => (
+                          <div
+                            key={rIdx}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              syncHighlightToNotes(h);
+                            }}
+                            title={`[${h.colorName}] Click to sync to Sadhana Notes (Page ${pageNum})`}
+                            className="absolute rounded-sm transition-opacity duration-200 cursor-pointer hover:opacity-100 shadow-[0_0_8px_rgba(245,158,11,0.2)]"
+                            style={{
+                              left: `${r.left}%`,
+                              top: `${r.top}%`,
+                              width: `${r.width}%`,
+                              height: `${r.height}%`,
+                              backgroundColor: h.color,
+                              opacity: 0.38,
+                              mixBlendMode: 'multiply',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                </div>
+
                 {!renderedPages.has(pageNum) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/40 text-zinc-500 font-mono text-xs">
+                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/40 text-zinc-500 font-mono text-xs pointer-events-none z-10">
                     <Loader2 className="w-5 h-5 animate-spin text-amber-500/50 mr-2" />
                     <span>Rendering Page {pageNum}...</span>
                   </div>
                 )}
 
-                <div className="absolute bottom-2 right-3 px-2 py-0.5 rounded-md bg-zinc-950/80 border border-zinc-800 text-[10px] font-mono font-bold text-amber-300/80 backdrop-blur-md select-none pointer-events-none">
+                <div className="absolute bottom-2 right-3 px-2 py-0.5 rounded-md bg-zinc-950/80 border border-zinc-800 text-[10px] font-mono font-bold text-amber-300/80 backdrop-blur-md select-none pointer-events-none z-10">
                   Page {pageNum} of {numPages}
                 </div>
               </div>
             </div>
           )}
 
-          {/* ── Fallback Viewport if Canvas encounters issues ── */}
-          {errorMsg && (
+          {/* ── Sacred Archival Granth Notice (for >25MB Compendiums) ── */}
+          {isHeavyArchive && (
+            <div className="w-full max-w-2xl my-auto py-10 px-4 flex flex-col items-center text-center">
+              <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/40 text-amber-400 mb-4 shadow-[0_0_35px_rgba(245,158,11,0.2)]">
+                <BookOpen className="w-10 h-10 text-amber-400" />
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-xs font-mono font-bold tracking-wider mb-3">
+                <Shield className="w-3.5 h-3.5 text-amber-400" />
+                Sacred Archival Compendium ({book.sizeMb} MB)
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold font-cinzel text-white mb-2">
+                {book.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-300 max-w-lg mb-6 leading-relaxed">
+                This colossal {book.sizeMb} MB encyclopedia is preserved securely in the Sanctum offline repository to comply with edge CDN streaming thresholds. All 27 other sacred texts are immediately readable online!
+              </p>
+
+              <div className="w-full p-4 rounded-2xl bg-zinc-900/80 border border-zinc-800 text-left mb-6 space-y-2">
+                <p className="text-xs text-amber-300 font-bold flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  Recommended Sacred Texts to Read Online Now:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
+                  {[
+                    LIBRARY_BOOKS.find((b) => b.id === 3), // Brahmacharya & Students
+                    LIBRARY_BOOKS.find((b) => b.id === 6), // Master Your Mind
+                    LIBRARY_BOOKS.find((b) => b.id === 15), // Vivekachudamani
+                  ]
+                    .filter(Boolean)
+                    .map((rec) => (
+                      <button
+                        key={rec!.id}
+                        onClick={() => {
+                          if (onSelectBook) onSelectBook(rec!);
+                        }}
+                        className="p-2.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/25 hover:border-amber-400 text-left transition cursor-pointer group"
+                      >
+                        <p className="text-xs font-bold text-amber-300 group-hover:text-amber-200 truncate">
+                          {rec!.title}
+                        </p>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">
+                          {rec!.sizeMb} MB • {rec!.language}
+                        </p>
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-bold text-xs sm:text-sm transition cursor-pointer shadow-lg hover:shadow-amber-500/25 active:scale-95"
+                >
+                  Return to Library
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Fallback Viewport if Canvas encounters issues (for normal books) ── */}
+          {!isHeavyArchive && errorMsg && (
             <div className="w-full h-full max-w-4xl flex flex-col items-center justify-center py-4">
               <div className="w-full h-[85vh] relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl bg-zinc-950">
                 <iframe
@@ -928,47 +1321,274 @@ export default function SanctuaryPdfReaderModal({ book, onClose }: SanctuaryPdfR
         <AnimatePresence>
           {showNotes && (
             <motion.aside
-              initial={{ x: 320, opacity: 0 }}
+              initial={{ x: 380, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 320, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className={`w-72 sm:w-80 border-l p-4 flex flex-col z-40 shrink-0 shadow-2xl ${themeStyles.cardBg}`}
+              exit={{ x: 380, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className={`w-80 sm:w-96 border-l p-4 flex flex-col z-40 shrink-0 shadow-2xl ${themeStyles.cardBg} overflow-hidden`}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
-                <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
-                  <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+              {/* Sidebar Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-800 shrink-0">
+                <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider font-cinzel">
+                  <Bookmark className="w-4 h-4 text-amber-400" />
                   <span>Sadhana Notes & Shlokas</span>
                 </div>
                 <button
                   onClick={() => setShowNotes(false)}
-                  className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white"
+                  className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition cursor-pointer"
+                  title="Close Sidebar (Esc)"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="mt-3 flex-1 flex flex-col gap-2">
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                  Record sacred verses, key realizations, or daily reminders for this scripture. Automatically synced to your browser:
-                </p>
+              {/* Sub-Tabs: Saved Shlokas vs Journal */}
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-950/70 border border-zinc-800 rounded-xl my-3 shrink-0">
+                <button
+                  onClick={() => setSidebarTab('shlokas')}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    sidebarTab === 'shlokas'
+                      ? 'bg-amber-500 text-zinc-950 shadow-md font-extrabold'
+                      : 'text-zinc-400 hover:text-white'
+                  }`}
+                >
+                  <Highlighter className="w-3.5 h-3.5" />
+                  <span>Shlokas ({highlights.length})</span>
+                </button>
+                <button
+                  onClick={() => setSidebarTab('notes')}
+                  className={`py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    sidebarTab === 'notes'
+                      ? 'bg-amber-500 text-zinc-950 shadow-md font-extrabold'
+                      : 'text-zinc-400 hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Journal</span>
+                </button>
+              </div>
 
-                <textarea
-                  value={notes}
-                  onChange={(e) => handleSaveNotes(e.target.value)}
-                  placeholder="Record verses, contemplation notes, page highlights..."
-                  className="flex-1 w-full p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 focus:border-amber-400 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none resize-none leading-relaxed"
-                />
+              {/* Content Area */}
+              <div className="flex-1 overflow-y-auto pr-1 space-y-3">
+                {sidebarTab === 'shlokas' ? (
+                  /* Shlokas List */
+                  highlights.length === 0 ? (
+                    <div className="py-12 px-3 flex flex-col items-center justify-center text-center">
+                      <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mb-3">
+                        <Highlighter className="w-6 h-6 text-amber-400" />
+                      </div>
+                      <p className="text-xs font-bold text-zinc-200 mb-1">
+                        No Shlokas Highlighted Yet
+                      </p>
+                      <p className="text-[11px] text-zinc-400 max-w-[220px] leading-relaxed">
+                        Select any text in the book to highlight in Yellow, Green, Blue, or Pink. Verses save here automatically.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {highlights.map((h) => {
+                        const colorConfig = {
+                          Yellow: { border: 'border-amber-400/60', text: 'text-amber-300', bg: 'bg-amber-500/15' },
+                          Green: { border: 'border-emerald-500/60', text: 'text-emerald-300', bg: 'bg-emerald-500/15' },
+                          Blue: { border: 'border-blue-500/60', text: 'text-blue-300', bg: 'bg-blue-500/15' },
+                          Pink: { border: 'border-pink-500/60', text: 'text-pink-300', bg: 'bg-pink-500/15' },
+                        }[h.colorName];
 
-                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-300 flex items-center gap-2">
-                  <Shield className="w-3.5 h-3.5 shrink-0 text-amber-400" />
-                  <span>Notes are encrypted locally and never transmitted to external servers.</span>
-                </div>
+                        const isFocused = activeHighlightId === h.id;
+
+                        return (
+                          <div
+                            key={h.id}
+                            className={`p-3 rounded-2xl bg-zinc-950/85 border transition-all duration-200 ${
+                              isFocused ? `${colorConfig.border} ring-2 ring-amber-500/40 shadow-lg` : 'border-zinc-800/90 hover:border-zinc-700'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full"
+                                  style={{ backgroundColor: h.color }}
+                                />
+                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${colorConfig.bg} ${colorConfig.text}`}>
+                                  {h.colorName}
+                                </span>
+                              </div>
+
+                              <button
+                                onClick={() => scrollToPage(h.page)}
+                                className="text-[10px] font-mono font-bold text-amber-300 hover:text-white px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 transition cursor-pointer"
+                                title="Jump to this page"
+                              >
+                                Page {h.page} →
+                              </button>
+                            </div>
+
+                            <p className="text-xs text-zinc-200 italic leading-relaxed line-clamp-4 pl-2 border-l-2 mb-2.5" style={{ borderColor: h.color }}>
+                              "{h.text}"
+                            </p>
+
+                            <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-[10px]">
+                              <button
+                                onClick={() => {
+                                  syncHighlightToNotes(h);
+                                  setSidebarTab('notes');
+                                }}
+                                className="text-zinc-400 hover:text-amber-300 flex items-center gap-1 transition cursor-pointer"
+                                title="Append this verse to your Sadhana Journal"
+                              >
+                                <FileText className="w-3 h-3" />
+                                <span>Add to Journal</span>
+                              </button>
+
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => {
+                                    if (navigator.clipboard) {
+                                      navigator.clipboard.writeText(`"${h.text}" — Page ${h.page}, ${book.title}`);
+                                      setCopiedHighlightId(h.id);
+                                      setTimeout(() => setCopiedHighlightId(null), 2000);
+                                      setDrmToast(`Copied Shloka from Page ${h.page}`);
+                                    }
+                                  }}
+                                  className="text-zinc-400 hover:text-white p-1 rounded hover:bg-zinc-800 transition cursor-pointer"
+                                  title="Copy Verse Citation"
+                                >
+                                  {copiedHighlightId === h.id ? (
+                                    <Check className="w-3 h-3 text-emerald-400" />
+                                  ) : (
+                                    <Copy className="w-3 h-3" />
+                                  )}
+                                </button>
+                                <button
+                                  onClick={() => removeHighlight(h.id)}
+                                  className="text-zinc-500 hover:text-red-400 p-1 rounded hover:bg-zinc-800 transition cursor-pointer"
+                                  title="Remove Highlight"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )
+                ) : (
+                  /* Freeform Journal Notes */
+                  <div className="flex flex-col h-full gap-2">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                      <span>Personal Contemplation & Realizations:</span>
+                      {highlights.length > 0 && (
+                        <button
+                          onClick={() => {
+                            const compiled = highlights
+                              .sort((a, b) => a.page - b.page)
+                              .map((h) => `📌 [Page ${h.page} • ${h.colorName}]\n"${h.text}"`)
+                              .join('\n\n');
+                            const nextNotes = notes.trim() ? `${notes.trim()}\n\n${compiled}` : compiled;
+                            handleSaveNotes(nextNotes);
+                            setDrmToast('All highlighted shlokas synced to journal.');
+                          }}
+                          className="text-[10px] font-bold text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer"
+                          title="Append all highlighted shlokas to journal text"
+                        >
+                          <Bookmark className="w-3 h-3" />
+                          <span>Sync All Shlokas</span>
+                        </button>
+                      )}
+                    </div>
+
+                    <textarea
+                      value={notes}
+                      onChange={(e) => handleSaveNotes(e.target.value)}
+                      placeholder="Write your sadhana journal, shloka translations, daily vow reflections, or realizations here..."
+                      className="flex-1 w-full min-h-[300px] p-3 rounded-2xl bg-zinc-950/80 border border-zinc-800 focus:border-amber-400 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none resize-none leading-relaxed"
+                    />
+
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-300 flex items-center gap-2 shrink-0">
+                      <Shield className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                      <span>Encrypted locally in browser storage. Private to your device.</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.aside>
           )}
         </AnimatePresence>
 
       </div>
+
+      {/* ── Sleek Floating Multi-Color Highlighter Toolbar ── */}
+      <AnimatePresence>
+        {currentSelection && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.88, y: 8 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            style={{
+              position: 'fixed',
+              left: `${currentSelection.toolbarX}px`,
+              top: `${currentSelection.toolbarY}px`,
+              transform: 'translate(-50%, -100%)',
+              zIndex: 140,
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.stopPropagation()}
+            className="sanctuary-highlight-toolbar flex items-center gap-1.5 p-1.5 rounded-2xl bg-zinc-950/95 border border-amber-500/50 shadow-[0_10px_35px_rgba(0,0,0,0.95),0_0_25px_rgba(245,158,11,0.3)] backdrop-blur-2xl select-none"
+          >
+            <div className="flex items-center gap-1 pl-1.5 pr-2 border-r border-zinc-800 text-[10px] font-bold text-amber-400 font-cinzel tracking-wider">
+              <Highlighter className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden xs:inline">Highlight</span>
+            </div>
+
+            {/* 4 Multi-Color Preset Swatches */}
+            {[
+              { color: '#FACC15', name: 'Yellow' as const, bg: 'bg-[#FACC15]', ring: 'hover:ring-[#FACC15]/80' },
+              { color: '#22C55E', name: 'Green' as const, bg: 'bg-[#22C55E]', ring: 'hover:ring-[#22C55E]/80' },
+              { color: '#3B82F6', name: 'Blue' as const, bg: 'bg-[#3B82F6]', ring: 'hover:ring-[#3B82F6]/80' },
+              { color: '#EC4899', name: 'Pink' as const, bg: 'bg-[#EC4899]', ring: 'hover:ring-[#EC4899]/80' },
+            ].map((preset) => (
+              <button
+                key={preset.color}
+                onClick={() => addHighlight(preset.color, preset.name)}
+                className={`w-6 h-6 rounded-full ${preset.bg} shadow-md hover:scale-125 transition-transform duration-150 cursor-pointer active:scale-95 border-2 border-zinc-900 hover:ring-2 ${preset.ring}`}
+                title={`Highlight in ${preset.name} & Sync to Sadhana Notes`}
+              />
+            ))}
+
+            <div className="w-px h-4 bg-zinc-800 mx-0.5" />
+
+            {/* Copy Quote Button */}
+            <button
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(`"${currentSelection.text}" — Page ${currentSelection.page}, ${book.title}`);
+                  setDrmToast(`Copied text from Page ${currentSelection.page}`);
+                }
+                window.getSelection()?.removeAllRanges();
+                setCurrentSelection(null);
+              }}
+              className="p-1.5 rounded-xl hover:bg-zinc-800 text-zinc-300 hover:text-white transition cursor-pointer"
+              title="Copy Selected Verse Citation"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Dismiss Button */}
+            <button
+              onClick={() => {
+                window.getSelection()?.removeAllRanges();
+                setCurrentSelection(null);
+              }}
+              className="p-1.5 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition cursor-pointer"
+              title="Dismiss Highlighter Toolbar"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Toast Notification: DRM Protection Warning ── */}
       <AnimatePresence>

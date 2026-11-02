@@ -1,0 +1,8 @@
+# Cloudflare Pages Deployment Ignore Rules
+# Strictly enforces Cloudflare's 25 MiB single-file limit
+
+.assets/**
+book/Bramhacharya (1).pdf
+book/Brahmacharya (1).pdf
+book/ब्रह्मचर्य_कब_क्यों_और_1.pdf
+
