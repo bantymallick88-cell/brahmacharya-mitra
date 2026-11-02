@@ -175,13 +175,12 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3.5">
               <div className="relative shrink-0 flex items-center justify-center">
-                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-[#F97316] blur-[4px] opacity-80" />
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-11 h-11 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_18px_rgba(255,140,0,0.6)] shrink-0"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -190,20 +189,15 @@ export default function Footer() {
                 />
               </div>
               <div className="flex flex-col leading-none">
-                <div className="flex items-baseline gap-1.5 flex-wrap">
-                  <span className="font-cinzel font-black text-lg sm:text-xl tracking-wider text-[#FFFFFF] drop-shadow-[0_1px_12px_rgba(255,255,255,0.45)] uppercase">
-                    BRAHMACHARYA
-                  </span>
-                  <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-[#F97316] bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_14px_rgba(249,115,22,0.65)] text-lg sm:text-xl font-black tracking-wide">
-                    MITRA
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="text-[10px] font-sanskrit text-amber-300 font-bold tracking-wider">
+                <span className="font-cinzel font-black text-xl sm:text-2xl tracking-wider text-[#FFFFFF] drop-shadow-[0_2px_14px_rgba(255,255,255,0.5)] uppercase">
+                  BRAHMACHARYA MITRA
+                </span>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="text-[11px] font-sanskrit text-white/90 font-bold tracking-wider">
                     ब्रह्मचर्य मित्र
                   </span>
-                  <span className="w-1 h-1 rounded-full bg-[#F97316]" />
-                  <span className="text-[9px] font-sans uppercase tracking-widest text-zinc-300 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
+                  <span className="text-[10px] font-sans uppercase tracking-widest text-zinc-300 font-semibold">
                     Divine Sanctum
                   </span>
                 </div>
@@ -303,43 +297,73 @@ export default function Footer() {
 
         </div>
 
-        {/* ── Bottom Disclaimers & Copyright ── */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
-          <div className="text-center sm:text-left flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
-            <span>© {new Date().getFullYear()} Brahmacharya Mitra (ब्रह्मचर्य मित्र). All rights reserved.</span>
+        {/* ── Premium Bottom Legal & Glassmorphism Bar ── */}
+        <div className="mt-12 p-4 sm:p-6 rounded-3xl bg-zinc-950/80 border border-white/10 backdrop-blur-2xl shadow-[0_15px_40px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.08)] flex flex-col lg:flex-row items-center justify-between gap-5 text-xs text-zinc-300">
+          
+          {/* Copyright & Divine Sanctum Attribution */}
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+            <div className="flex items-center gap-1.5 font-cinzel font-bold text-white tracking-wider">
+              <span>© {new Date().getFullYear()}</span>
+              <span className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">BRAHMACHARYA MITRA</span>
+            </div>
             <span className="text-zinc-600 hidden sm:inline">•</span>
-            <button
-              onClick={openDmcaModal}
-              className="text-amber-400 hover:text-amber-300 underline underline-offset-4 decoration-amber-500/50 hover:decoration-amber-300 transition cursor-pointer font-bold"
-            >
-              DMCA / Fair Use Notice
-            </button>
-            <span className="text-zinc-600">•</span>
-            <button
-              onClick={openPrivacyModal}
-              className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition cursor-pointer font-medium"
-            >
-              Privacy Policy
-            </button>
-            <span className="text-zinc-600">•</span>
-            <a
-              href={`${baseUrl}privacy`}
-              className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition font-medium"
-            >
-              Terms of Use
-            </a>
+            <span className="text-[11px] text-zinc-400">All rights reserved</span>
+            <span className="text-zinc-600 hidden sm:inline">•</span>
+            <span className="text-[11px] text-zinc-400 font-sanskrit">ब्रह्मचर्य मित्र</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Glassmorphic Legal & Contact Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+            {/* DMCA / Fair Use */}
+            <button
+              onClick={openDmcaModal}
+              className="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-amber-400/60 text-amber-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold shadow-sm active:scale-95"
+              title="View DMCA Copyright & Fair Use Notice"
+            >
+              <Scale className="w-3.5 h-3.5 text-amber-400" />
+              <span>DMCA / Fair Use</span>
+            </button>
+
+            {/* Privacy Policy */}
+            <button
+              onClick={openPrivacyModal}
+              className="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-emerald-400/60 text-zinc-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-medium shadow-sm active:scale-95"
+              title="Privacy Policy & Local Data Sovereignty"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Privacy Policy</span>
+            </button>
+
+            {/* Terms */}
+            <a
+              href={`${baseUrl}privacy`}
+              className="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-blue-400/60 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 text-xs font-medium shadow-sm active:scale-95"
+              title="Terms of Use & Legal Framework"
+            >
+              <Info className="w-3.5 h-3.5 text-blue-400" />
+              <span>Terms</span>
+            </a>
+
+            {/* Contact Support */}
+            <a
+              href={`mailto:${contactEmail}`}
+              className="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition-all flex items-center gap-1.5 text-xs font-semibold shadow-sm active:scale-95"
+              title={`Email support: ${contactEmail}`}
+            >
+              <Mail className="w-3.5 h-3.5 text-amber-400" />
+              <span>Support: {contactEmail}</span>
+            </a>
+
+            {/* Back to Top */}
             <button
               onClick={scrollToTop}
-              className="px-3 py-2 rounded-xl bg-zinc-950/90 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+              className="p-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-amber-400 text-zinc-300 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95 ml-1"
               title={t.footer.backToTop}
             >
-              <span>{t.footer.backToTop}</span>
-              <ArrowUp className="w-3.5 h-3.5 text-amber-400" />
+              <ArrowUp className="w-4 h-4 text-amber-400" />
             </button>
           </div>
+
         </div>
 
         <div className="mt-4 text-center text-[10px] text-zinc-500 max-w-3xl mx-auto leading-relaxed">

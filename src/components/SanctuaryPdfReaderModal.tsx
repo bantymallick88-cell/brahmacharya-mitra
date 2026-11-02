@@ -1115,8 +1115,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                                   width: `${r.width}%`,
                                   height: `${r.height}%`,
                                   backgroundColor: h.color,
-                                  opacity: 0.38,
-                                  mixBlendMode: 'multiply',
+                                  opacity: 0.45,
+                                  borderBottom: `2px solid ${h.color}`,
+                                  boxShadow: `0 0 6px ${h.color}35`,
                                 }}
                               />
                             ))}
@@ -1189,8 +1190,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                               width: `${r.width}%`,
                               height: `${r.height}%`,
                               backgroundColor: h.color,
-                              opacity: 0.38,
-                              mixBlendMode: 'multiply',
+                              opacity: 0.45,
+                              borderBottom: `2px solid ${h.color}`,
+                              boxShadow: `0 0 6px ${h.color}35`,
                             }}
                           />
                         ))}
