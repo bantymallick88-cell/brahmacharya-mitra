@@ -31,13 +31,13 @@ export default function LanguageSelector() {
       {/* Trigger Button with Glassmorphic styling and glowing hover */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/80 hover:bg-zinc-800/90 border border-amber-500/30 hover:border-amber-400 text-xs font-semibold text-zinc-200 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] cursor-pointer"
+        className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-full bg-zinc-900/80 hover:bg-zinc-800/90 border border-amber-500/30 hover:border-amber-400 text-xs font-semibold text-zinc-200 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] cursor-pointer shrink-0"
         aria-label="Select Language"
         title="Change Language"
       >
-        <span className="text-sm leading-none">{currentMeta.flag}</span>
+        <span className="text-xs sm:text-sm leading-none">{currentMeta.flag}</span>
         <span className="hidden sm:inline font-medium text-amber-300/90">{currentMeta.nativeName}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-amber-400' : ''}`} />
+        <ChevronDown className={`w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-amber-400' : ''}`} />
       </button>
 
       {/* Glassmorphic Dropdown Menu */}
