@@ -46,6 +46,19 @@ export interface HighlightItem {
   rects: { left: number; top: number; width: number; height: number }[];
 }
 
+export interface CanvasHighlight {
+  id: string;
+  bookId: number;
+  page: number;
+  type: 'rect' | 'stroke';
+  color: string;
+  colorName: 'Yellow' | 'Green' | 'Blue' | 'Pink';
+  opacity: number;
+  rect?: { x: number; y: number; w: number; h: number };
+  points?: { x: number; y: number }[];
+  createdAt: number;
+}
+
 interface CurrentSelection {
   text: string;
   page: number;
@@ -107,16 +120,39 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   const [copiedHighlightId, setCopiedHighlightId] = useState<string | null>(null);
   const [activeHighlightId, setActiveHighlightId] = useState<string | null>(null);
 
+  // Canvas Overlay Interactive Highlighter States
+  const [canvasHighlights, setCanvasHighlights] = useState<CanvasHighlight[]>([]);
+  const canvasHighlightsRef = useRef<CanvasHighlight[]>([]);
+  const [isHighlighterActive, setIsHighlighterActive] = useState<boolean>(true);
+  const isHighlighterActiveRef = useRef<boolean>(true);
+  const [drawMode, setDrawMode] = useState<'rect' | 'stroke'>('rect');
+  const drawModeRef = useRef<'rect' | 'stroke'>('rect');
+
+  const activeDrawingRef = useRef<{
+    page: number;
+    startX: number;
+    startY: number;
+    currentX: number;
+    currentY: number;
+    points: { x: number; y: number }[];
+  } | null>(null);
+
   useEffect(() => {
     highlightsRef.current = highlights;
   }, [highlights]);
+
+  useEffect(() => {
+    canvasHighlightsRef.current = canvasHighlights;
+  }, [canvasHighlights]);
 
   const selectHighlighterColor = (color: string, name: 'Yellow' | 'Green' | 'Blue' | 'Pink') => {
     setActiveHighlighterColor(color);
     setActiveHighlighterName(name);
     activeColorRef.current = color;
     activeColorNameRef.current = name;
-    setDrmToast(`Highlighter: ${name} active`);
+    setIsHighlighterActive(true);
+    isHighlighterActiveRef.current = true;
+    setDrmToast(`✨ ${name} Highlighter active — Drag on page to highlight`);
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -186,6 +222,14 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         triggerDrmWarning();
       }
 
+      // Undo Shortcut (Ctrl+Z / Cmd+Z)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+          e.preventDefault();
+          undoLastHighlight();
+        }
+      }
+
       // Page Navigation shortcuts (when not typing in textarea/input)
       if (!['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
         if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -215,6 +259,16 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         setHighlights([]);
       }
 
+      const savedCanvasHl = localStorage.getItem(`sanctuary_canvas_highlights_${book.id}`);
+      if (savedCanvasHl) {
+        const parsed = JSON.parse(savedCanvasHl);
+        setCanvasHighlights(parsed);
+        canvasHighlightsRef.current = parsed;
+      } else {
+        setCanvasHighlights([]);
+        canvasHighlightsRef.current = [];
+      }
+
       const savedPage = localStorage.getItem(`sanctuary_last_page_${book.id}`);
       if (savedPage) {
         const p = parseInt(savedPage, 10);
@@ -237,6 +291,40 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
       }
     }
   }, [book, pageNum]);
+
+  // Save Canvas Highlights to LocalStorage
+  const saveCanvasHighlights = (items: CanvasHighlight[]) => {
+    setCanvasHighlights(items);
+    canvasHighlightsRef.current = items;
+    if (book) {
+      try {
+        localStorage.setItem(`sanctuary_canvas_highlights_${book.id}`, JSON.stringify(items));
+      } catch {
+        // storage quota failsafe
+      }
+    }
+  };
+
+  // Remove a canvas highlight
+  const removeCanvasHighlight = (id: string) => {
+    const target = canvasHighlightsRef.current.find((h) => h.id === id);
+    const updated = canvasHighlightsRef.current.filter((h) => h.id !== id);
+    saveCanvasHighlights(updated);
+    setDrmToast('Highlight removed from page.');
+    if (target) {
+      redrawCanvasForPage(target.page);
+    }
+  };
+
+  // Undo last canvas highlight
+  const undoLastHighlight = () => {
+    if (canvasHighlightsRef.current.length === 0) return;
+    const last = canvasHighlightsRef.current[0];
+    const updated = canvasHighlightsRef.current.slice(1);
+    saveCanvasHighlights(updated);
+    setDrmToast(`Undid highlight on Page ${last.page}`);
+    redrawCanvasForPage(last.page);
+  };
 
   // Save Notes handler
   const handleSaveNotes = (text: string) => {
@@ -535,6 +623,215 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     }
   }, [pdfUrl, book]);
 
+  // Redraw all saved highlights (and active live drag preview) on the transparent overlay canvas
+  const redrawCanvasForPage = useCallback((pageIndex: number, previewDrawing?: any) => {
+    const canvas = document.getElementById(`highlight-canvas-${pageIndex}`) as HTMLCanvasElement | null;
+    const pageCard = document.getElementById(`sanctuary-page-card-${pageIndex}`) as HTMLDivElement | null;
+    if (!canvas || !pageCard) return;
+
+    const cardRect = pageCard.getBoundingClientRect();
+    const width = cardRect.width || canvas.clientWidth || 600;
+    const height = cardRect.height || canvas.clientHeight || 850;
+    if (width === 0 || height === 0) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const targetWidth = Math.floor(width * dpr);
+    const targetHeight = Math.floor(height * dpr);
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+    }
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+
+    // Render all saved canvas highlights for this page
+    const pageHls = canvasHighlightsRef.current.filter((h) => h.page === pageIndex);
+
+    for (const hl of pageHls) {
+      ctx.save();
+      ctx.fillStyle = hl.color;
+      ctx.strokeStyle = hl.color;
+      ctx.globalAlpha = hl.opacity || 0.42;
+
+      if (hl.type === 'rect' && hl.rect) {
+        const rx = (hl.rect.x / 100) * width;
+        const ry = (hl.rect.y / 100) * height;
+        const rw = (hl.rect.w / 100) * width;
+        const rh = (hl.rect.h / 100) * height;
+        ctx.fillRect(rx, ry, rw, rh);
+      } else if (hl.type === 'stroke' && hl.points && hl.points.length > 1) {
+        ctx.lineWidth = Math.max(14, width * 0.024);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        const p0x = (hl.points[0].x / 100) * width;
+        const p0y = (hl.points[0].y / 100) * height;
+        ctx.moveTo(p0x, p0y);
+        for (let i = 1; i < hl.points.length; i++) {
+          const px = (hl.points[i].x / 100) * width;
+          const py = (hl.points[i].y / 100) * height;
+          ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Render active live drag preview
+    if (previewDrawing && previewDrawing.page === pageIndex) {
+      ctx.save();
+      ctx.fillStyle = activeColorRef.current;
+      ctx.strokeStyle = activeColorRef.current;
+      ctx.globalAlpha = 0.45;
+
+      if (drawModeRef.current === 'rect') {
+        const x = Math.min(previewDrawing.startX, previewDrawing.currentX);
+        const y = Math.min(previewDrawing.startY, previewDrawing.currentY);
+        const w = Math.abs(previewDrawing.currentX - previewDrawing.startX);
+        const h = Math.abs(previewDrawing.currentY - previewDrawing.startY);
+        ctx.fillRect(x, y, w, h);
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x, y, w, h);
+      } else if (drawModeRef.current === 'stroke' && previewDrawing.points?.length > 1) {
+        ctx.lineWidth = Math.max(14, width * 0.024);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(previewDrawing.points[0].x, previewDrawing.points[0].y);
+        for (let i = 1; i < previewDrawing.points.length; i++) {
+          ctx.lineTo(previewDrawing.points[i].x, previewDrawing.points[i].y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }, []);
+
+  // Canvas Interactive Pointer Events (Universal Drag-to-Highlight)
+  const handleCanvasPointerDown = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
+    if (!isHighlighterActiveRef.current) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const canvas = e.currentTarget;
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch {}
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    activeDrawingRef.current = {
+      page: p,
+      startX: x,
+      startY: y,
+      currentX: x,
+      currentY: y,
+      points: [{ x, y }],
+    };
+  };
+
+  const handleCanvasPointerMove = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
+    if (!activeDrawingRef.current || activeDrawingRef.current.page !== p) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const canvas = e.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+    const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+
+    activeDrawingRef.current.currentX = x;
+    activeDrawingRef.current.currentY = y;
+    if (drawModeRef.current === 'stroke') {
+      activeDrawingRef.current.points.push({ x, y });
+    }
+
+    redrawCanvasForPage(p, activeDrawingRef.current);
+  };
+
+  const handleCanvasPointerUp = (e: React.PointerEvent<HTMLCanvasElement>, p: number) => {
+    if (!activeDrawingRef.current || activeDrawingRef.current.page !== p) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+
+    const drawing = activeDrawingRef.current;
+    activeDrawingRef.current = null;
+
+    const canvas = e.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    if (width === 0 || height === 0) return;
+
+    let newHl: CanvasHighlight | null = null;
+
+    if (drawModeRef.current === 'rect') {
+      const rx = Math.min(drawing.startX, drawing.currentX);
+      const ry = Math.min(drawing.startY, drawing.currentY);
+      const rw = Math.abs(drawing.currentX - drawing.startX);
+      const rh = Math.abs(drawing.currentY - drawing.startY);
+
+      // Minimum drag threshold: 8px x 8px
+      if (rw >= 8 && rh >= 8 && book) {
+        newHl = {
+          id: `ch_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          bookId: book.id,
+          page: p,
+          type: 'rect',
+          color: activeColorRef.current,
+          colorName: activeColorNameRef.current,
+          opacity: 0.42,
+          rect: {
+            x: (rx / width) * 100,
+            y: (ry / height) * 100,
+            w: (rw / width) * 100,
+            h: (rh / height) * 100,
+          },
+          createdAt: Date.now(),
+        };
+      }
+    } else if (drawModeRef.current === 'stroke') {
+      if (drawing.points.length >= 2 && book) {
+        newHl = {
+          id: `ch_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          bookId: book.id,
+          page: p,
+          type: 'stroke',
+          color: activeColorRef.current,
+          colorName: activeColorNameRef.current,
+          opacity: 0.42,
+          points: drawing.points.map((pt) => ({
+            x: (pt.x / width) * 100,
+            y: (pt.y / height) * 100,
+          })),
+          createdAt: Date.now(),
+        };
+      }
+    }
+
+    if (newHl) {
+      const updated = [newHl, ...canvasHighlightsRef.current];
+      saveCanvasHighlights(updated);
+      setDrmToast(`✨ Highlighted (${activeColorNameRef.current}) on Page ${p}`);
+      setTimeout(() => redrawCanvasForPage(p), 15);
+    } else {
+      redrawCanvasForPage(p);
+    }
+  };
+
   // Render individual page canvas & text layer
   const renderCanvasPage = useCallback(async (pageIndex: number) => {
     if (!pdfDocRef.current || renderingQueueRef.current.has(pageIndex)) return;
@@ -606,6 +903,11 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         next.add(pageIndex);
         return next;
       });
+
+      // Automatically re-render saved canvas highlights on this page
+      setTimeout(() => {
+        redrawCanvasForPage(pageIndex);
+      }, 50);
     } catch (err: any) {
       if (err?.name !== 'RenderingCancelledException') {
         console.warn(`Render error page ${pageIndex}:`, err);
@@ -613,7 +915,31 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
     } finally {
       renderingQueueRef.current.delete(pageIndex);
     }
-  }, [pageBaseWidth, zoom]);
+  }, [pageBaseWidth, zoom, redrawCanvasForPage]);
+
+  // Redraw all rendered pages when canvasHighlights, renderedPages, or zoom changes
+  useEffect(() => {
+    renderedPages.forEach((p) => {
+      redrawCanvasForPage(p);
+    });
+    if (viewMode === 'single') {
+      redrawCanvasForPage(pageNum);
+    }
+  }, [canvasHighlights, zoom, renderedPages, pageNum, viewMode, redrawCanvasForPage]);
+
+  // Redraw on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      renderedPages.forEach((p) => {
+        redrawCanvasForPage(p);
+      });
+      if (viewMode === 'single') {
+        redrawCanvasForPage(pageNum);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [renderedPages, pageNum, viewMode, redrawCanvasForPage]);
 
   // Initial document load
   useEffect(() => {
@@ -830,15 +1156,16 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
         {/* ── Always-Visible Multi-Color Highlighter Palette ── */}
         <div
           className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-zinc-900/90 border border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.15)] shrink-0"
-          title="Active Highlighter Palette — Drag or select text to auto-highlight"
+          title="Interactive Canvas Highlighter Palette — Drag over page text or scanned images to highlight"
         >
           <div className="flex items-center gap-1 text-amber-300 font-cinzel text-[10px] font-bold mr-0.5 sm:mr-1">
             <Highlighter className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden xl:inline text-[9px] uppercase tracking-wider text-amber-300/90">Palette:</span>
           </div>
 
+          {/* 4 Multi-Color Swatches */}
           {COLOR_PRESETS.map((preset) => {
-            const isSelected = activeHighlighterColor === preset.color;
+            const isSelected = activeHighlighterColor === preset.color && isHighlighterActive;
             return (
               <button
                 key={preset.color}
@@ -846,9 +1173,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                 className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-200 cursor-pointer flex items-center justify-center ${preset.bg} ${
                   isSelected
                     ? 'scale-115 ring-2 ring-white ring-offset-2 ring-offset-zinc-950 shadow-[0_0_12px_rgba(255,255,255,0.8)]'
-                    : 'opacity-70 hover:opacity-100 hover:scale-105 border border-zinc-900'
+                    : 'opacity-65 hover:opacity-100 hover:scale-105 border border-zinc-900'
                 }`}
-                title={`Active Color: ${preset.name} (${preset.color}) — Select text to highlight`}
+                title={`Active Color: ${preset.name} (${preset.color}) — Drag to highlight`}
               >
                 {isSelected && (
                   <span className="w-1.5 h-1.5 rounded-full bg-zinc-950 shadow-sm" />
@@ -856,6 +1183,52 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               </button>
             );
           })}
+
+          <div className="w-px h-4 bg-zinc-800 mx-0.5 sm:mx-1" />
+
+          {/* Draw Style: Box (rect) vs Pen (stroke) */}
+          <div className="hidden xs:flex items-center bg-zinc-950/80 p-0.5 rounded-lg border border-zinc-800/80 text-[9px] font-bold">
+            <button
+              onClick={() => {
+                setDrawMode('rect');
+                drawModeRef.current = 'rect';
+                setIsHighlighterActive(true);
+                isHighlighterActiveRef.current = true;
+                setDrmToast('Highlighting Style: Box / Shloka Bar');
+              }}
+              className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
+                drawMode === 'rect' && isHighlighterActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Box / Straight Line Highlighter (Ideal for Shlokas & Verses)"
+            >
+              Box
+            </button>
+            <button
+              onClick={() => {
+                setDrawMode('stroke');
+                drawModeRef.current = 'stroke';
+                setIsHighlighterActive(true);
+                isHighlighterActiveRef.current = true;
+                setDrmToast('Highlighting Style: Freehand Pen Stroke');
+              }}
+              className={`px-1.5 py-0.5 rounded transition cursor-pointer ${
+                drawMode === 'stroke' && isHighlighterActive ? 'bg-amber-500 text-zinc-950 font-extrabold shadow-sm' : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Freehand Highlighter Pen (Ideal for circles & custom marks)"
+            >
+              Pen
+            </button>
+          </div>
+
+          {/* Quick Undo Button */}
+          <button
+            onClick={undoLastHighlight}
+            disabled={canvasHighlights.length === 0}
+            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
+            title="Undo Last Highlight (Ctrl+Z)"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         {/* Right: Theme, Zoom, Continuous/Single Mode & Close */}
@@ -960,9 +1333,9 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
             title="Sadhana Notes & Highlighted Shlokas"
           >
             <Highlighter className="w-4 h-4" />
-            {highlights.length > 0 && (
+            {(highlights.length + canvasHighlights.length) > 0 && (
               <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-zinc-950 text-[9px] font-mono font-black flex items-center justify-center shadow-md">
-                {highlights.length}
+                {highlights.length + canvasHighlights.length}
               </span>
             )}
           </button>
@@ -1176,6 +1549,23 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                     <div
                       id={`text-layer-${p}`}
                       className="textLayer absolute inset-0 select-text"
+                      style={{ pointerEvents: isHighlighterActive ? 'none' : 'auto' }}
+                    />
+
+                    {/* Transparent Interactive Canvas Overlay for Universal Highlighting (Images & Text PDFs) */}
+                    <canvas
+                      id={`highlight-canvas-${p}`}
+                      onPointerDown={(e) => handleCanvasPointerDown(e, p)}
+                      onPointerMove={(e) => handleCanvasPointerMove(e, p)}
+                      onPointerUp={(e) => handleCanvasPointerUp(e, p)}
+                      onPointerCancel={(e) => handleCanvasPointerUp(e, p)}
+                      className="absolute inset-0 w-full h-full z-[12]"
+                      style={{
+                        mixBlendMode: 'multiply',
+                        touchAction: isHighlighterActive ? 'none' : 'auto',
+                        pointerEvents: isHighlighterActive ? 'auto' : 'none',
+                        cursor: isHighlighterActive ? 'crosshair' : 'default',
+                      }}
                     />
 
                     {/* Persistent Glowing Highlight Overlays */}
@@ -1251,6 +1641,23 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                 <div
                   id={`text-layer-${pageNum}`}
                   className="textLayer absolute inset-0 select-text"
+                  style={{ pointerEvents: isHighlighterActive ? 'none' : 'auto' }}
+                />
+
+                {/* Transparent Interactive Canvas Overlay for Universal Highlighting (Images & Text PDFs) */}
+                <canvas
+                  id={`highlight-canvas-${pageNum}`}
+                  onPointerDown={(e) => handleCanvasPointerDown(e, pageNum)}
+                  onPointerMove={(e) => handleCanvasPointerMove(e, pageNum)}
+                  onPointerUp={(e) => handleCanvasPointerUp(e, pageNum)}
+                  onPointerCancel={(e) => handleCanvasPointerUp(e, pageNum)}
+                  className="absolute inset-0 w-full h-full z-[12]"
+                  style={{
+                    mixBlendMode: 'multiply',
+                    touchAction: isHighlighterActive ? 'none' : 'auto',
+                    pointerEvents: isHighlighterActive ? 'auto' : 'none',
+                    cursor: isHighlighterActive ? 'crosshair' : 'default',
+                  }}
                 />
 
                 {/* Persistent Glowing Highlight Overlays */}
@@ -1476,7 +1883,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                   }`}
                 >
                   <Highlighter className="w-3.5 h-3.5" />
-                  <span>Shlokas ({highlights.length})</span>
+                  <span>Highlights ({highlights.length + canvasHighlights.length})</span>
                 </button>
                 <button
                   onClick={() => setSidebarTab('notes')}
@@ -1494,21 +1901,98 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto pr-1 space-y-3">
                 {sidebarTab === 'shlokas' ? (
-                  /* Shlokas List */
-                  highlights.length === 0 ? (
+                  /* Shlokas & Highlights List */
+                  (highlights.length === 0 && canvasHighlights.length === 0) ? (
                     <div className="py-12 px-3 flex flex-col items-center justify-center text-center">
                       <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mb-3">
                         <Highlighter className="w-6 h-6 text-amber-400" />
                       </div>
                       <p className="text-xs font-bold text-zinc-200 mb-1">
-                        No Shlokas Highlighted Yet
+                        No Highlights Yet
                       </p>
                       <p className="text-[11px] text-zinc-400 max-w-[220px] leading-relaxed">
-                        Select any text in the book to highlight in Yellow, Green, Blue, or Pink. Verses save here automatically.
+                        Select a color from the top palette and drag over text or scanned images to highlight. Verses & markings save here automatically.
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-2.5">
+                      {/* Canvas Interactive Highlights (Universal for Images & Text) */}
+                      {canvasHighlights.map((ch) => {
+                        const colorConfig = {
+                          Yellow: { border: 'border-amber-400/60', text: 'text-amber-300', bg: 'bg-amber-500/15' },
+                          Green: { border: 'border-emerald-500/60', text: 'text-emerald-300', bg: 'bg-emerald-500/15' },
+                          Blue: { border: 'border-blue-500/60', text: 'text-blue-300', bg: 'bg-blue-500/15' },
+                          Pink: { border: 'border-pink-500/60', text: 'text-pink-300', bg: 'bg-pink-500/15' },
+                        }[ch.colorName];
+
+                        return (
+                          <div
+                            key={ch.id}
+                            className="p-3 rounded-2xl bg-zinc-950/85 border border-zinc-800/90 hover:border-zinc-700 transition-all duration-200"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full"
+                                  style={{ backgroundColor: ch.color }}
+                                />
+                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${colorConfig.bg} ${colorConfig.text}`}>
+                                  {ch.colorName}
+                                </span>
+                                <span className="text-[9px] text-zinc-500 font-mono uppercase">
+                                  {ch.type === 'rect' ? 'Box' : 'Pen'}
+                                </span>
+                              </div>
+
+                              <button
+                                onClick={() => scrollToPage(ch.page)}
+                                className="text-[10px] font-mono font-bold text-amber-300 hover:text-white px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 transition cursor-pointer"
+                                title="Jump to this page"
+                              >
+                                Page {ch.page} →
+                              </button>
+                            </div>
+
+                            <p className="text-xs text-zinc-300 italic leading-relaxed pl-2 border-l-2 mb-2.5" style={{ borderColor: ch.color }}>
+                              [Visual {ch.type === 'rect' ? 'Box' : 'Stroke'} Highlight on Page {ch.page}]
+                            </p>
+
+                            <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-[10px]">
+                              <button
+                                onClick={() => {
+                                  const entryTag = `📌 [Page ${ch.page} • ${ch.colorName} Highlight]:\n"Visual highlight on Page ${ch.page} of ${book.title}"`;
+                                  setNotes((prevNotes) => {
+                                    const combined = prevNotes.trim() ? `${prevNotes.trim()}\n\n${entryTag}` : entryTag;
+                                    if (book) {
+                                      try {
+                                        localStorage.setItem(`sanctuary_notes_${book.id}`, combined);
+                                      } catch {}
+                                    }
+                                    return combined;
+                                  });
+                                  setSidebarTab('notes');
+                                  setDrmToast(`Added Page ${ch.page} highlight to journal`);
+                                }}
+                                className="text-zinc-400 hover:text-amber-300 flex items-center gap-1 transition cursor-pointer"
+                                title="Append this note to your Sadhana Journal"
+                              >
+                                <FileText className="w-3 h-3" />
+                                <span>Add to Journal</span>
+                              </button>
+
+                              <button
+                                onClick={() => removeCanvasHighlight(ch.id)}
+                                className="text-zinc-500 hover:text-red-400 p-1 rounded hover:bg-zinc-800 transition cursor-pointer"
+                                title="Remove Highlight"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {/* Text Selection Highlights */}
                       {highlights.map((h) => {
                         const colorConfig = {
                           Yellow: { border: 'border-amber-400/60', text: 'text-amber-300', bg: 'bg-amber-500/15' },
@@ -1601,14 +2085,17 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                   <div className="flex flex-col h-full gap-2">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400">
                       <span>Personal Contemplation & Realizations:</span>
-                      {highlights.length > 0 && (
+                      {(highlights.length > 0 || canvasHighlights.length > 0) && (
                         <button
                           onClick={() => {
-                            const compiled = highlights
+                            const textCompiled = highlights
                               .sort((a, b) => a.page - b.page)
-                              .map((h) => `📌 [Page ${h.page} • ${h.colorName}]\n"${h.text}"`)
-                              .join('\n\n');
-                            const nextNotes = notes.trim() ? `${notes.trim()}\n\n${compiled}` : compiled;
+                              .map((h) => `📌 [Page ${h.page} • ${h.colorName}]\n"${h.text}"`);
+                            const canvasCompiled = canvasHighlights
+                              .sort((a, b) => a.page - b.page)
+                              .map((ch) => `📌 [Page ${ch.page} • ${ch.colorName} Highlight]:\n"Visual ${ch.type === 'rect' ? 'Box' : 'Stroke'} highlight on Page ${ch.page}"`);
+                            const allCompiled = [...textCompiled, ...canvasCompiled].join('\n\n');
+                            const nextNotes = notes.trim() ? `${notes.trim()}\n\n${allCompiled}` : allCompiled;
                             handleSaveNotes(nextNotes);
                             setDrmToast('All highlighted shlokas synced to journal.');
                           }}
@@ -1616,7 +2103,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
                           title="Append all highlighted shlokas to journal text"
                         >
                           <Bookmark className="w-3 h-3" />
-                          <span>Sync All Shlokas</span>
+                          <span>Sync All Highlights</span>
                         </button>
                       )}
                     </div>
