@@ -31,5 +31,6 @@ pnpm-debug.log*
 *.session
 *.session-journal
 
-# Large PDF library assets
+# Large PDF library assets & local assets storage
 public/book/*.pdf
+.assets/

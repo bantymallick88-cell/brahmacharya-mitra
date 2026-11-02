@@ -29,7 +29,7 @@ export default function Hero() {
       {/* ── Active Hero Background Image: 1000469239.jpg ── */}
       <div
         className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-[1.02]"
-        style={{ backgroundImage: "url('/1000469239.jpg')" }}
+        style={{ backgroundImage: `url('${baseUrl}1000469239.jpg')` }}
       />
 
       {/* ── Deep Obsidian Black Gradient Tint (#02040a) ── */}
@@ -59,8 +59,9 @@ export default function Hero() {
         >
           <img
             src={baseUrl + "photo_mahadev.jpg"}
-            alt="Mahadev"
-            className="w-5 h-5 rounded-full object-cover shrink-0"
+            alt="Brahmacharya Mitra"
+            className="w-5 h-5 rounded-full object-cover border border-amber-400/80 shadow-[0_0_8px_rgba(245,158,11,0.4)] shrink-0"
+            style={{ objectPosition: 'center 20%' }}
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = MAHADEV_IMAGE_DATA;

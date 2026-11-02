@@ -110,8 +110,9 @@ export default function InstallPrompt() {
             <div className="relative flex-shrink-0">
               <img
                 src={baseUrl + "photo_mahadev.jpg"}
-                alt="Mahadev"
+                alt="Brahmacharya Mitra"
                 className="w-10 h-10 rounded-full object-cover border-2 border-[#FF8C00] shrink-0 shadow-[0_0_12px_rgba(255,140,0,0.5)]"
+                style={{ objectPosition: 'center 20%' }}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = MAHADEV_IMAGE_DATA;

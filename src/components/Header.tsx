@@ -5,7 +5,7 @@ import {
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
-  Share2, Check, Smartphone, HelpCircle, Lock
+  Share2, Check, Smartphone, HelpCircle, Lock, ShieldCheck
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -27,14 +27,15 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 /* ─────────────────────────────────────────────────────────────
    App Brand Logo — Mahadev Divine Photo
-   Strict Circular CSS Fit: w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0
+   Strict Circular CSS Fit with Centered Face Framing & Divine Glow
 ───────────────────────────────────────────────────────────── */
-export function MahadevLogo({ className }: { size?: number; className?: string }) {
+export function MahadevLogo({ className, size }: { size?: number; className?: string }) {
   return (
     <img
       src={baseUrl + "photo_mahadev.jpg"}
-      alt="Mahadev"
-      className={className || "w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"}
+      alt="Brahmacharya Mitra"
+      className={className || "w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] shrink-0"}
+      style={{ objectPosition: 'center 20%' }}
       onError={(e) => {
         e.currentTarget.onerror = null;
         e.currentTarget.src = MAHADEV_IMAGE_DATA;
@@ -136,6 +137,28 @@ function ToolsDrawer({
 
   // Direct Diagnostic & Emergency Tools (Opens Dedicated Modals)
   const diagnosticTools = [
+    {
+      title: 'Urge Interceptor / Anti-Relapse Shield',
+      subtitle: '10-min mandatory lockout, reflection & 4-7-8 breathing',
+      icon: ShieldAlert,
+      badge: '10-Min Lockout',
+      color: 'border-red-500/60 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.25)]',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-interceptor-modal'));
+        onClose();
+      },
+    },
+    {
+      title: 'System-Wide NSFW Blocker',
+      subtitle: 'Zero-bypass DNS shield for Android, iOS & Windows',
+      icon: ShieldCheck,
+      badge: 'DNS Shield',
+      color: 'border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-blocker-modal'));
+        onClose();
+      },
+    },
     {
       title: 'Brain Fog Test',
       subtitle: 'Porn-induced mental fog diagnostic',
@@ -240,15 +263,19 @@ function ToolsDrawer({
             <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 flex-shrink-0 border-b border-zinc-800/80 bg-zinc-950/40">
               {currentScreen === 'menu' ? (
                 <div className="flex items-center gap-3">
-                  <img
-                    src={baseUrl + "photo_mahadev.jpg"}
-                    alt="Mahadev"
-                    className="w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = MAHADEV_IMAGE_DATA;
-                    }}
-                  />
+                  <div className="relative shrink-0 flex items-center justify-center">
+                    <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 blur-[3px] opacity-75" />
+                    <img
+                      src={baseUrl + "photo_mahadev.jpg"}
+                      alt="Brahmacharya Mitra"
+                      className="relative w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_12px_rgba(255,140,0,0.5)] shrink-0"
+                      style={{ objectPosition: 'center 20%' }}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                      }}
+                    />
+                  </div>
                   <div className="flex flex-col leading-none">
                     <div className="flex items-baseline gap-1.5">
                       <span className="font-cinzel font-black text-sm tracking-wider text-white">
@@ -712,20 +739,32 @@ export default function Header() {
           >
 
             {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
-            <a href="#" className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0">
-              <img
-                src={baseUrl + "photo_mahadev.jpg"}
-                alt="Mahadev"
-                className="w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shrink-0"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = MAHADEV_IMAGE_DATA;
-                }}
-              />
+            <a
+              href={baseUrl}
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0 cursor-pointer"
+              title="Brahmacharya Mitra — Home"
+            >
+              <div className="relative group/logo shrink-0 flex items-center justify-center">
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[4px] opacity-75 group-hover/logo:opacity-100 transition-opacity duration-300" />
+                <img
+                  src={baseUrl + "photo_mahadev.jpg"}
+                  alt="Brahmacharya Mitra Logo"
+                  className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  style={{ objectPosition: 'center 20%' }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                  }}
+                />
+              </div>
 
               <div className="flex flex-col leading-none min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-2 flex-wrap">
-                  <span className="font-cinzel font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wider text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap">
+                  <span className="font-cinzel font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wider text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors">
                     BRAHMACHARYA
                   </span>
                   <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-sm xs:text-base sm:text-lg md:text-xl font-bold tracking-wide whitespace-nowrap">

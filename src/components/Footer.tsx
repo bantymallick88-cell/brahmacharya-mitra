@@ -1,21 +1,33 @@
+import React, { useState } from 'react';
 import { 
   Flame, 
   Sparkles, 
   ShieldAlert, 
   ArrowUp, 
   ShieldCheck,
-  Mail,
-  ExternalLink,
-  Lock,
-  BookOpen
+  Mail, 
+  ExternalLink, 
+  Lock, 
+  BookOpen,
+  Scale,
+  Copy,
+  Check,
+  HeartHandshake,
+  Compass,
+  Trophy,
+  Info
 } from 'lucide-react';
 import TelegramIcon from './TelegramIcon';
 import { useTranslation } from '../i18n';
 import { useIsRegisteredUser } from '../utils/useRegisteredUser';
+import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 
 export default function Footer() {
   const { t } = useTranslation();
   const isRegistered = useIsRegisteredUser();
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const contactEmail = 'bantyxyz13@gmail.com';
 
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) 
     ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/') 
@@ -34,70 +46,84 @@ export default function Footer() {
     window.dispatchEvent(new CustomEvent('open-privacy-modal'));
   };
 
+  const openDmcaModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('open-dmca-modal'));
+  };
+
+  const copyEmail = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(contactEmail);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    }
+  };
+
   return (
-    <footer className="border-t border-amber-500/20 bg-[#02040a] relative overflow-hidden pt-16 pb-12">
+    <footer className="border-t border-amber-500/25 bg-[#02040a] relative overflow-hidden pt-16 pb-20 sm:pb-24">
       
-      {/* Sacred Shloka Grand Banner */}
+      {/* ── Sacred Shloka Grand Sanctuary Banner ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="p-8 sm:p-12 rounded-3xl backdrop-blur-3xl bg-zinc-950/70 border border-amber-500/25 hover:border-amber-400/70 text-center relative overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.25)] mb-16 transition-all duration-500">
+        <div className="p-8 sm:p-12 rounded-3xl backdrop-blur-3xl bg-zinc-950/80 border border-amber-500/30 hover:border-amber-400/80 text-center relative overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.85),0_0_40px_rgba(245,158,11,0.2)] mb-16 transition-all duration-500 group">
           
-          {/* Ambient Deep Cosmic Purple & Indigo Aura */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[380px] bg-[radial-gradient(circle,rgba(109,40,217,0.22)_0%,rgba(99,102,241,0.18)_40%,rgba(245,158,11,0.14)_70%,transparent_100%)] blur-3xl pointer-events-none" />
+          {/* Ambient Deep Cosmic Purple & Radiant Gold Aura */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[380px] bg-[radial-gradient(circle,rgba(109,40,217,0.24)_0%,rgba(99,102,241,0.18)_40%,rgba(245,158,11,0.15)_70%,transparent_100%)] blur-3xl pointer-events-none" />
+          <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-3 relative z-10 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4 relative z-10 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            {t.footer.vedicRef}
+            <span>{t.footer.vedicRef}</span>
           </div>
 
-          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black font-sanskrit text-amber-200 tracking-wide max-w-4xl mx-auto leading-relaxed drop-shadow-[0_2px_15px_rgba(245,158,11,0.3)] relative z-10">
+          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black font-sanskrit text-amber-200 tracking-wide max-w-4xl mx-auto leading-relaxed drop-shadow-[0_2px_20px_rgba(245,158,11,0.4)] relative z-10">
             {t.footer.shlokaQuote}
           </h3>
 
-          <p className="mt-3 text-xs sm:text-sm text-zinc-300 max-w-2xl mx-auto font-medium relative z-10">
+          <p className="mt-3.5 text-xs sm:text-sm text-zinc-300 max-w-2xl mx-auto font-medium relative z-10 leading-relaxed">
             {t.footer.shlokaMeaning}
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 relative z-10">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5 relative z-10">
             <button
               onClick={triggerPanic}
-              className="px-5 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 border border-red-500/60 hover:border-amber-400 text-red-300 text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-[0_0_18px_rgba(239,68,68,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:scale-105"
+              className="px-5 py-2.5 rounded-2xl bg-red-950/60 hover:bg-red-900/80 border border-red-500/70 hover:border-amber-400 text-red-200 text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] hover:scale-105 active:scale-95"
             >
               <ShieldAlert className="w-4 h-4 text-red-400" />
-              <span>{t.footer.panicShieldBtn}</span>
+              <span>{t.footer.panicShieldBtn} 🚨</span>
             </button>
             <a
               href="#streak"
-              className="btn-shimmer btn-metallic-glow px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs font-black transition flex items-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105"
+              className="btn-shimmer btn-metallic-glow px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs font-black transition flex items-center gap-2 shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-95"
             >
-              <Flame className="w-4 h-4 fill-black" />
+              <Flame className="w-4 h-4 fill-zinc-950" />
               <span>{t.footer.trackStreakBtn}</span>
             </a>
           </div>
         </div>
 
-        {/* ── Official Support & Community Card ── */}
-        <div className="p-6 sm:p-8 rounded-3xl backdrop-blur-3xl bg-zinc-950/85 border border-amber-500/35 hover:border-amber-400/60 relative overflow-hidden shadow-[0_0_40px_rgba(245,158,11,0.15)] mb-14 transition-all duration-500 group">
+        {/* ── Official Community & Support 3D Glassmorphic Card ── */}
+        <div className="p-6 sm:p-8 rounded-3xl backdrop-blur-3xl bg-zinc-950/85 border border-amber-500/35 hover:border-amber-400/70 relative overflow-hidden shadow-[0_10px_45px_rgba(0,0,0,0.8),0_0_35px_rgba(245,158,11,0.2)] mb-14 transition-all duration-500 group">
           {/* Ambient Glow */}
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-500/15 via-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-amber-600/10 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-indigo-600/15 via-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="space-y-2.5 text-center lg:text-left max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider shadow-[0_0_12px_rgba(245,158,11,0.15)]">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Official Sangha & Help</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                <HeartHandshake className="w-3.5 h-3.5 text-amber-400" />
+                <span>Official Sangha & Support Sanctuary</span>
               </div>
-              <h4 className="text-xl sm:text-2xl lg:text-3xl font-black font-cinzel text-[#F59E0B] tracking-wide drop-shadow-[0_2px_12px_rgba(245,158,11,0.3)]">
-                Support & Community
+              <h4 className="text-xl sm:text-2xl lg:text-3xl font-black font-cinzel text-amber-300 tracking-wide drop-shadow-[0_2px_15px_rgba(245,158,11,0.35)]">
+                Community, Questions & DMCA Support
               </h4>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-medium">
-                For any queries, feedback, or assistance, reach out via Email or join our official Telegram group.
+                For questions, feedback, spiritual mentorship, or DMCA copyright inquiries, contact us directly via email or our private Telegram sadhak community.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3.5 w-full lg:w-auto shrink-0">
-              {/* Telegram Group Button (Restricted to Registered Users) */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto shrink-0">
+              {/* Telegram Group Button */}
               {isRegistered ? (
                 <a
                   href="https://t.me/+aeaMsRXfx0VhZDJl"
@@ -120,28 +146,48 @@ export default function Footer() {
                 </button>
               )}
 
-              {/* Support Email Button */}
-              <a
-                href="mailto:bantyxyz13@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:scale-105 active:scale-95 cursor-pointer"
-              >
-                <Mail className="w-4 h-4 text-amber-400" />
-                <span>bantyxyz13@gmail.com</span>
-              </a>
+              {/* Support Email Direct Compose & Copy Button */}
+              <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-2xl border border-amber-500/35 shadow-sm">
+                <a
+                  href={`mailto:${contactEmail}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-xl hover:bg-zinc-800 text-amber-300 hover:text-white text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer"
+                  title="Email bantyxyz13@gmail.com"
+                >
+                  <Mail className="w-4 h-4 text-amber-400" />
+                  <span>{contactEmail}</span>
+                </a>
+                <button
+                  onClick={copyEmail}
+                  className="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition cursor-pointer"
+                  title="Copy Support Email"
+                >
+                  {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-amber-400" />}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Footer Navigation Columns */}
+        {/* ── Footer Navigation Columns ── */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-zinc-800/80">
           
           {/* Brand Info */}
           <div className="space-y-4 md:col-span-1">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl divine-emblem flex items-center justify-center font-cinzel font-black text-amber-300 text-lg shadow-[0_0_20px_rgba(109,40,217,0.35)]">
-                ॐ
+              <div className="relative shrink-0 flex items-center justify-center">
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 blur-[3px] opacity-75" />
+                <img
+                  src={baseUrl + "photo_mahadev.jpg"}
+                  alt="Brahmacharya Mitra Logo"
+                  className="relative w-10 h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] shrink-0"
+                  style={{ objectPosition: 'center 20%' }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                  }}
+                />
               </div>
               <div>
                 <span className="font-cinzel font-black text-lg gold-to-indigo-text">Brahmacharya</span>{' '}
@@ -157,96 +203,108 @@ export default function Footer() {
             <p className="text-xs text-zinc-400 leading-relaxed">
               {t.footer.brandDesc}
             </p>
+
+            {/* Fair Use Badge */}
+            <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-200/90 leading-relaxed">
+              <div className="flex items-center gap-1.5 font-bold text-amber-300 mb-1">
+                <Scale className="w-3.5 h-3.5 text-amber-400" />
+                <span>Non-Profit Spiritual Seva</span>
+              </div>
+              All scriptures are hosted for non-commercial research & education.
+            </div>
           </div>
 
           {/* Quick Tools */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
-              {t.footer.coreToolsTitle}
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-amber-400" />
+              <span>{t.footer.coreToolsTitle}</span>
             </h4>
-            <ul className="space-y-2 text-xs text-zinc-400">
-              <li><a href="#streak" className="hover:text-amber-300 transition">{t.nav.streakDay.replace(' {days}', '')}</a></li>
-              <li><a href="#calculator" className="hover:text-amber-300 transition">{t.nav.calculator}</a></li>
-              <li><a href="#brain-fog" className="hover:text-amber-300 transition">{t.nav.brainFog}</a></li>
-              <li><a href="#ai-mentor" className="hover:text-amber-300 transition">{t.nav.aiMentor}</a></li>
-              <li><button onClick={triggerPanic} className="text-red-400 hover:text-red-300 transition text-left cursor-pointer">{t.nav.panicMode} 🚨</button></li>
+            <ul className="space-y-2.5 text-xs text-zinc-400">
+              <li><a href="#streak" className="hover:text-amber-300 transition flex items-center gap-1"><span>🔥</span> <span>Streak Counter</span></a></li>
+              <li><a href={`${baseUrl}dashboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🧭</span> <span>Daily Sadhana Dashboard</span></a></li>
+              <li><a href={`${baseUrl}leaderboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🏆</span> <span>Global Leaderboard</span></a></li>
+              <li><a href="#calculator" className="hover:text-amber-300 transition flex items-center gap-1"><span>🧮</span> <span>{t.nav.calculator}</span></a></li>
+              <li><a href="#brain-fog" className="hover:text-amber-300 transition flex items-center gap-1"><span>🧠</span> <span>{t.nav.brainFog}</span></a></li>
+              <li><button onClick={triggerPanic} className="text-red-400 hover:text-red-300 transition text-left cursor-pointer flex items-center gap-1"><span>🚨</span> <span>{t.nav.panicMode} (Urge Breaker)</span></button></li>
             </ul>
           </div>
 
           {/* Curriculum & Wisdom */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
-              {t.footer.curriculumTitle}
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+              <span>{t.footer.curriculumTitle}</span>
             </h4>
-            <ul className="space-y-2 text-xs text-zinc-400">
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (30D)</a></li>
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (60D)</a></li>
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (100D)</a></li>
-              <li><a href="#deities" className="hover:text-amber-300 transition">{t.nav.deities}</a></li>
+            <ul className="space-y-2.5 text-xs text-zinc-400">
               <li>
-                <a href={`${baseUrl}books/`} className="hover:text-amber-300 transition flex items-center gap-1.5">
+                <a href={`${baseUrl}books/`} className="hover:text-amber-300 transition flex items-center gap-1.5 font-medium text-amber-300/90">
                   <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{t.nav.books} (29 Books)</span>
+                  <span>Sanctuary Library (29+ PDFs)</span>
                 </a>
               </li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (30D Reset)</a></li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (60D Transformation)</a></li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (100D Akhand Vrat)</a></li>
+              <li><a href="#deities" className="hover:text-amber-300 transition">{t.nav.deities}</a></li>
             </ul>
           </div>
 
-          {/* Mission & Seva */}
+          {/* Mission, Legal & DMCA */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
-              {t.footer.missionTitle}
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>Legal & Fair Use Sanctuary</span>
             </h4>
             <p className="text-xs text-zinc-400 leading-relaxed mb-3">
-              {t.footer.missionDesc}
+              Dedicated to pure spiritual growth, vital energy preservation, and ethical character building.
             </p>
             <div className="flex flex-col gap-2">
-              {isRegistered ? (
-                <a
-                  href="https://t.me/+aeaMsRXfx0VhZDJl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold group cursor-pointer"
-                >
-                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-                  <span>Join Telegram Community ↗</span>
-                </a>
-              ) : (
-                <button
-                  onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
-                  className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium group cursor-pointer text-left"
-                  title="Complete Setup Wizard to unlock Telegram Community"
-                >
-                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors" />
-                  <span>Telegram Community 🔒</span>
-                </button>
-              )}
-              <a
-                href="mailto:bantyxyz13@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-zinc-300 hover:text-amber-300 transition flex items-center gap-1.5 font-medium group cursor-pointer"
+              <button
+                onClick={openDmcaModal}
+                className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit"
               >
-                <Mail className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-                <span>bantyxyz13@gmail.com</span>
-              </a>
+                <Scale className="w-3.5 h-3.5 text-amber-400" />
+                <span>DMCA Notice & Takedown</span>
+              </button>
               <button
                 onClick={openPrivacyModal}
-                className="text-xs text-amber-300/80 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit pt-1"
+                className="text-xs text-zinc-300 hover:text-amber-300 transition flex items-center gap-1.5 font-medium cursor-pointer w-fit"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span>100% Private & Client-Side</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Privacy & Data Sovereignty</span>
               </button>
+              <a
+                href={`${baseUrl}privacy`}
+                className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium w-fit"
+              >
+                <Info className="w-3.5 h-3.5 text-amber-400" />
+                <span>Full Terms & Legal Details</span>
+              </a>
+              <a
+                href={`mailto:${contactEmail}`}
+                className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium w-fit pt-1"
+              >
+                <Mail className="w-3.5 h-3.5 text-amber-400" />
+                <span>Contact: {contactEmail}</span>
+              </a>
             </div>
           </div>
 
         </div>
 
-        {/* Bottom Disclaimers & Copyright */}
+        {/* ── Bottom Disclaimers & Copyright ── */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
           <div className="text-center sm:text-left flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
-            <span>{t.footer.copyright.replace('{year}', String(new Date().getFullYear()))}</span>
+            <span>© {new Date().getFullYear()} Brahmacharya Mitra (ब्रह्मचर्य मित्र). All rights reserved.</span>
             <span className="text-zinc-600 hidden sm:inline">•</span>
+            <button
+              onClick={openDmcaModal}
+              className="text-amber-400 hover:text-amber-300 underline underline-offset-4 decoration-amber-500/50 hover:decoration-amber-300 transition cursor-pointer font-bold"
+            >
+              DMCA / Fair Use Notice
+            </button>
+            <span className="text-zinc-600">•</span>
             <button
               onClick={openPrivacyModal}
               className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition cursor-pointer font-medium"
@@ -258,18 +316,18 @@ export default function Footer() {
               href={`${baseUrl}privacy`}
               className="text-zinc-400 hover:text-amber-300 underline underline-offset-4 decoration-zinc-700 hover:decoration-amber-400 transition font-medium"
             >
-              Terms & Legal
+              Terms of Use
             </a>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={scrollToTop}
-              className="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800 hover:border-amber-500/50 text-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+              className="px-3 py-2 rounded-xl bg-zinc-950/90 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
               title={t.footer.backToTop}
             >
               <span>{t.footer.backToTop}</span>
-              <ArrowUp className="w-3.5 h-3.5" />
+              <ArrowUp className="w-3.5 h-3.5 text-amber-400" />
             </button>
           </div>
         </div>

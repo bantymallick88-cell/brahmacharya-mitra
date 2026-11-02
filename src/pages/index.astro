@@ -210,19 +210,4 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 	<!-- Footer -->
 	<Footer client:visible />
 
-	<!-- Floating Emergency Panic FAB for instant access on any screen -->
-	<div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 max-w-[calc(100vw-2rem)]">
-		<button
-			id="floating-panic-btn"
-			onclick="window.dispatchEvent(new CustomEvent('open-panic-modal'))"
-			class="btn-shimmer flex items-center gap-2 px-3.5 py-2.5 sm:px-4.5 sm:py-3 rounded-full backdrop-blur-xl bg-zinc-950/90 hover:bg-zinc-900 border border-red-500/50 hover:border-amber-400 text-white font-black text-xs sm:text-sm tracking-wide shadow-[0_0_25px_rgba(239,68,68,0.35),0_0_15px_rgba(245,158,11,0.15)] hover:shadow-[0_0_35px_rgba(245,158,11,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group whitespace-nowrap"
-			aria-label="Emergency Panic Mode"
-		>
-			<span class="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
-				<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-				<span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-red-400 group-hover:bg-amber-400 transition-colors"></span>
-			</span>
-			<span class="text-zinc-100 group-hover:text-amber-200 transition-colors font-bold tracking-wider">🚨 Panic Mode</span>
-		</button>
-	</div>
 </Layout>

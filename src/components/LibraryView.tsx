@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  BookOpen, Search, Download, ExternalLink, Sparkles,
+  BookOpen, Search, Sparkles,
   Filter, Tag, ArrowLeft, BookMarked, Globe, Layers,
-  CheckCircle2, Share2, Flame, ShieldCheck
+  CheckCircle2, Share2, Flame, ShieldCheck, Scale, AlertCircle,
+  Eye, Lock, ExternalLink
 } from 'lucide-react';
 import { LIBRARY_BOOKS, LIBRARY_CATEGORIES, type LibraryBook } from '../data/libraryBooks';
+import SanctuaryPdfReaderModal from './SanctuaryPdfReaderModal';
 
 const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL)
   ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/')
@@ -16,6 +18,7 @@ export default function LibraryView() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All Books');
   const [selectedLanguage, setSelectedLanguage] = useState<'All' | 'Hindi' | 'English'>('All');
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [activeBookForReader, setActiveBookForReader] = useState<LibraryBook | null>(null);
 
   const filteredBooks = useMemo(() => {
     return LIBRARY_BOOKS.filter((book) => {
@@ -57,15 +60,17 @@ export default function LibraryView() {
   }, [searchQuery, selectedCategory, selectedLanguage]);
 
   const handleShareBook = (book: LibraryBook) => {
-    const bookUrl = `${window.location.origin}${baseUrl}book/${encodeURIComponent(book.fileName)}`;
+    const bookUrl = `${window.location.origin}${baseUrl}books/?bookId=${book.id}`;
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(`${book.title} - Free Brahmacharya & Mind Mastery PDF: ${bookUrl}`);
+      navigator.clipboard.writeText(`${book.title} - Read in Sacred Brahmacharya Sanctuary: ${bookUrl}`);
       setCopiedId(book.id);
       setTimeout(() => setCopiedId(null), 2500);
     }
   };
 
-  const getPdfUrl = (fileName: string) => `${baseUrl}book/${encodeURIComponent(fileName)}`;
+  const openDmcaModal = () => {
+    window.dispatchEvent(new CustomEvent('open-dmca-modal'));
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -80,6 +85,13 @@ export default function LibraryView() {
         </a>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={openDmcaModal}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-800 hover:border-amber-400/50 text-zinc-400 hover:text-amber-300 text-xs font-semibold transition cursor-pointer"
+          >
+            <Scale className="w-3.5 h-3.5 text-amber-400" />
+            <span>DMCA & Legal Notice</span>
+          </button>
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold shadow-[0_0_15px_rgba(245,158,11,0.2)]">
             <BookMarked className="w-3.5 h-3.5 text-amber-400" />
             <span>29 Sacred Books Online</span>
@@ -88,7 +100,7 @@ export default function LibraryView() {
       </div>
 
       {/* ── Hero Showcase Banner ── */}
-      <div className="relative rounded-3xl bg-zinc-950/85 border border-amber-500/30 p-6 sm:p-10 mb-10 overflow-hidden backdrop-blur-2xl shadow-[0_0_50px_rgba(245,158,11,0.15)] text-center">
+      <div className="relative rounded-3xl bg-zinc-950/85 border border-amber-500/30 p-6 sm:p-10 mb-8 overflow-hidden backdrop-blur-2xl shadow-[0_0_50px_rgba(245,158,11,0.15)] text-center">
         {/* Ambient Aurora Glow */}
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(circle,rgba(245,158,11,0.18)_0%,rgba(109,40,217,0.12)_50%,transparent_100%)] blur-3xl pointer-events-none" />
 
@@ -119,8 +131,38 @@ export default function LibraryView() {
               <Globe className="w-3.5 h-3.5 text-amber-400" /> Hindi, Sanskrit & English
             </span>
             <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Instant In-Browser Reading & Download
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Protected Sanctuary In-App Reader
             </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MANDATORY COPYRIGHT & EDUCATIONAL FAIR USE DISCLAIMER BANNER ── */}
+      <div className="relative rounded-2xl bg-gradient-to-r from-amber-500/10 via-zinc-900/90 to-amber-500/10 border border-amber-500/35 p-4 sm:p-5 mb-8 backdrop-blur-xl shadow-lg">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 shrink-0 mt-0.5">
+              <Scale className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-2">
+                <span>Copyright & Educational Fair Use Disclaimer</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-500/30">Non-Profit</span>
+              </h3>
+              <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
+                All scriptures, books, and scientific papers hosted in this sanctuary are provided <strong>strictly for educational, non-profit spiritual study, character building, and research</strong> under Section 107 of the US Copyright Act and Section 52 of the Indian Copyright Act, 1957. All rights belong entirely to their respective authors, publishers, and spiritual lineages.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end">
+            <button
+              onClick={openDmcaModal}
+              className="w-full md:w-auto px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer whitespace-nowrap active:scale-95"
+            >
+              <span>DMCA Takedown / Copyright Notice</span>
+              <ExternalLink className="w-3 h-3 text-amber-400" />
+            </button>
           </div>
         </div>
       </div>
@@ -248,8 +290,6 @@ export default function LibraryView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredBooks.map((book) => {
-            const pdfUrl = getPdfUrl(book.fileName);
-
             return (
               <div
                 key={book.id}
@@ -311,38 +351,32 @@ export default function LibraryView() {
                   </div>
                 </div>
 
-                {/* Bottom Action Buttons */}
+                {/* ── Action Buttons: PROTECTED IN-APP SANCTUARY READER ── */}
                 <div className="pt-4 border-t border-zinc-800/80 flex items-center gap-2">
-                  {/* Direct Read / Open PDF Button */}
-                  <a
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 cursor-pointer"
-                    title={`Read ${book.title} Online`}
+                  {/* Primary "Read Online in Sanctuary" Button (Replaces Direct Download) */}
+                  <button
+                    onClick={() => setActiveBookForReader(book)}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-xs transition flex items-center justify-center gap-2 shadow-md shadow-amber-500/25 active:scale-95 cursor-pointer group/readbtn"
+                    title={`Read ${book.title} Online in Protected Sanctuary`}
                   >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Read / Open PDF</span>
-                    <ExternalLink className="w-3 h-3 text-zinc-900" />
-                  </a>
+                    <BookOpen className="w-3.5 h-3.5 text-zinc-950 group-hover/readbtn:scale-110 transition-transform" />
+                    <span>Read Online in Sanctuary</span>
+                  </button>
 
-                  {/* Direct Download Button */}
-                  <a
-                    href={pdfUrl}
-                    download={book.fileName}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition cursor-pointer active:scale-95 flex items-center justify-center shrink-0"
-                    title={`Download ${book.fileName}`}
+                  {/* Quick Preview Eye Icon */}
+                  <button
+                    onClick={() => setActiveBookForReader(book)}
+                    className="p-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white transition cursor-pointer active:scale-95 flex items-center justify-center shrink-0"
+                    title="Launch Sanctuary Reader"
                   >
-                    <Download className="w-4 h-4 text-amber-400" />
-                  </a>
+                    <Eye className="w-4 h-4 text-amber-400" />
+                  </button>
 
                   {/* Share Link Button */}
                   <button
                     onClick={() => handleShareBook(book)}
                     className="p-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/30 text-zinc-400 hover:text-amber-300 transition cursor-pointer active:scale-95 flex items-center justify-center shrink-0"
-                    title="Copy Book Link"
+                    title="Copy Sanctuary Book Link"
                   >
                     {copiedId === book.id ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -356,6 +390,12 @@ export default function LibraryView() {
           })}
         </div>
       )}
+
+      {/* ── In-App Protected Sanctuary PDF Reader Modal ── */}
+      <SanctuaryPdfReaderModal
+        book={activeBookForReader}
+        onClose={() => setActiveBookForReader(null)}
+      />
     </div>
   );
 }
