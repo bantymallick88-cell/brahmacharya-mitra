@@ -648,3 +648,74 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Ultra-Deep Pitch Black Night Theme (#050505)
+   Smoothly activated when html.pitch-black is present.
+   Default warm dark aesthetic interface is 100% untouched when absent.
+   ══════════════════════════════════════════════════════════════════ */
+html.pitch-black,
+html.pitch-black body,
+html.pitch-black footer,
+html.pitch-black .bg-\[\#02040a\],
+html.pitch-black [data-theme-bg="obsidian"] {
+  background-color: #050505 !important;
+}
+
+html.pitch-black {
+  --color-obsidian-base: #050505;
+  --color-obsidian-surface: #07070a;
+  --color-dark-bg: #050505;
+  --color-card-bg: rgba(10, 10, 14, 0.75);
+}
+
+/* Subdued background aura pulse in pitch black mode for eye comfort */
+html.pitch-black .animate-aura-pulse {
+  opacity: 0.16 !important;
+}
+
+/* Frosted glassmorphism cards in Pitch Black Night Mode (backdrop-filter: blur(12px), border: 1px solid rgba(255, 255, 255, 0.08)) */
+html.pitch-black .glass-panel,
+html.pitch-black .glass-card-lift,
+html.pitch-black .divine-emblem,
+html.pitch-black .pitch-black-card,
+html.pitch-black .bg-gradient-to-b.from-zinc-900\/90.to-zinc-950,
+html.pitch-black .bg-zinc-950\/70,
+html.pitch-black .bg-zinc-950\/60,
+html.pitch-black .bg-zinc-950\/90 {
+  background: rgba(10, 10, 14, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.85) !important;
+}
+
+html.pitch-black .glass-panel:hover,
+html.pitch-black .glass-card-lift:hover {
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.95), 0 0 20px rgba(245, 158, 11, 0.15) !important;
+}
+
+/* Navbar in Pitch Black Mode */
+html.pitch-black #navbar > div > div {
+  background: rgba(6, 6, 8, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* Global Transitions for smooth theme switching */
+html,
+body,
+footer,
+#navbar,
+#navbar > div > div,
+.glass-panel,
+.glass-card-lift,
+.divine-emblem {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+

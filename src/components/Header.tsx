@@ -12,6 +12,7 @@ import { useTranslation } from '../i18n';
 import AuthModal from './AuthModal';
 import TelegramIcon from './TelegramIcon';
 import { useIsRegisteredUser } from '../utils/useRegisteredUser';
+import ThemeToggle from './ThemeToggle';
 
 // Feature Sub-Views
 import JournalNotesView from './mdf/JournalNotesView';
@@ -300,13 +301,16 @@ function ToolsDrawer({
                 </button>
               )}
 
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-zinc-400 hover:text-white hover:border-amber-500/50 transition cursor-pointer"
-                aria-label="Close menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-zinc-400 hover:text-white hover:border-amber-500/50 transition cursor-pointer"
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* ── Screen Container ── */}
@@ -726,15 +730,15 @@ export default function Header() {
       <header
         id="navbar"
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${
-          isScrolled ? 'py-1.5 sm:py-2' : 'py-2.5 sm:py-3.5'
+          isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
         }`}
       >
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 w-full">
+        <div className="max-w-6xl mx-auto px-2 xs:px-3 sm:px-6 w-full">
           <div
-            className={`flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 rounded-2xl transition-all duration-500 w-full ${
+            className={`flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-4 px-2.5 xs:px-3 sm:px-6 rounded-2xl transition-all duration-500 w-full ${
               isScrolled
-                ? 'py-2 sm:py-2.5 bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
-                : 'py-2.5 sm:py-3 bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
+                ? 'py-1.5 sm:py-2.5 bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
+                : 'py-2 sm:py-3 bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
             }`}
           >
 
@@ -745,7 +749,7 @@ export default function Header() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 sm:gap-3.5 group flex-shrink min-w-0 cursor-pointer"
+              className="flex items-center gap-1.5 xs:gap-2 sm:gap-3.5 group flex-shrink min-w-0 cursor-pointer"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -753,7 +757,7 @@ export default function Header() {
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  className="relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -767,11 +771,11 @@ export default function Header() {
                   <span className="font-cinzel font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wider text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors">
                     BRAHMACHARYA
                   </span>
-                  <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-sm xs:text-base sm:text-lg md:text-xl font-bold tracking-wide whitespace-nowrap">
+                  <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-xs xs:text-base sm:text-lg md:text-xl font-bold tracking-wide whitespace-nowrap">
                     MITRA
                   </span>
                 </div>
-                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden xs:flex items-center gap-1.5 truncate">
+                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate">
                   ब्रह्मचर्य मित्र
                   <span className="inline-block w-px h-2 bg-amber-500/50" />
                   <span className="text-amber-300/75">दिव्य शक्ति</span>
@@ -840,26 +844,29 @@ export default function Header() {
               )}
             </div>
 
-            {/* ── Right: Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+            {/* ── Right: 3D Sun/Moon Toggle, Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}
+            <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2.5 flex-shrink-0">
+              {/* 3D Sun/Moon Theme Toggle (Compact & Mobile-Optimized) */}
+              <ThemeToggle />
+
               {/* Share Icon Button */}
               <button
                 onClick={handleShare}
-                className="relative group p-2 sm:p-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
+                className="relative group p-1.5 xs:p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
                 aria-label="Share Brahmacharya Mitra"
                 title="Share App / Copy Link"
               >
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform" />
               </button>
 
-              <div className="scale-90 sm:scale-100 origin-right">
+              <div className="scale-[0.88] xs:scale-95 sm:scale-100 origin-center">
                 <LanguageSelector />
               </div>
 
               {/* 3-line Hamburger Menu Icon */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative group p-2 sm:p-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
+                className="relative group p-1.5 xs:p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center flex-shrink-0"
                 aria-label="Open Sadhana Tools and Navigation Drawer"
               >
                 <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 group-hover:scale-110 transition-transform" />

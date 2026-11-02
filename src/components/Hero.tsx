@@ -21,9 +21,9 @@ export default function Hero() {
 
   return (
     <section
-      className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 md:pt-40 md:pb-28 overflow-hidden"
+      className="relative pt-24 pb-14 sm:pt-36 sm:pb-24 md:pt-40 md:pb-28 overflow-hidden transition-colors duration-500"
       style={{
-        background: '#02040a',
+        backgroundColor: 'var(--color-obsidian-base, #02040a)',
       }}
     >
       {/* ── Active Hero Background Image: 1000469239.jpg ── */}
