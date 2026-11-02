@@ -650,12 +650,17 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   PURE PITCH-BLACK DARK MODE (Active when .dark class is on <html> / <body>)
-   1. Page background forced to absolute Pitch Black (#000000 !important).
-   2. All brown/warm background tints removed.
-   3. Card containers converted to deep dark glassmorphism:
-      background: rgba(12, 12, 14, 0.85), border: 1px solid rgba(255, 255, 255, 0.1), backdrop-filter: blur(12px).
-   4. Heading titles in crisp Pure White (#FFFFFF !important) & body text in Muted White (#E2E8F0 !important).
+   GODLY & DRIBBLE-INSPIRED PITCH-BLACK OLED DARK MODE
+   (Active strictly when .dark class is on <html> / <body>)
+   1. Absolute Pitch Black (#000000 !important) background for page, body, main, footer, section, header.
+   2. Completely removes all orange, gold, yellow, and reddish gradients/text colors.
+   3. Force all text, headings ("TRANSMUTE YOUR ENERGY"), logo typography, subtext, and labels
+      to crisp Pure White (#FFFFFF !important) or Light Muted Slate (#CBD5E1 !important).
+   4. Cards strictly use dark glassmorphism styling:
+      background: rgba(10, 10, 12, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      backdrop-filter: blur(12px) !important;
+   5. Preserves PDF reader tools, color highlighters (Yellow, Green, Blue, Pink), and reading filters.
    ══════════════════════════════════════════════════════════════════ */
 html.dark,
 html.dark body,
@@ -672,94 +677,242 @@ html.dark {
   --color-obsidian-base: #000000;
   --color-obsidian-surface: #0a0a0c;
   --color-dark-bg: #000000;
-  --color-card-bg: rgba(12, 12, 14, 0.85);
+  --color-card-bg: rgba(10, 10, 12, 0.95);
 }
 
-/* Remove all brown/warm background aura tints in pitch-black dark mode */
+/* Remove all ambient auras, sunrise glow backdrops, and lens flares */
 html.dark .theme-ambient-auras,
-html.dark .animate-aura-pulse {
+html.dark .animate-aura-pulse,
+html.dark .lens-flare-beam,
+html.dark .lens-flare-orb,
+html.dark .sunrise-backdrop::before {
   display: none !important;
   opacity: 0 !important;
 }
 
-html.dark .hero-tint {
+/* Hero background OLED adjustments */
+html.dark .hero-tint,
+html.dark .hero-radial-tint {
   background: #000000 !important;
+  display: none !important;
+  opacity: 0 !important;
 }
 
 html.dark .hero-bg-image {
-  opacity: 0.1 !important;
+  opacity: 0.08 !important;
 }
 
-/* Deep dark glassmorphism for all card containers */
-html.dark .glass-panel,
-html.dark .glass-card-lift,
-html.dark .divine-emblem,
-html.dark .pitch-black-card,
-html.dark section a.rounded-3xl,
-html.dark section button.rounded-3xl,
-html.dark section div.rounded-3xl,
-html.dark .bg-gradient-to-b.from-zinc-900\/90.to-zinc-950,
-html.dark .bg-zinc-950\/85,
-html.dark .bg-zinc-950\/80,
-html.dark .bg-zinc-950\/90,
-html.dark .bg-zinc-950\/70,
-html.dark .bg-zinc-950\/60,
-html.dark .bg-zinc-900\/90,
-html.dark .bg-zinc-900\/80,
-html.dark [data-card="glass"] {
-  background: rgba(12, 12, 14, 0.85) !important;
+/* Hide background floating particles & decorative ambient blur blobs in Dark Mode */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .animate-float,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) div[class*="blur-2xl"][class*="bg-amber-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) div[class*="blur-2xl"][class*="bg-yellow-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) div[class*="blur-3xl"][class*="bg-amber-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) div[class*="blur-3xl"][class*="bg-yellow-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) div[class*="blur-3xl"][class*="bg-indigo-"] {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* 2. STRICT DARK GLASSMORPHISM CARD STYLING */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .glass-panel,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .glass-card-lift,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .divine-emblem,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .pitch-black-card,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .spotlight-card,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .border-beam-card,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) section a.rounded-3xl,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) section button.rounded-3xl,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) section div.rounded-3xl,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) [data-card="glass"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-gradient-to-b.from-zinc-900\/90.to-zinc-950,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-950\/85,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-950\/80,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-950\/90,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-950\/70,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-950\/60,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-900\/90,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .bg-zinc-900\/80 {
+  background: rgba(10, 10, 12, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.9) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.95) !important;
 }
 
 /* Card hover in dark mode */
-html.dark .glass-panel:hover,
-html.dark .glass-card-lift:hover,
-html.dark section a.rounded-3xl:hover,
-html.dark section button.rounded-3xl:hover {
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .glass-panel:hover,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .glass-card-lift:hover,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) section a.rounded-3xl:hover,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) section button.rounded-3xl:hover,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .spotlight-card:hover {
   border-color: rgba(255, 255, 255, 0.25) !important;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Top Navbar in Pitch-Black Dark Mode */
+/* 3. TOP NAVBAR & NAVIGATION DRAWER */
 html.dark #navbar > div > div {
-  background: rgba(12, 12, 14, 0.85) !important;
+  background: rgba(10, 10, 12, 0.92) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95) !important;
 }
 
-/* Bottom Navigation Dock in Dark Mode */
+html.dark div.fixed.top-0.right-0.bottom-0.z-\[100\] {
+  background: rgba(8, 8, 10, 0.98) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: -20px 0 80px rgba(0, 0, 0, 0.98) !important;
+}
+
+/* 4. FLOATING 3D GLASSMORPHIC BOTTOM NAVIGATION DOCK */
 html.dark .bottom-nav-dock,
+html.dark nav[aria-label="Bottom Navigation Bar"] div.backdrop-blur-2xl,
 html.dark div.fixed.bottom-3 > div > div.backdrop-blur-2xl,
-html.dark div.fixed.bottom-4 > div > div.backdrop-blur-2xl {
-  background: rgba(12, 12, 14, 0.9) !important;
+html.dark div.fixed.bottom-4 > div > div.backdrop-blur-2xl,
+html.dark div.fixed.bottom-5 > div > div.backdrop-blur-2xl {
+  background: rgba(10, 10, 12, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95) !important;
 }
 
-/* Heading titles in crisp Pure White (#FFFFFF !important) */
-html.dark h1,
-html.dark h2,
-html.dark h3,
-html.dark h4,
-html.dark h5,
-html.dark h6 {
+html.dark nav[aria-label="Bottom Navigation Bar"] .animate-aura-pulse {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* 5. REMOVE ALL ORANGE, GOLD, YELLOW, OR REDDISH GRADIENTS */
+/* Overwrite headline & text gradients to crisp Pure White (#FFFFFF !important) */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .metallic-gold-text,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .metallic-gold-shimmer,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .gold-gradient-text,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .gold-to-indigo-text,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .saffron-gradient-text,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .mitra-gold-serif,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) span.bg-clip-text {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   color: #FFFFFF !important;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4) !important;
+  filter: none !important;
+  animation: none !important;
+}
+
+/* Logo Typography in Header ("BRAHMACHARYA MITRA") */
+html.dark header#navbar a span {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: none !important;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4) !important;
+}
+
+html.dark header#navbar a span.font-sanskrit {
+  color: #CBD5E1 !important;
+  -webkit-text-fill-color: #CBD5E1 !important;
+}
+
+html.dark header#navbar a .group\/logo > div {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+html.dark header#navbar a img {
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Rotating Border Beam badge & card gradients converted to sleek monochrome silver shimmer */
+html.dark .border-beam-badge::before {
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 240deg,
+    rgba(255, 255, 255, 0.2) 280deg,
+    rgba(255, 255, 255, 0.6) 325deg,
+    rgba(255, 255, 255, 0.95) 350deg,
+    transparent 360deg
+  ) !important;
+}
+
+html.dark .border-beam-card::before {
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 200deg,
+    rgba(255, 255, 255, 0.15) 260deg,
+    rgba(255, 255, 255, 0.5) 320deg,
+    rgba(255, 255, 255, 0.9) 355deg,
+    transparent 360deg
+  ) !important;
+}
+
+html.dark .pulse-gold-ring::before {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25) !important;
+}
+
+html.dark .border-glow-gold::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05)) !important;
+}
+
+/* 6. TYPOGRAPHY: PURE WHITE HEADINGS & LIGHT MUTED SLATE SUBTEXT */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h1,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h2,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h3,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h4,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h5,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) h6 {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   text-shadow: none !important;
 }
 
-/* Body text in Muted White (#E2E8F0 !important) */
-html.dark p,
-html.dark .text-zinc-400,
-html.dark .text-zinc-300,
-html.dark .text-zinc-200 {
-  color: #E2E8F0 !important;
+/* Sanskrit typography in dark mode */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .font-sanskrit {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  filter: none !important;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Body text, descriptions & muted subtext -> Light Muted Slate (#CBD5E1 !important) */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) p,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .text-zinc-400,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .text-zinc-300,
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) .text-zinc-500 {
+  color: #CBD5E1 !important;
+}
+
+/* Amber, Yellow, and Orange text overrides to Crisp Pure White */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="text-amber-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="text-yellow-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="text-orange-"] {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Secondary/muted subtext or paragraphs with amber colors -> Light Muted Slate */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) p[class*="text-amber-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) p[class*="text-yellow-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) span[class*="text-amber-300/"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *) span[class*="text-amber-400/"] {
+  color: #CBD5E1 !important;
+  -webkit-text-fill-color: #CBD5E1 !important;
+}
+
+/* Amber/yellow borders converted to subtle glass borders */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="border-amber-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="border-yellow-"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="border-orange-"] {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Amber badges/pills converted to sleek dark glass pills */
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="bg-amber-500/"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="bg-yellow-500/"],
+html.dark :not(#sanctuary-pdf-reader):not(#sanctuary-pdf-reader *)[class*="bg-orange-500/"] {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Smooth transitions */

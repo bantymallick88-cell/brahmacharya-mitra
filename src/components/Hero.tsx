@@ -28,14 +28,14 @@ export default function Hero() {
     >
       {/* ── Active Hero Background Image: 1000469239.jpg ── */}
       <div
-        className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-[1.02]"
+        className="hero-bg-image absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-[1.02]"
         style={{ backgroundImage: `url('${baseUrl}1000469239.jpg')` }}
       />
 
       {/* ── Deep Obsidian Black Gradient Tint (#02040a) ── */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#02040a]/90 via-[#02040a]/75 to-[#02040a]" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#02040a]/85 via-transparent to-[#02040a]/85" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(109,40,217,0.22)_0%,rgba(245,158,11,0.12)_45%,rgba(2,4,10,0.95)_80%)]" />
+      <div className="hero-radial-tint absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(109,40,217,0.22)_0%,rgba(245,158,11,0.12)_45%,rgba(2,4,10,0.95)_80%)]" />
       
       {/* ── 21st.dev Style Active Flowing Liquid Aurora Shader Canvas Background ── */}
       <LiquidAuroraCanvas />

@@ -1304,6 +1304,7 @@ export default function SanctuaryPdfReaderModal({ book, onClose, onSelectBook }:
   return (
     <div
       ref={containerRef}
+      id="sanctuary-pdf-reader"
       onContextMenu={(e) => {
         e.preventDefault();
         triggerDrmWarning();
