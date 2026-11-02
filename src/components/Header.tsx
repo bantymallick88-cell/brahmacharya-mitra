@@ -724,7 +724,7 @@ export default function Header() {
       >
         <div className="max-w-6xl mx-auto px-1 sm:px-6 w-full">
           <div
-            className={`flex items-center justify-between gap-1 sm:gap-4 px-1.5 sm:px-6 rounded-2xl transition-all duration-500 w-full overflow-hidden ${
+            className={`flex items-center justify-between gap-1 sm:gap-4 px-1.5 sm:px-6 rounded-2xl transition-all duration-500 w-full ${
               isScrolled
                 ? 'py-1.5 sm:py-2.5 bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
                 : 'py-2 sm:py-3 bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
@@ -738,7 +738,7 @@ export default function Header() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 sm:gap-2.5 group flex-shrink min-w-0 cursor-pointer overflow-hidden"
+              className="flex items-center gap-1 sm:gap-2.5 group flex-shrink min-w-0 cursor-pointer"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -755,12 +755,12 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none min-w-0 overflow-hidden">
+              <div className="flex flex-col leading-none min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5 whitespace-nowrap">
-                  <span className="font-cinzel font-bold text-xs sm:text-sm md:text-base tracking-wider text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors">
+                  <span className="font-cinzel font-bold text-[13px] sm:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors">
                     BRAHMACHARYA
                   </span>
-                  <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-xs sm:text-sm md:text-base font-bold tracking-wide whitespace-nowrap">
+                  <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[13px] sm:text-base font-bold tracking-tight whitespace-nowrap pr-0.5">
                     MITRA
                   </span>
                 </div>

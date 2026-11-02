@@ -55,20 +55,22 @@ export default function Hero() {
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border-beam-badge backdrop-blur-3xl bg-zinc-950/70 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] text-amber-300 text-xs sm:text-sm font-semibold tracking-wider mb-6 transition-all duration-300 max-w-full"
+          className="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border-beam-badge backdrop-blur-3xl bg-zinc-950/70 border border-white/10 hover:border-amber-400/80 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] text-amber-300 mb-6 transition-all duration-300"
         >
           <img
             src={baseUrl + "photo_mahadev.jpg"}
             alt="Brahmacharya Mitra"
-            className="w-5 h-5 rounded-full object-cover border border-amber-400/80 shadow-[0_0_8px_rgba(245,158,11,0.4)] shrink-0"
+            className="w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full object-cover border border-amber-400/80 shadow-[0_0_8px_rgba(245,158,11,0.4)] shrink-0"
             style={{ objectPosition: 'center 20%' }}
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = MAHADEV_IMAGE_DATA;
             }}
           />
-          <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-          <span className="truncate">{t.hero.badge}</span>
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span className="text-[10px] sm:text-xs font-semibold tracking-wider whitespace-normal text-center leading-snug">
+            {t.hero.badge}
+          </span>
         </motion.div>
 
         {/* Bilingual Main Headline with 21st.dev Glowing Lens Flare */}
