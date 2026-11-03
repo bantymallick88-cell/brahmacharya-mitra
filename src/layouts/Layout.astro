@@ -224,6 +224,10 @@ const faqJsonLd = {
 		<link rel="shortcut icon" href={`${baseUrl}photo_mahadev.jpg`} />
 		<link rel="apple-touch-icon" href={`${baseUrl}photo_mahadev.jpg`} />
 		<link rel="manifest" href={`${baseUrl}manifest.json`} />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Brahmacharya Mitra" />
 		<link rel="canonical" href={canonicalUrl} />
 		<meta name="generator" content={Astro.generator} />
 
@@ -330,5 +334,71 @@ const faqJsonLd = {
 
 		<!-- System-Wide NSFW Blocker Setup Wizard (DNS Shield) Modal -->
 		<NsfwBlockerModal client:load />
+
+		<!-- PWA Service Worker Instant Cache-Buster & Auto-Reload Registration -->
+		<script is:inline define:vars={{ baseUrl }}>
+			if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+				window.addEventListener('load', function() {
+					var swUrl = (baseUrl || '/').replace(/\/$/, '') + '/sw.js';
+					var refreshing = false;
+
+					// When the active service worker changes (new version claimed clients), reload once to display fresh UI
+					navigator.serviceWorker.addEventListener('controllerchange', function() {
+						if (!refreshing) {
+							refreshing = true;
+							console.log('[PWA] New service worker took control. Reloading page for fresh UI...');
+							window.location.reload();
+						}
+					});
+
+					navigator.serviceWorker.register(swUrl, { scope: baseUrl || '/' })
+						.then(function(reg) {
+							// Check for updates on server immediately
+							reg.update();
+
+							function handleWorker(worker) {
+								if (!worker) return;
+								worker.addEventListener('statechange', function() {
+									if (worker.state === 'installed') {
+										if (navigator.serviceWorker.controller) {
+											// New worker installed over existing app instance — force skipWaiting
+											console.log('[PWA] New worker installed. Sending SKIP_WAITING...');
+											worker.postMessage({ type: 'SKIP_WAITING' });
+										}
+									}
+								});
+							}
+
+							// If a service worker is waiting, trigger skipWaiting
+							if (reg.waiting) {
+								reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+							}
+
+							// If a worker is installing, listen to its state change
+							if (reg.installing) {
+								handleWorker(reg.installing);
+							}
+
+							// Listen for future service worker updates
+							reg.addEventListener('updatefound', function() {
+								console.log('[PWA] Update found on server.');
+								if (reg.installing) {
+									handleWorker(reg.installing);
+								}
+							});
+
+							// Check for updates when app regains focus or visibility
+							document.addEventListener('visibilitychange', function() {
+								if (document.visibilityState === 'visible') {
+									reg.update();
+								}
+							});
+						})
+						.catch(function(err) {
+							console.warn('[PWA] Service Worker registration failed:', err);
+						});
+				});
+			}
+		</script>
 	</body>
 </html>
