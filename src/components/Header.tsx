@@ -651,13 +651,19 @@ export default function Header() {
   const isRegistered = useIsRegisteredUser();
 
   useEffect(() => {
+    try {
+      if (localStorage.getItem('app_version') !== '2.2.0') {
+        localStorage.setItem('app_version', '2.2.0');
+      }
+    } catch (e) {}
+
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     try {
       const saved = localStorage.getItem('bm_streak_days');
       if (saved) setStreakDays(parseInt(saved, 10));
-    } catch (e) {}
+    } catch (e) { }
 
     const handleStreakChange = (e: any) => {
       if (e.detail?.days !== undefined) setStreakDays(e.detail.days);
@@ -718,17 +724,15 @@ export default function Header() {
     <>
       <header
         id="navbar"
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${
-          isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
+          }`}
       >
-        <div className="max-w-6xl mx-auto px-1 sm:px-6 w-full">
+        <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
           <div
-            className={`flex items-center justify-between gap-1 sm:gap-4 px-1.5 sm:px-6 rounded-2xl transition-all duration-500 w-full ${
-              isScrolled
+            className={`flex flex-wrap items-center justify-between gap-2 px-2.5 sm:px-5 rounded-2xl transition-all duration-500 w-full ${isScrolled
                 ? 'py-1.5 sm:py-2.5 bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
                 : 'py-2 sm:py-3 bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
-            }`}
+              }`}
           >
 
             {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
@@ -738,15 +742,16 @@ export default function Header() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 sm:gap-2.5 group flex-shrink min-w-0 cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2.5 group shrink-0 min-w-0 cursor-pointer"
               title="Brahmacharya Mitra — Home"
+              style={{ whiteSpace: 'nowrap' }}
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
                 <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[4px] opacity-75 group-hover/logo:opacity-100 transition-opacity duration-300" />
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-7 h-7 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  className="relative w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -755,16 +760,22 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none min-w-0">
-                <div className="flex items-baseline gap-1 sm:gap-1.5 whitespace-nowrap">
-                  <span className="font-cinzel font-bold text-[13px] sm:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors">
+              <div className="flex flex-col leading-none min-w-0" style={{ whiteSpace: 'nowrap' }}>
+                <div className="flex items-baseline gap-1 sm:gap-1.5" style={{ whiteSpace: 'nowrap' }}>
+                  <span
+                    className="font-cinzel font-bold text-[13px] sm:text-base md:text-lg tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors"
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
                     BRAHMACHARYA
                   </span>
-                  <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[13px] sm:text-base font-bold tracking-tight whitespace-nowrap pr-0.5">
+                  <span
+                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[13px] sm:text-base md:text-lg font-bold tracking-tight whitespace-nowrap pr-0.5"
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
                     MITRA
                   </span>
                 </div>
-                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate">
+                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate" style={{ whiteSpace: 'nowrap' }}>
                   ब्रह्मचर्य मित्र
                   <span className="inline-block w-px h-2 bg-amber-500/50" />
                   <span className="text-amber-300/75">दिव्य शक्ति</span>
@@ -772,38 +783,42 @@ export default function Header() {
               </div>
             </a>
 
-            {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup) ── */}
-            <div className="hidden lg:flex items-center gap-2">
+            {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup, Library, Telegram) ── */}
+            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-wrap shrink-0">
               <a
                 href={baseUrl + "dashboard/"}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <Compass className="w-3.5 h-3.5 text-amber-400" />
-                <span>Dashboard</span>
+                <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span style={{ whiteSpace: 'nowrap' }}>Dashboard</span>
               </a>
 
               <a
                 href={baseUrl + "leaderboard/"}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                <span>Leaderboard</span>
+                <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span style={{ whiteSpace: 'nowrap' }}>Leaderboard</span>
               </a>
 
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0"
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Setup Wizard</span>
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span style={{ whiteSpace: 'nowrap' }}>Setup Wizard</span>
               </button>
 
               <a
                 href={baseUrl + "books/"}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-                <span>Library</span>
+                <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span style={{ whiteSpace: 'nowrap' }}>Library</span>
               </a>
 
               {/* ── Official Telegram Community Link (Restricted to Registered Users) ── */}
@@ -812,11 +827,12 @@ export default function Header() {
                   href="https://t.me/+aeaMsRXfx0VhZDJl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 xl:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer shrink-0"
                   title="Join Official Telegram Community"
+                  style={{ whiteSpace: 'nowrap' }}
                 >
-                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
-                  <span className="font-extrabold tracking-wide">Join Telegram</span>
+                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  <span className="font-extrabold tracking-wide" style={{ whiteSpace: 'nowrap' }}>Join Telegram</span>
                 </a>
               ) : (
                 <button
@@ -824,11 +840,12 @@ export default function Header() {
                     setToastMessage('Telegram Sangha is private for registered sadhaks. Complete your Setup Wizard to unlock!');
                     window.dispatchEvent(new CustomEvent('open-onboarding-wizard'));
                   }}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-750 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 text-xs font-bold transition-all duration-300 shadow-sm cursor-pointer group"
+                  className="flex items-center gap-1.5 px-3 xl:px-3.5 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-750 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 text-xs font-bold transition-all duration-300 shadow-sm cursor-pointer group shrink-0"
                   title="Complete Setup Wizard to Join Telegram Community"
+                  style={{ whiteSpace: 'nowrap' }}
                 >
-                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors flex-shrink-0" />
-                  <span>Join Telegram 🔒</span>
+                  <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors shrink-0" />
+                  <span style={{ whiteSpace: 'nowrap' }}>Join Telegram 🔒</span>
                 </button>
               )}
             </div>

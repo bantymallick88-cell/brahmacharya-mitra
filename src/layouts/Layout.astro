@@ -204,10 +204,23 @@ const faqJsonLd = {
 <!doctype html>
 <html lang="en" class="scroll-smooth" translate="no">
 	<head>
-		<!-- Instant Theme Mode Pre-Hydration (Prevents FOUC) -->
+		<!-- Instant Theme Mode Pre-Hydration & App Version Auto-Upgrade Boot Script -->
 		<script is:inline>
 			(function() {
 				try {
+					var TARGET_APP_VERSION = "2.2.0";
+					var storedVersion = localStorage.getItem('app_version');
+					if (storedVersion !== TARGET_APP_VERSION) {
+						localStorage.setItem('app_version', TARGET_APP_VERSION);
+						// Force UI cache purge for old and returning users
+						if (storedVersion && 'caches' in window) {
+							caches.keys().then(function(names) {
+								for (var i = 0; i < names.length; i++) {
+									caches.delete(names[i]);
+								}
+							});
+						}
+					}
 					var savedTheme = localStorage.getItem('bm_theme');
 					if (savedTheme === 'dark') {
 						document.documentElement.classList.add('dark');
