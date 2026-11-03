@@ -208,17 +208,22 @@ const faqJsonLd = {
 		<script is:inline>
 			(function() {
 				try {
-					var TARGET_APP_VERSION = "2.2.0";
-					var storedVersion = localStorage.getItem('app_version');
-					if (storedVersion !== TARGET_APP_VERSION) {
-						localStorage.setItem('app_version', TARGET_APP_VERSION);
+					var TARGET_BUILD_VERSION = "2.5.0";
+					var storedBuildVersion = localStorage.getItem('app_build_version') || localStorage.getItem('app_version');
+					if (storedBuildVersion !== TARGET_BUILD_VERSION) {
+						localStorage.setItem('app_build_version', TARGET_BUILD_VERSION);
+						localStorage.setItem('app_version', TARGET_BUILD_VERSION);
 						// Force UI cache purge for old and returning users
-						if (storedVersion && 'caches' in window) {
+						if ('caches' in window) {
 							caches.keys().then(function(names) {
 								for (var i = 0; i < names.length; i++) {
 									caches.delete(names[i]);
 								}
 							});
+						}
+						if (storedBuildVersion) {
+							window.location.reload();
+							return;
 						}
 					}
 					var savedTheme = localStorage.getItem('bm_theme');

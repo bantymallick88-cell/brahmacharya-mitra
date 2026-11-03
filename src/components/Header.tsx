@@ -652,8 +652,14 @@ export default function Header() {
 
   useEffect(() => {
     try {
-      if (localStorage.getItem('app_version') !== '2.2.0') {
-        localStorage.setItem('app_version', '2.2.0');
+      const CURRENT_BUILD_VERSION = "2.5.0";
+      const storedBuildVersion = localStorage.getItem("app_build_version");
+      if (storedBuildVersion !== CURRENT_BUILD_VERSION) {
+        localStorage.setItem("app_build_version", CURRENT_BUILD_VERSION);
+        localStorage.setItem("app_version", CURRENT_BUILD_VERSION);
+        if (storedBuildVersion) {
+          window.location.reload();
+        }
       }
     } catch (e) {}
 
@@ -729,9 +735,9 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
           <div
-            className={`flex flex-wrap items-center justify-between gap-2 px-2.5 sm:px-5 rounded-2xl transition-all duration-500 w-full ${isScrolled
-                ? 'py-1.5 sm:py-2.5 bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
-                : 'py-2 sm:py-3 bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
+            className={`w-full flex flex-wrap lg:flex-nowrap items-center justify-between px-4 py-2 gap-2 overflow-hidden rounded-2xl transition-all duration-500 ${isScrolled
+                ? 'bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
+                : 'bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
               }`}
           >
 
@@ -742,9 +748,8 @@ export default function Header() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-1.5 sm:gap-2.5 group shrink-0 min-w-0 cursor-pointer"
+              className="flex items-center gap-2 shrink-0 max-w-[50%] md:max-w-none group cursor-pointer"
               title="Brahmacharya Mitra — Home"
-              style={{ whiteSpace: 'nowrap' }}
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
                 <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[4px] opacity-75 group-hover/logo:opacity-100 transition-opacity duration-300" />
@@ -760,22 +765,20 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none min-w-0" style={{ whiteSpace: 'nowrap' }}>
-                <div className="flex items-baseline gap-1 sm:gap-1.5" style={{ whiteSpace: 'nowrap' }}>
+              <div className="flex flex-col leading-none min-w-0 truncate">
+                <div className="flex items-baseline gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base font-bold whitespace-nowrap truncate">
                   <span
-                    className="font-cinzel font-bold text-[13px] sm:text-base md:text-lg tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap group-hover:text-amber-100 transition-colors"
-                    style={{ whiteSpace: 'nowrap' }}
+                    className="font-cinzel font-bold text-xs sm:text-sm md:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap truncate group-hover:text-amber-100 transition-colors"
                   >
                     BRAHMACHARYA
                   </span>
                   <span
-                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[13px] sm:text-base md:text-lg font-bold tracking-tight whitespace-nowrap pr-0.5"
-                    style={{ whiteSpace: 'nowrap' }}
+                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-xs sm:text-sm md:text-base font-bold tracking-tight whitespace-nowrap truncate pr-0.5"
                   >
                     MITRA
                   </span>
                 </div>
-                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate" style={{ whiteSpace: 'nowrap' }}>
+                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate">
                   ब्रह्मचर्य मित्र
                   <span className="inline-block w-px h-2 bg-amber-500/50" />
                   <span className="text-amber-300/75">दिव्य शक्ति</span>
@@ -784,7 +787,7 @@ export default function Header() {
             </a>
 
             {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup, Library, Telegram) ── */}
-            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-wrap shrink-0">
+            <div className="hidden lg:flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
               <a
                 href={baseUrl + "dashboard/"}
                 className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
@@ -850,8 +853,8 @@ export default function Header() {
               )}
             </div>
 
-            {/* ── Right: 3D Sun/Moon Toggle, Share Button, Language Dropdown & 3-Line Hamburger Menu Icon ── */}
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            {/* ── Right: Action Buttons Wrapper (Theme Toggle, Share, Language & Hamburger) ── */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
               {/* 3D Sun/Moon Theme Toggle (Compact & Mobile-Optimized) */}
               <ThemeToggle />
 
@@ -862,7 +865,7 @@ export default function Header() {
                 aria-label="Share Brahmacharya Mitra"
                 title="Share App / Copy Link"
               >
-                <Share2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+                <Share2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
               </button>
 
               <div className="shrink-0 flex items-center">

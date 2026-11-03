@@ -1,7 +1,7 @@
 // Brahmacharya Mitra — Progressive Web App (PWA) Service Worker
-// Version: 2.2.0 (Auto-updating cache-buster)
+// Version: 2.5.0 (Auto-updating cache-buster)
 
-const CACHE_NAME = 'bm-pwa-v2.2.0';
+const CACHE_NAME = 'bm-pwa-v2.5.0';
 
 // Base scope resolution
 const SCOPE_URL = self.registration ? self.registration.scope : './';
