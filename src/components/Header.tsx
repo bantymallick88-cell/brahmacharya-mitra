@@ -735,7 +735,7 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
           <div
-            className={`w-full flex flex-wrap lg:flex-nowrap items-center justify-between px-4 py-2 gap-2 overflow-hidden rounded-2xl transition-all duration-500 ${isScrolled
+            className={`w-full flex items-center justify-between min-w-0 overflow-x-auto no-scrollbar px-1.5 py-1 gap-1 sm:gap-2 rounded-2xl transition-all duration-500 ${isScrolled
                 ? 'bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
                 : 'bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
               }`}
@@ -748,7 +748,7 @@ export default function Header() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 shrink-0 max-w-[50%] md:max-w-none group cursor-pointer"
+              className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0 cursor-pointer"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -756,7 +756,7 @@ export default function Header() {
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  className="relative w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -765,63 +765,59 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none min-w-0 truncate">
-                <div className="flex items-baseline gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base font-bold whitespace-nowrap truncate">
+              <div className="flex flex-col leading-none shrink-0">
+                <div className="flex items-baseline gap-0.5 sm:gap-1 text-[10px] xs:text-xs sm:text-sm md:text-base font-bold whitespace-nowrap tracking-tight shrink-0">
                   <span
-                    className="font-cinzel font-bold text-xs sm:text-sm md:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap truncate group-hover:text-amber-100 transition-colors"
+                    className="font-cinzel font-bold text-[10px] xs:text-xs sm:text-sm md:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap shrink-0 group-hover:text-amber-100 transition-colors"
                   >
                     BRAHMACHARYA
                   </span>
                   <span
-                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-xs sm:text-sm md:text-base font-bold tracking-tight whitespace-nowrap truncate pr-0.5"
+                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[10px] xs:text-xs sm:text-sm md:text-base font-bold tracking-tight whitespace-nowrap shrink-0 pr-0.5"
                   >
                     MITRA
                   </span>
                 </div>
-                <span className="mt-0.5 sm:mt-1 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.2em] text-amber-400/80 hidden sm:flex items-center gap-1.5 truncate">
+                <span className="mt-0.5 text-[7px] sm:text-[8px] font-sanskrit tracking-[0.15em] text-amber-400/80 hidden sm:flex items-center gap-1 shrink-0 whitespace-nowrap">
                   ब्रह्मचर्य मित्र
-                  <span className="inline-block w-px h-2 bg-amber-500/50" />
+                  <span className="inline-block w-px h-1.5 bg-amber-500/50" />
                   <span className="text-amber-300/75">दिव्य शक्ति</span>
                 </span>
               </div>
             </a>
 
             {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup, Library, Telegram) ── */}
-            <div className="hidden lg:flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
+            <div className="hidden lg:flex items-center gap-1 sm:gap-1.5 xl:gap-2 shrink-0">
               <a
                 href={baseUrl + "dashboard/"}
-                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
-                style={{ whiteSpace: 'nowrap' }}
+                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span style={{ whiteSpace: 'nowrap' }}>Dashboard</span>
+                <span>Dashboard</span>
               </a>
 
               <a
                 href={baseUrl + "leaderboard/"}
-                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
-                style={{ whiteSpace: 'nowrap' }}
+                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span style={{ whiteSpace: 'nowrap' }}>Leaderboard</span>
+                <span>Leaderboard</span>
               </a>
 
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
-                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0"
-                style={{ whiteSpace: 'nowrap' }}
+                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span style={{ whiteSpace: 'nowrap' }}>Setup Wizard</span>
+                <span>Setup Wizard</span>
               </button>
 
               <a
                 href={baseUrl + "books/"}
-                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0"
-                style={{ whiteSpace: 'nowrap' }}
+                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span style={{ whiteSpace: 'nowrap' }}>Library</span>
+                <span>Library</span>
               </a>
 
               {/* ── Official Telegram Community Link (Restricted to Registered Users) ── */}
@@ -830,12 +826,11 @@ export default function Header() {
                   href="https://t.me/+aeaMsRXfx0VhZDJl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 xl:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 group cursor-pointer shrink-0"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] cursor-pointer shrink-0 whitespace-nowrap"
                   title="Join Official Telegram Community"
-                  style={{ whiteSpace: 'nowrap' }}
                 >
-                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
-                  <span className="font-extrabold tracking-wide" style={{ whiteSpace: 'nowrap' }}>Join Telegram</span>
+                  <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 transition-transform shrink-0" />
+                  <span className="font-extrabold tracking-wide">Join Telegram</span>
                 </a>
               ) : (
                 <button
@@ -843,29 +838,28 @@ export default function Header() {
                     setToastMessage('Telegram Sangha is private for registered sadhaks. Complete your Setup Wizard to unlock!');
                     window.dispatchEvent(new CustomEvent('open-onboarding-wizard'));
                   }}
-                  className="flex items-center gap-1.5 px-3 xl:px-3.5 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-750 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 text-xs font-bold transition-all duration-300 shadow-sm cursor-pointer group shrink-0"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-750 hover:border-amber-500/40 text-zinc-400 hover:text-amber-300 text-xs font-bold transition-all duration-300 shadow-sm cursor-pointer group shrink-0 whitespace-nowrap"
                   title="Complete Setup Wizard to Join Telegram Community"
-                  style={{ whiteSpace: 'nowrap' }}
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors shrink-0" />
-                  <span style={{ whiteSpace: 'nowrap' }}>Join Telegram 🔒</span>
+                  <span>Join Telegram 🔒</span>
                 </button>
               )}
             </div>
 
-            {/* ── Right: Action Buttons Wrapper (Theme Toggle, Share, Language & Hamburger) ── */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
+            {/* ── Right: Action Buttons (Theme Toggle, Share, Language Selector & Hamburger) ── */}
+            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
               {/* 3D Sun/Moon Theme Toggle (Compact & Mobile-Optimized) */}
-              <ThemeToggle />
+              <ThemeToggle className="shrink-0 scale-90 sm:scale-100 origin-center" />
 
               {/* Share Icon Button */}
               <button
                 onClick={handleShare}
-                className="relative group p-1 sm:p-2.5 rounded-lg sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0"
+                className="relative group p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
                 aria-label="Share Brahmacharya Mitra"
                 title="Share App / Copy Link"
               >
-                <Share2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+                <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
               </button>
 
               <div className="shrink-0 flex items-center">
@@ -875,10 +869,10 @@ export default function Header() {
               {/* 3-line Hamburger Menu Icon */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative group p-1 sm:p-3 rounded-lg sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0"
+                className="relative group p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
                 aria-label="Open Sadhana Tools and Navigation Drawer"
               >
-                <Menu className="w-4 h-4 sm:w-6 sm:h-6 text-amber-400 group-hover:scale-110 transition-transform" />
+                <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
               </button>
             </div>
 
