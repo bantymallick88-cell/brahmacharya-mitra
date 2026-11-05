@@ -13,7 +13,8 @@ import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 export default function Hero() {
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+  const isHindi = currentLang === 'hi';
 
   const triggerPanic = () => {
     window.dispatchEvent(new CustomEvent('open-panic-modal'));
@@ -128,16 +129,16 @@ export default function Hero() {
 
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-[11px] sm:text-xs font-bold shadow-sm">
-              🔥 100% Free & Open
+              {isHindi ? '🔥 100% निःशुल्क' : '🔥 100% Free & Open'}
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/35 text-red-300 text-[11px] sm:text-xs font-bold shadow-sm">
-              🛑 1-Tap Urge Breaker
+              {isHindi ? '🛑 1-टैप अर्ज ब्रेकर' : '🛑 1-Tap Urge Breaker'}
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/35 text-yellow-300 text-[11px] sm:text-xs font-bold shadow-sm">
-              📿 108 Japa Counter
+              {isHindi ? '📿 108 जप माला' : '📿 108 Japa Counter'}
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] sm:text-xs font-bold shadow-sm">
-              📖 29 Sacred Books
+              {isHindi ? '📖 29 पवित्र ग्रंथ' : '📖 29 Sacred Books'}
             </span>
           </div>
         </motion.div>

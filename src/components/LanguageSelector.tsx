@@ -14,8 +14,18 @@ export default function LanguageSelector() {
         setIsOpen(false);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const indianLanguages = SUPPORTED_LANGUAGES.filter(l => l.group === 'Indian');
@@ -28,35 +38,73 @@ export default function LanguageSelector() {
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button with Glassmorphic styling and glowing hover */}
+      {/* Trigger Button with High-Contrast Bilingual Indicator ('GB' / 'HI') */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-full bg-zinc-900/80 hover:bg-zinc-800/90 border border-amber-500/30 hover:border-amber-400 text-xs font-semibold text-zinc-200 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] cursor-pointer shrink-0"
-        aria-label="Select Language"
-        title="Change Language"
+        className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.35)] cursor-pointer shrink-0 active:scale-95"
+        aria-label="Select Language (English / Hindi)"
+        aria-expanded={isOpen}
+        title="Switch Language / भाषा बदलें"
       >
-        <span className="text-xs sm:text-sm leading-none">{currentMeta.flag}</span>
-        <span className="hidden sm:inline font-medium text-amber-300/90">{currentMeta.nativeName}</span>
-        <ChevronDown className={`w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-amber-400' : ''}`} />
+        <span className="text-sm leading-none" role="img" aria-label="Flag">
+          {currentMeta.flag}
+        </span>
+        <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-amber-300">
+          {currentLang === 'hi' ? 'HI' : (currentLang === 'en' ? 'EN' : currentLang.toUpperCase())}
+        </span>
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-amber-400 transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
       </button>
 
-      {/* Glassmorphic Dropdown Menu */}
+      {/* Glassmorphic Dropdown Menu (Guaranteed High z-index & Mobile Alignment) */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 rounded-2xl glass-panel border border-amber-500/40 bg-[#0c0c12]/95 backdrop-blur-2xl p-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 sm:right-0 mt-2 w-72 max-w-[90vw] rounded-2xl border-2 border-amber-500/50 bg-[#0d0d14]/98 backdrop-blur-2xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] z-[120] animate-in fade-in zoom-in-95 duration-150">
           
-          <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-zinc-800/80 mb-2">
-            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5" /> Select Language
+          {/* Header */}
+          <div className="flex items-center justify-between px-1 pb-2 border-b border-zinc-800/80 mb-2.5">
+            <span className="text-[11px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-amber-400" /> भाषा चुनें • Select Language
             </span>
-            <span className="text-[10px] text-zinc-400">15 Languages</span>
+            <span className="text-[10px] text-zinc-400 font-semibold">15 Languages</span>
           </div>
 
-          <div className="max-h-80 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
-            
+          {/* ── QUICK 1-TAP SWITCH: ENGLISH (GB/EN) & HINDI (IN/HI) ── */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <button
+              onClick={() => handleSelect('en')}
+              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                currentLang === 'en'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] font-black border border-amber-300'
+                  : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
+              }`}
+            >
+              <span className="text-sm">🇬🇧</span>
+              <span>English (EN)</span>
+              {currentLang === 'en' && <Check className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />}
+            </button>
+
+            <button
+              onClick={() => handleSelect('hi')}
+              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                currentLang === 'hi'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] font-black border border-amber-300'
+                  : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
+              }`}
+            >
+              <span className="text-sm">🇮🇳</span>
+              <span>हिन्दी (HI)</span>
+              {currentLang === 'hi' && <Check className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />}
+            </button>
+          </div>
+
+          <div className="max-h-72 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
             {/* Indian Languages Section */}
             <div>
-              <div className="px-2.5 py-1 text-[10px] font-bold text-amber-500/80 uppercase tracking-widest">
-                భಾರతీయ ଭାଷା (Indian Languages)
+              <div className="px-2 py-1 text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-1">
+                <span>भारतीय भाषाएँ (Indian Languages)</span>
               </div>
               <div className="grid grid-cols-1 gap-1">
                 {indianLanguages.map((lang) => {
@@ -67,8 +115,8 @@ export default function LanguageSelector() {
                       onClick={() => handleSelect(lang.code)}
                       className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition cursor-pointer ${
                         isSelected
-                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
-                          : 'text-zinc-300 hover:bg-zinc-800/60 hover:text-white'
+                          ? 'bg-amber-500/25 text-amber-300 font-bold border border-amber-500/50 shadow-sm'
+                          : 'text-zinc-300 hover:bg-zinc-850 hover:text-white'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -78,7 +126,7 @@ export default function LanguageSelector() {
                           <span className="text-[10px] text-zinc-400 ml-1.5">({lang.name})</span>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-amber-400 stroke-[2.5]" />}
                     </button>
                   );
                 })}
@@ -87,7 +135,7 @@ export default function LanguageSelector() {
 
             {/* Global Languages Section */}
             <div className="pt-2 border-t border-zinc-800/80">
-              <div className="px-2.5 py-1 text-[10px] font-bold text-sky-400/80 uppercase tracking-widest">
+              <div className="px-2 py-1 text-[10px] font-black text-sky-400 uppercase tracking-widest">
                 Global Languages
               </div>
               <div className="grid grid-cols-1 gap-1">
@@ -99,8 +147,8 @@ export default function LanguageSelector() {
                       onClick={() => handleSelect(lang.code)}
                       className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition cursor-pointer ${
                         isSelected
-                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
-                          : 'text-zinc-300 hover:bg-zinc-800/60 hover:text-white'
+                          ? 'bg-amber-500/25 text-amber-300 font-bold border border-amber-500/50 shadow-sm'
+                          : 'text-zinc-300 hover:bg-zinc-850 hover:text-white'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -110,13 +158,12 @@ export default function LanguageSelector() {
                           <span className="text-[10px] text-zinc-400 ml-1.5">({lang.name})</span>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-amber-400 stroke-[2.5]" />}
                     </button>
                   );
                 })}
               </div>
             </div>
-
           </div>
 
         </div>

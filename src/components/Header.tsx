@@ -642,7 +642,7 @@ function ToolsDrawer({
    Main Header / Navbar — Ultra-Clean Top Bar with Mobile Responsiveness
 ───────────────────────────────────────────────────────────── */
 export default function Header() {
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [streakDays, setStreakDays] = useState(7);
@@ -735,24 +735,24 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
           <div
-            className={`w-full flex items-center justify-between min-w-0 overflow-x-auto no-scrollbar px-2 sm:px-4 py-1.5 sm:py-2.5 gap-2 sm:gap-4 rounded-2xl transition-all duration-500 ${isScrolled
+            className={`w-full flex items-center justify-between min-w-0 px-2 sm:px-4 py-1.5 sm:py-2.5 gap-1.5 sm:gap-4 rounded-2xl transition-all duration-500 relative ${isScrolled
                 ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
                 : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
               }`}
             style={{
-              background: isScrolled ? 'rgba(20, 14, 8, 0.92)' : 'rgba(28, 20, 10, 0.75)',
-              border: '1px solid rgba(245, 158, 11, 0.25)',
+              background: isScrolled ? 'rgba(20, 14, 8, 0.95)' : 'rgba(28, 20, 10, 0.82)',
+              border: '1.5px solid rgba(245, 158, 11, 0.3)',
             }}
           >
 
-            {/* ── Left: Logo (Mahadev Divine Photo) & Enriched Brand Title ── */}
+            {/* ── Left: Logo (Mahadev Divine Photo) & Auto-Scaling Bold Brand Title ── */}
             <a
               href={baseUrl}
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 cursor-pointer group"
+              className="flex items-center gap-1.5 sm:gap-3 shrink min-w-0 cursor-pointer group"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -769,13 +769,14 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none shrink-0">
+              <div className="flex flex-col leading-none min-w-0 overflow-hidden">
                 <span
-                  className="font-cinzel text-base xs:text-lg sm:text-2xl font-black tracking-wide bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(245,158,11,0.5)] whitespace-nowrap shrink-0"
+                  className="font-cinzel font-black tracking-tight sm:tracking-wide bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(245,158,11,0.5)] whitespace-nowrap"
+                  style={{ fontSize: 'clamp(0.92rem, 3.8vw, 1.5rem)' }}
                 >
                   BRAHMACHARYA MITRA
                 </span>
-                <span className="mt-0.5 text-[8px] sm:text-[10px] font-sanskrit tracking-[0.18em] text-amber-300/80 hidden sm:flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+                <span className="mt-0.5 text-[8px] sm:text-[10px] font-sanskrit tracking-[0.18em] text-amber-300/80 hidden md:flex items-center gap-1.5 shrink-0 whitespace-nowrap">
                   ब्रह्मचर्य मित्र
                   <span className="inline-block w-px h-1.5 bg-amber-500/50" />
                   <span className="text-amber-200/90 font-medium">दिव्य शक्ति • Ojas & Tejas</span>
@@ -790,7 +791,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Dashboard</span>
+                <span>{currentLang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'}</span>
               </a>
 
               <a
@@ -798,7 +799,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Leaderboard</span>
+                <span>{currentLang === 'hi' ? 'लीडरबोर्ड' : 'Leaderboard'}</span>
               </a>
 
               <button
@@ -806,7 +807,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Setup Wizard</span>
+                <span>{currentLang === 'hi' ? 'सेटअप विजार्ड' : 'Setup Wizard'}</span>
               </button>
 
               <a
@@ -814,7 +815,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Library</span>
+                <span>{currentLang === 'hi' ? 'ग्रंथालय' : 'Library'}</span>
               </a>
 
               {/* ── Official Telegram Community Link (Restricted to Registered Users) ── */}
@@ -827,7 +828,7 @@ export default function Header() {
                   title="Join Official Telegram Community"
                 >
                   <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 transition-transform shrink-0" />
-                  <span className="font-extrabold tracking-wide">Join Telegram</span>
+                  <span className="font-extrabold tracking-wide">{currentLang === 'hi' ? 'टेलीग्राम' : 'Join Telegram'}</span>
                 </a>
               ) : (
                 <button
@@ -839,27 +840,39 @@ export default function Header() {
                   title="Complete Setup Wizard to Join Telegram Community"
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors shrink-0" />
-                  <span>Join Telegram 🔒</span>
+                  <span>{currentLang === 'hi' ? 'टेलीग्राम 🔒' : 'Join Telegram 🔒'}</span>
                 </button>
               )}
             </div>
 
-            {/* ── Right: Action Buttons (Theme Toggle, Language Selector & Hamburger Menu — Share removed from top bar) ── */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* 3D Sun/Moon Theme Toggle (Compact & Mobile-Optimized) */}
-              <ThemeToggle className="shrink-0 scale-90 sm:scale-100 origin-center" />
+            {/* ── Right: Action Buttons (Theme Toggle, Language Selector & RESTORED ☰ Hamburger Menu) ── */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
+              {/* 3D Sun/Moon Theme Toggle (Compact on mobile) */}
+              <div className="hidden xs:flex items-center shrink-0">
+                <ThemeToggle className="scale-90 sm:scale-100 origin-center" />
+              </div>
 
+              {/* Language Selector ('GB' / 'HI') */}
               <div className="shrink-0 flex items-center">
                 <LanguageSelector />
               </div>
 
-              {/* 3-line Hamburger Menu Icon */}
+              {/* 3-line Hamburger Menu Icon (RESTORED, 100% VISIBLE & HIGH CONTRAST) */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative group p-1.5 sm:p-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
+                className="relative group px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/20 hover:from-amber-500/35 hover:to-amber-500/45 border-2 border-amber-400 text-amber-200 hover:text-white shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 shrink-0"
                 aria-label="Open Sadhana Tools and Navigation Drawer"
+                title="Open Navigation Menu"
               >
-                <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+                {/* 3-line Authentic Hamburger Menu Graphic */}
+                <div className="flex flex-col justify-center items-center w-5 h-4 gap-1">
+                  <span className="w-5 h-0.5 bg-amber-300 rounded-full group-hover:bg-white transition-colors" />
+                  <span className="w-5 h-0.5 bg-amber-300 rounded-full group-hover:bg-white transition-colors" />
+                  <span className="w-5 h-0.5 bg-amber-300 rounded-full group-hover:bg-white transition-colors" />
+                </div>
+                <span className="hidden sm:inline text-xs font-black uppercase tracking-wider text-amber-300 ml-0.5">
+                  {currentLang === 'hi' ? 'मेन्यू' : 'Menu'}
+                </span>
               </button>
             </div>
 
