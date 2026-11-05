@@ -194,28 +194,29 @@ export default function VisualActionGrid() {
                 </div>
               </div>
 
-              <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1.5">
-                {isHindi ? 'अखंड ब्रह्मचर्य स्ट्रीक' : 'Start / Track Your Streak'}
+              <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1.5 flex items-center gap-1.5">
+                <span>🔥</span>
+                <span>{isHindi ? 'स्ट्रीक ट्रैकर' : 'Streak Tracker'}</span>
               </h3>
               <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
-                {isHindi ? 'वीर्य रक्षा, तेजस्विता एवं आत्म-संयम' : 'Ojas Transmutation & Self-Mastery'}
+                {isHindi ? 'अखंड ब्रह्मचर्य संकल्प • वीर्य रक्षा' : 'Akhand Brahmacharya • Ojas Transmutation'}
               </p>
             </div>
 
             <p className="text-xs text-zinc-300 mt-2 leading-relaxed">
               {isHindi 
-                ? 'दैनिक वीर्य रक्षा का संकल्प लें। एक भी दिन पतन न होने दें।' 
-                : 'Track daily retention victory and keep your sacred energy flowing.'}
+                ? 'दैनिक वीर्य रक्षा का संकल्प लें। 1-टैप से चेक-इन करें।' 
+                : 'Track daily retention victory and 1-tap check-in.'}
             </p>
           </div>
 
-          {/* 1-Tap Action Button */}
+          {/* 1-Tap Action Button: Start / Check-in */}
           <button
             onClick={handleScrollToStreak}
             className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
             <Flame className="w-4 h-4 fill-zinc-950 text-zinc-950 shrink-0" />
-            <span>{isHindi ? 'स्ट्रीक काउंटर आरंभ करें' : 'Track Streak Now'}</span>
+            <span>{isHindi ? 'शुरू करें / चेक-इन' : 'Start / Check-in'}</span>
             <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
           </button>
         </motion.div>
@@ -248,7 +249,8 @@ export default function VisualActionGrid() {
             {/* High-Contrast Bold SOS Title */}
             <div className="my-2">
               <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-1.5">
-                <span>{isHindi ? 'आपातकालीन पैनिक मोड' : 'Emergency Panic Mode'}</span>
+                <span>🛑</span>
+                <span>{isHindi ? 'इमरजेंसी SOS / रीलेप्स शील्ड' : 'Emergency SOS / Relapse Shield'}</span>
               </h3>
               <p className="text-xs text-red-200 font-sanskrit font-bold mt-1">
                 {isHindi ? 'काम-वेग नियंत्रण • तुरंत सुरक्षा कवच' : 'Urge Shield & 4-7-8 Breathwork'}
@@ -366,8 +368,9 @@ export default function VisualActionGrid() {
               </div>
             </div>
 
-            <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1">
-              {isHindi ? 'दैनिक साधना व जप' : 'Daily Sadhana & Japa'}
+            <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1 flex items-center gap-1.5">
+              <span>📿</span>
+              <span>{isHindi ? '108 जप माला काउंटर' : '108 Japa Mala Counter'}</span>
             </h3>
             <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
               {isHindi ? 'गायत्री, महामृत्युंजय व नाम-जप' : 'Gayatri, Mahamrityunjaya & Naam Jap'}
@@ -380,7 +383,7 @@ export default function VisualActionGrid() {
             className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
           >
             <Disc className="w-4 h-4 text-amber-400 animate-spin-slow shrink-0" />
-            <span>{isHindi ? 'दैनिक साधना चेकलिस्ट खोलें' : 'Open Sadhana Routine'}</span>
+            <span>{isHindi ? 'दैनिक साधना खोलें' : 'Open Daily Sadhana'}</span>
             <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
           </a>
         </motion.div>
@@ -433,11 +436,12 @@ export default function VisualActionGrid() {
               </div>
             </div>
 
-            <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1">
-              {isHindi ? 'ग्रंथ पुस्तकालय एवं विश्व श्रेणी' : 'Sacred Books & Leaderboard'}
+            <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1 flex items-center gap-1.5">
+              <span>📚</span>
+              <span>{isHindi ? 'पवित्र ग्रंथ एवं लीडरबोर्ड' : 'Sacred Books & Leaderboard'}</span>
             </h3>
             <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
-              {isHindi ? 'प्रेमानंद जी, शिवानन्द जी व गैरी विल्सन' : 'Ancient Shastras & Global Sadhaks'}
+              {isHindi ? 'प्रेमानंद जी, शिवानन्द जी व विश्व साधक' : 'Ancient Shastras & Global Sadhaks'}
             </p>
           </div>
 
@@ -448,7 +452,7 @@ export default function VisualActionGrid() {
               className="py-3 px-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 text-amber-300 hover:text-white font-black text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer text-center"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>{isHindi ? '29 ग्रंथ पढ़ें' : '29 Books'}</span>
+              <span>{isHindi ? '29 पवित्र ग्रंथ' : '29 Sacred Books'}</span>
             </a>
 
             <a
@@ -456,7 +460,7 @@ export default function VisualActionGrid() {
               className="py-3 px-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer text-center"
             >
               <Trophy className="w-3.5 h-3.5 text-zinc-950 shrink-0" />
-              <span>{isHindi ? 'लीडरबोर्ड 🏆' : 'Ranks 🏆'}</span>
+              <span>{isHindi ? 'लीडरबोर्ड 🏆' : 'Leaderboard 🏆'}</span>
             </a>
           </div>
         </motion.div>

@@ -733,26 +733,26 @@ export default function Header() {
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
           }`}
       >
-        <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 w-full">
           <div
-            className={`w-full flex items-center justify-between min-w-0 px-2 sm:px-4 py-1.5 sm:py-2.5 gap-1.5 sm:gap-4 rounded-2xl transition-all duration-500 relative ${isScrolled
+            className={`w-full flex items-center justify-between px-3 py-2 sm:py-2.5 gap-2 sm:gap-3 rounded-2xl transition-all duration-500 relative ${isScrolled
                 ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
                 : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
               }`}
             style={{
-              background: isScrolled ? 'rgba(20, 14, 8, 0.95)' : 'rgba(28, 20, 10, 0.82)',
+              background: isScrolled ? 'rgba(20, 14, 8, 0.95)' : 'rgba(28, 20, 10, 0.85)',
               border: '1.5px solid rgba(245, 158, 11, 0.3)',
             }}
           >
 
-            {/* ── Left: Logo (Mahadev Divine Photo) & Auto-Scaling Bold Brand Title ── */}
+            {/* ── Left: Logo & Strictly Spelled "BRAHMACHARYA MITRA" with Dynamic Scaling (No Truncation) ── */}
             <a
               href={baseUrl}
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-1.5 sm:gap-3 shrink min-w-0 cursor-pointer group"
+              className="flex items-center gap-1.5 sm:gap-2.5 shrink min-w-0 cursor-pointer group"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -760,7 +760,7 @@ export default function Header() {
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(255,140,0,0.6)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(255,140,0,0.6)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -769,22 +769,17 @@ export default function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none min-w-0 overflow-hidden">
-                <span
-                  className="font-cinzel font-black tracking-tight sm:tracking-wide bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(245,158,11,0.5)] whitespace-nowrap"
-                  style={{ fontSize: 'clamp(0.92rem, 3.8vw, 1.5rem)' }}
-                >
+              <div className="flex flex-col leading-none shrink-0 min-w-0">
+                <span className="text-sm sm:text-lg md:text-xl font-extrabold tracking-wide text-amber-400 whitespace-nowrap shrink-0 drop-shadow-[0_2px_10px_rgba(245,158,11,0.4)]">
                   BRAHMACHARYA MITRA
                 </span>
-                <span className="mt-0.5 text-[8px] sm:text-[10px] font-sanskrit tracking-[0.18em] text-amber-300/80 hidden md:flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                  ब्रह्मचर्य मित्र
-                  <span className="inline-block w-px h-1.5 bg-amber-500/50" />
-                  <span className="text-amber-200/90 font-medium">दिव्य शक्ति • Ojas & Tejas</span>
+                <span className="mt-0.5 text-[8px] sm:text-[9px] font-sanskrit tracking-[0.16em] text-amber-300/80 hidden md:flex items-center gap-1 shrink-0 whitespace-nowrap">
+                  ब्रह्मचर्य मित्र • Ojas & Tejas
                 </span>
               </div>
             </a>
 
-            {/* ── Center/Right: Desktop Nav Links (Daily Dashboard, Leaderboard, Setup, Library, Telegram) ── */}
+            {/* ── Center: Desktop Nav Links (Visible on Large Screens) ── */}
             <div className="hidden lg:flex items-center gap-1 sm:gap-1.5 xl:gap-2 shrink-0">
               <a
                 href={baseUrl + "dashboard/"}
@@ -807,7 +802,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>{currentLang === 'hi' ? 'सेटअप विजार्ड' : 'Setup Wizard'}</span>
+                <span>{currentLang === 'hi' ? 'सेटअप' : 'Setup'}</span>
               </button>
 
               <a
@@ -818,7 +813,7 @@ export default function Header() {
                 <span>{currentLang === 'hi' ? 'ग्रंथालय' : 'Library'}</span>
               </a>
 
-              {/* ── Official Telegram Community Link (Restricted to Registered Users) ── */}
+              {/* ── Official Telegram Link (Restricted to Registered Users) ── */}
               {isRegistered ? (
                 <a
                   href="https://t.me/+aeaMsRXfx0VhZDJl"
@@ -828,7 +823,7 @@ export default function Header() {
                   title="Join Official Telegram Community"
                 >
                   <TelegramIcon className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200 transition-transform shrink-0" />
-                  <span className="font-extrabold tracking-wide">{currentLang === 'hi' ? 'टेलीग्राम' : 'Join Telegram'}</span>
+                  <span className="font-extrabold tracking-wide">{currentLang === 'hi' ? 'टेलीग्राम' : 'Telegram'}</span>
                 </a>
               ) : (
                 <button
@@ -840,27 +835,27 @@ export default function Header() {
                   title="Complete Setup Wizard to Join Telegram Community"
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400 transition-colors shrink-0" />
-                  <span>{currentLang === 'hi' ? 'टेलीग्राम 🔒' : 'Join Telegram 🔒'}</span>
+                  <span>{currentLang === 'hi' ? 'टेलीग्राम 🔒' : 'Telegram 🔒'}</span>
                 </button>
               )}
             </div>
 
-            {/* ── Right: Action Buttons (Theme Toggle, Language Selector & RESTORED ☰ Hamburger Menu) ── */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
-              {/* 3D Sun/Moon Theme Toggle (Compact on mobile) */}
-              <div className="hidden xs:flex items-center shrink-0">
-                <ThemeToggle className="scale-90 sm:scale-100 origin-center" />
+            {/* ── Right: Language Switcher 'GB EN' & Menu '☰' (Proper spacing, never touch or overlap) ── */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+              {/* 3D Sun/Moon Theme Toggle (Desktop/Tablet) */}
+              <div className="hidden sm:flex items-center shrink-0">
+                <ThemeToggle className="scale-90 origin-center" />
               </div>
 
-              {/* Language Selector ('GB' / 'HI') */}
+              {/* Language Switcher ('GB EN') */}
               <div className="shrink-0 flex items-center">
                 <LanguageSelector />
               </div>
 
-              {/* 3-line Hamburger Menu Icon (RESTORED, 100% VISIBLE & HIGH CONTRAST) */}
+              {/* 3-line Hamburger Menu Icon '☰' */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative group px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/20 hover:from-amber-500/35 hover:to-amber-500/45 border-2 border-amber-400 text-amber-200 hover:text-white shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 shrink-0"
+                className="relative group px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/20 hover:from-amber-500/35 hover:to-amber-500/45 border-2 border-amber-400 text-amber-200 hover:text-white shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 shrink-0"
                 aria-label="Open Sadhana Tools and Navigation Drawer"
                 title="Open Navigation Menu"
               >
