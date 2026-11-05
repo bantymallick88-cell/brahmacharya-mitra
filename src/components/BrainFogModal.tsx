@@ -9,6 +9,7 @@ import {
   Sparkles,
   CheckCircle2
 } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 interface Question {
   id: string;
@@ -76,6 +77,7 @@ const QUESTIONS: Question[] = [
 ];
 
 export default function BrainFogModal() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({
     morning_fog: 2,
@@ -160,13 +162,13 @@ export default function BrainFogModal() {
             <div className="text-left mb-6 pr-10">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
                 <Brain className="w-3.5 h-3.5 text-amber-400" />
-                <span>Diagnostic Quiz</span>
+                <span>{t('brainFog.badge')}</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black font-cinzel text-white">
-                Porn-Induced Brain Fog & Mental Clarity Tracker
+                {t('brainFog.title')} <span className="text-amber-400">{t('brainFog.titleHighlight')}</span>
               </h2>
               <p className="text-xs text-zinc-400 mt-1">
-                Evaluate prefrontal cortex hypofrontality, memory latency & dopamine desensitization.
+                {t('brainFog.subtitle')}
               </p>
             </div>
 

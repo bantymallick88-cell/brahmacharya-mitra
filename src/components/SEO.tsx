@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useTranslation } from '../i18n';
 
 export const SEO_CONFIG = {
   title: "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker",
@@ -11,6 +12,31 @@ export const SEO_CONFIG = {
 };
 
 export default function SEO() {
+  const { currentLang } = useTranslation();
+
+  const titleByLang: Record<string, string> = {
+    hi: "ब्रह्मचर्य मित्र — वीर्य रक्षा, ब्रह्मचर्य एवं NoFap साधना ट्रैकर",
+    or: "ବ୍ରହ୍ମଚର୍ଯ୍ୟ ମିତ୍ର — ବୀର୍ଯ୍ୟ ରକ୍ଷା, ବ୍ରହ୍ମଚର୍ଯ୍ୟ ଓ NoFap ସାଧନା ଟ୍ରାକର୍",
+    en: "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker"
+  };
+
+  const descByLang: Record<string, string> = {
+    hi: "ब्रह्मचर्य मित्र के साथ अश्लीलता की लत, ब्रेन फॉग और पतन चक्र पर विजय प्राप्त करें। अपनी ब्रह्मचर्य स्ट्रीक ट्रैक करें, ओजस रूपांतरण सीखें और 29 निःशुल्क पवित्र शास्त्र पढ़ें।",
+    or: "ବ୍ରହ୍ମଚର୍ଯ୍ୟ ମିତ୍ର ସହିତ ଅଶ୍ଳୀଳତା, ବ୍ରେନ୍ ଫଗ୍ ଓ ପତନ ଚକ୍ରରୁ ମୁକ୍ତି ପାଆନ୍ତୁ। ଆପଣଙ୍କ ବ୍ରହ୍ମଚର୍ଯ୍ୟ ଷ୍ଟ୍ରିକ୍ ଟ୍ରାକ୍ କରନ୍ତୁ ଏବଂ ୨୯ଟି ମାଗଣା ପବିତ୍ର ପୁସ୍ତକ ପଢ଼ନ୍ତୁ।",
+    en: "Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, transmute energy into Ojas, and access 29 free sacred scriptures."
+  };
+
+  const activeTitle = titleByLang[currentLang] || titleByLang.en;
+  const activeDesc = descByLang[currentLang] || descByLang.en;
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.title = activeTitle;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', activeDesc);
+    }
+  }, [activeTitle, activeDesc]);
+
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL)
     ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/')
     : '/';
@@ -176,9 +202,9 @@ export default function SEO() {
 
   return (
     <>
-      <title>{SEO_CONFIG.title}</title>
-      <meta name="title" content={SEO_CONFIG.title} />
-      <meta name="description" content={SEO_CONFIG.description} />
+      <title>{activeTitle}</title>
+      <meta name="title" content={activeTitle} />
+      <meta name="description" content={activeDesc} />
       <meta name="keywords" content={SEO_CONFIG.keywords} />
       <meta name="author" content={SEO_CONFIG.author} />
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />

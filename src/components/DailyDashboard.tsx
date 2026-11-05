@@ -12,6 +12,7 @@ import { ALL_TASK_MAP } from './OnboardingWizard';
 import { getWallpaperForDay, downloadCanvasWallpaper } from '../data/wallpapers';
 import { MILESTONES } from './Habits';
 import { getStoredStreak, updateGlobalStreak, getDynamicTarget } from '../streakStore';
+import { useTranslation } from '../i18n';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Brave Sadhak',
@@ -45,6 +46,7 @@ const TASK_DEFINITIONS: Record<string, { label: string; icon: string; time: stri
 };
 
 export const DailyDashboard: React.FC = () => {
+  const { t, currentLang } = useTranslation();
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const initialStreak = getStoredStreak();
   const [streakDays, setStreakDays] = useState<number>(initialStreak.days);
@@ -481,16 +483,16 @@ export const DailyDashboard: React.FC = () => {
         <div className="flex items-center justify-between px-1">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
-              Visual Tapasya Motivation
+              {t('wallpapers.visualMotivation')}
             </span>
             <h2 className="text-xl md:text-2xl font-black text-white font-cinzel flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-400" />
-              <span>Daily Motivational Wallpaper & Streak Badges</span>
+              <span>{t('wallpapers.sectionTitle')}</span>
             </h2>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/30 hidden sm:inline-flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5 fill-amber-400" />
-            <span>Day {streakDays} Milestone</span>
+            <span>{t('wallpapers.milestoneBadge', { day: streakDays })}</span>
           </span>
         </div>
 
@@ -510,12 +512,12 @@ export const DailyDashboard: React.FC = () => {
             <div className="flex items-center justify-between w-full relative z-10">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-black uppercase tracking-wider shadow">
                 <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" />
-                <span>Day {streakDays} Unlocked Wallpaper</span>
+                <span>{t('wallpapers.unlockedBadge', { day: streakDays })}</span>
               </span>
 
               <span className="p-2 rounded-xl bg-black/60 text-zinc-300 group-hover:text-amber-400 transition shadow flex items-center gap-1.5 text-xs">
                 <Eye className="w-4 h-4" />
-                <span>Expand Fullscreen</span>
+                <span>{t('wallpapers.expandFullscreen')}</span>
               </span>
             </div>
 
@@ -525,10 +527,10 @@ export const DailyDashboard: React.FC = () => {
                 {activeWallpaper.headline}
               </h4>
               <p className="text-sm sm:text-base text-amber-200/95 font-serif italic mt-1 line-clamp-2 drop-shadow">
-                “{activeWallpaper.hindiQuote}”
+                “{currentLang === 'en' ? activeWallpaper.englishQuote : (activeWallpaper.hindiQuote || activeWallpaper.englishQuote)}”
               </p>
               <span className="text-xs text-zinc-400 block mt-1.5">
-                — {activeWallpaper.author || 'Ancient Wisdom'} • {activeWallpaper.intensityStage}
+                — {activeWallpaper.author || t('wallpapers.ancientWisdom')} • {activeWallpaper.intensityStage}
               </span>
             </div>
 
@@ -548,12 +550,12 @@ export const DailyDashboard: React.FC = () => {
                 {wallpaperSaved ? (
                   <>
                     <Check className="w-4 h-4 stroke-[3]" />
-                    <span>Wallpaper Saved to Device!</span>
+                    <span>{t('wallpapers.savedToDevice')}</span>
                   </>
                 ) : (
                   <>
                     <Download className="w-4 h-4" />
-                    <span>Save Ultra-HD Wallpaper</span>
+                    <span>{t('wallpapers.saveUltraHd')}</span>
                   </>
                 )}
               </motion.button>
@@ -564,9 +566,9 @@ export const DailyDashboard: React.FC = () => {
                   e.stopPropagation();
                   setPreviewModalOpen(true);
                 }}
-                className="px-4 py-3 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-white/15 text-xs font-bold transition"
+                className="px-4 py-3 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 border border-white/15 text-xs font-bold transition cursor-pointer"
               >
-                Inspect
+                {t('wallpapers.inspect')}
               </button>
             </div>
           </motion.div>
@@ -576,16 +578,19 @@ export const DailyDashboard: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wider font-cinzel">
                 <Trophy className="w-4 h-4 text-amber-400" />
-                <span>Streak Milestone Badges</span>
+                <span>{t('wallpapers.milestoneBadges')}</span>
               </span>
               <span className="text-[11px] text-zinc-400 font-mono">
-                {MILESTONES.filter((m) => streakDays >= m.day).length}/{MILESTONES.length} Unlocked
+                {t('wallpapers.unlockedRatio', { unlocked: MILESTONES.filter((m) => streakDays >= m.day).length, total: MILESTONES.length })}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3 py-3">
               {MILESTONES.map((m) => {
                 const isUnlocked = streakDays >= m.day;
+                const title = t(`milestones.m${m.day}Title`) || m.title;
+                const desc = t(`milestones.m${m.day}Desc`) || m.desc;
+
                 return (
                   <div
                     key={m.day}
@@ -607,10 +612,10 @@ export const DailyDashboard: React.FC = () => {
 
                     <div className="min-w-0">
                       <div className="text-xs font-bold text-white flex items-center gap-1">
-                        <span>{m.title}</span>
+                        <span>{title}</span>
                         {isUnlocked && <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[3]" />}
                       </div>
-                      <div className="text-[10px] text-zinc-400 truncate">{m.desc}</div>
+                      <div className="text-[10px] text-zinc-400 truncate">{desc}</div>
                     </div>
                   </div>
                 );
@@ -618,8 +623,8 @@ export const DailyDashboard: React.FC = () => {
             </div>
 
             <div className="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400 flex items-center justify-between">
-              <span>Next Milestone: <strong className="text-amber-300">{MILESTONES.find((m) => m.day > streakDays)?.title || 'Paramhansa Level'}</strong></span>
-              <span className="text-amber-400 font-bold">Unstoppable Tapasya</span>
+              <span>{t('wallpapers.nextMilestone', { milestone: MILESTONES.find((m) => m.day > streakDays)?.title || t('wallpapers.paramhansaLevel') })}</span>
+              <span className="text-amber-400 font-bold">{t('wallpapers.stayResolute')}</span>
             </div>
           </div>
         </div>
@@ -881,7 +886,7 @@ export const DailyDashboard: React.FC = () => {
               {/* Day Badge */}
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-zinc-950 font-black text-xs shadow-lg uppercase tracking-wider z-10">
                 <Flame className="w-3.5 h-3.5 fill-black" />
-                <span>DAY {activeWallpaper.day} UNLOCKED</span>
+                <span>{t('wallpapers.dayUnlocked', { day: activeWallpaper.day })}</span>
               </div>
 
               {/* Headline */}
@@ -897,13 +902,15 @@ export const DailyDashboard: React.FC = () => {
               {/* Quotes Card */}
               <div className="p-3.5 rounded-2xl bg-black/85 border border-white/10 backdrop-blur-md max-w-xs text-left z-10 space-y-2">
                 <p className="text-xs font-serif text-amber-200 italic leading-relaxed">
-                  “{activeWallpaper.hindiQuote}”
+                  “{currentLang === 'en' ? activeWallpaper.englishQuote : (activeWallpaper.hindiQuote || activeWallpaper.englishQuote)}”
                 </p>
-                <p className="text-[11px] text-zinc-300 leading-relaxed border-t border-white/10 pt-1.5">
-                  “{activeWallpaper.englishQuote}”
-                </p>
+                {currentLang !== 'en' && activeWallpaper.englishQuote && (
+                  <p className="text-[11px] text-zinc-300 leading-relaxed border-t border-white/10 pt-1.5">
+                    “{activeWallpaper.englishQuote}”
+                  </p>
+                )}
                 <span className="text-[10px] font-bold text-amber-400 block pt-0.5">
-                  — {activeWallpaper.author}
+                  — {activeWallpaper.author || t('wallpapers.ancientWisdom')}
                 </span>
               </div>
 
@@ -918,12 +925,12 @@ export const DailyDashboard: React.FC = () => {
                 {wallpaperSaved ? (
                   <>
                     <Check className="w-4 h-4 stroke-[3]" />
-                    <span>Wallpaper Downloaded!</span>
+                    <span>{t('wallpapers.downloaded')}</span>
                   </>
                 ) : (
                   <>
                     <Download className="w-4 h-4" />
-                    <span>Download Ultra-HD Wallpaper</span>
+                    <span>{t('wallpapers.downloadUltraHd')}</span>
                   </>
                 )}
               </motion.button>

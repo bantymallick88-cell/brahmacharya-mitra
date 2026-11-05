@@ -8,12 +8,14 @@ import {
 } from 'lucide-react';
 import { LIBRARY_BOOKS, LIBRARY_CATEGORIES, type LibraryBook } from '../data/libraryBooks';
 import SanctuaryPdfReaderModal from './SanctuaryPdfReaderModal';
+import { useTranslation } from '../i18n';
 
 const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL)
   ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/')
   : '/';
 
 export default function LibraryView() {
+  const { t, currentLang } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All Books');
   const [selectedLanguage, setSelectedLanguage] = useState<'All' | 'Hindi' | 'English'>('All');
@@ -98,7 +100,7 @@ export default function LibraryView() {
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition shadow-sm cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
-          <span>Back to Home</span>
+          <span>{t('library.backHome')}</span>
         </a>
 
         <div className="flex items-center gap-2">
@@ -107,11 +109,11 @@ export default function LibraryView() {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-800 hover:border-amber-400/50 text-zinc-400 hover:text-amber-300 text-xs font-semibold transition cursor-pointer"
           >
             <Scale className="w-3.5 h-3.5 text-amber-400" />
-            <span>DMCA & Legal Notice</span>
+            <span>{t('library.dmcaNotice')}</span>
           </button>
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold shadow-[0_0_15px_rgba(245,158,11,0.2)]">
             <BookMarked className="w-3.5 h-3.5 text-amber-400" />
-            <span>29 Sacred Books Online</span>
+            <span>{t('library.booksOnline')}</span>
           </span>
         </div>
       </div>
@@ -124,31 +126,27 @@ export default function LibraryView() {
         <div className="relative z-10 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-extrabold uppercase tracking-wider mb-4 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Grand Sanatan & Modern Library</span>
+            <span>{t('library.grandBadge')}</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-cinzel text-white tracking-tight leading-tight">
-            The Sacred{' '}
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent">
-              Brahmacharya Library
-            </span>
+            {t('library.mainTitle')}
           </h1>
 
           <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-300 leading-relaxed font-medium">
-            Explore 29 complete, transformative PDF books and research papers spanning classical Vedic scriptures,
-            neuroscience of porn recovery, seminal energy transmutation into Ojas, and youth habit mastery. 100% free for all sadhaks.
+            {t('library.mainDesc')}
           </p>
 
           {/* Quick Stats Pill Row */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs">
             <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-amber-400" /> 29 Full PDF Books
+              <BookOpen className="w-3.5 h-3.5 text-amber-400" /> {t('library.statBooks')}
             </span>
             <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-amber-400" /> Hindi, Sanskrit & English
+              <Globe className="w-3.5 h-3.5 text-amber-400" /> {t('library.statLangs')}
             </span>
             <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Protected Sanctuary In-App Reader
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> {t('library.statReader')}
             </span>
           </div>
         </div>
@@ -194,7 +192,7 @@ export default function LibraryView() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search books by title, author, keyword, shastra, or language..."
+              placeholder={t('library.searchPlaceholder') || "Search books by title, author, keyword..."}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-900/90 border border-zinc-800 focus:border-amber-400 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none transition shadow-inner"
             />
             {searchQuery && (
@@ -384,8 +382,8 @@ export default function LibraryView() {
                     <BookOpen className="w-3.5 h-3.5 text-zinc-950 group-hover/readbtn:scale-110 transition-transform" />
                     <span>
                       {lastReadMap[book.id]
-                        ? `Resume Page ${lastReadMap[book.id]}`
-                        : 'Read Online in Sanctuary'}
+                        ? t('library.resumeReading', { page: lastReadMap[book.id] })
+                        : t('library.readNow')}
                     </span>
                   </button>
 

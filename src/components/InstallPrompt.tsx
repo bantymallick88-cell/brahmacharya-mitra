@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Smartphone, X } from 'lucide-react';
 import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
+import { useTranslation } from '../i18n';
 
 export default function InstallPrompt() {
+  const { t } = useTranslation();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showBanner, setShowBanner] = useState(false);
 
@@ -134,7 +136,7 @@ export default function InstallPrompt() {
                 </span>
               </div>
               <p className="text-[11px] text-zinc-300 truncate mt-0.5">
-                📱 Add to Home Screen for offline sadhana
+                {t('menu.pwaInstallSubtitle') || '📱 Add to Home Screen for offline sadhana'}
               </p>
             </div>
 
@@ -146,7 +148,7 @@ export default function InstallPrompt() {
                 title="1-Tap Native Install"
               >
                 <Smartphone className="w-3.5 h-3.5 shrink-0" />
-                <span>Add to Home Screen</span>
+                <span>{t('menu.pwaInstallTitle') || 'Add to Home Screen'}</span>
               </button>
 
               <button

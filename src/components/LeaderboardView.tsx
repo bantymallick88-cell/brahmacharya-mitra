@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { UserProfile } from './OnboardingWizard';
 import { getStoredStreak } from '../streakStore';
+import { useTranslation } from '../i18n';
 
 interface LeaderboardEntry {
   rank: number;
@@ -29,6 +30,7 @@ export const isDeveloperProfile = (name: string): boolean => {
 };
 
 export const LeaderboardView: React.FC = () => {
+  const { t } = useTranslation();
   const [metric, setMetric] = useState<'streak' | 'japa'>('streak');
   const [geoFilter, setGeoFilter] = useState<'all' | 'my_country'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -202,13 +204,16 @@ export const LeaderboardView: React.FC = () => {
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider">
           <Trophy className="w-4 h-4 text-amber-400" />
-          <span>Dynamic Sadhak Tapasya Circle</span>
+          <span>{t('leaderboard.circleBadge')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
-          Global Sadhak <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 font-cinzel">Leaderboard</span>
+          {t('leaderboard.title')}{' '}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 font-cinzel">
+            {t('leaderboard.titleHighlight')}
+          </span>
         </h1>
         <p className="text-sm md:text-base text-zinc-400">
-          Rankings are strictly dynamic — populated exclusively by verified sadhaks who completed Onboarding Setup.
+          {t('leaderboard.subtitle')}
         </p>
       </div>
 
@@ -230,23 +235,23 @@ export const LeaderboardView: React.FC = () => {
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold text-[10px] tracking-wide flex items-center gap-1">
                     <Code className="w-3 h-3 text-purple-400" />
-                    <span>Developer / Admin</span>
+                    <span>{t('leaderboard.developerBadge')}</span>
                   </span>
                   <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold text-[10px]">
-                    Excluded from Public Ranks
+                    {t('leaderboard.excludedNotice')}
                   </span>
                 </div>
                 <p className="text-xs text-zinc-400 mt-1">
-                  Brahmacharya Mitra Platform Architect • Sacred energy preserver & technical guardian.
+                  {t('leaderboard.developerDesc')}
                 </p>
               </div>
             </div>
 
             <div className="text-left sm:text-right flex-shrink-0">
               <span className="text-xs font-mono font-bold text-amber-300 block">
-                {developerEntries[0]?.streakDays} Days Tapasya
+                {t('leaderboard.daysTapasya', { days: developerEntries[0]?.streakDays })}
               </span>
-              <span className="text-[10px] text-zinc-500">Official Platform Admin</span>
+              <span className="text-[10px] text-zinc-500">{t('leaderboard.officialAdmin')}</span>
             </div>
           </div>
         </div>
@@ -265,7 +270,7 @@ export const LeaderboardView: React.FC = () => {
             }`}
           >
             <Flame className="w-4 h-4 fill-current" />
-            <span>Streak Days</span>
+            <span>{t('leaderboard.metricStreak')}</span>
           </button>
           <button
             onClick={() => setMetric('japa')}
@@ -276,7 +281,7 @@ export const LeaderboardView: React.FC = () => {
             }`}
           >
             <Disc className="w-4 h-4" />
-            <span>Naam Jap Count</span>
+            <span>{t('leaderboard.metricJapa')}</span>
           </button>
         </div>
 
@@ -291,7 +296,7 @@ export const LeaderboardView: React.FC = () => {
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              All Countries 🌐
+              {t('leaderboard.allCountries')}
             </button>
             <button
               onClick={() => setGeoFilter('my_country')}
@@ -301,7 +306,7 @@ export const LeaderboardView: React.FC = () => {
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              My Country {userProfile?.countryFlag || '🇮🇳'}
+              {t('leaderboard.myCountry')}
             </button>
           </div>
 
@@ -309,7 +314,7 @@ export const LeaderboardView: React.FC = () => {
             <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search sadhak or city..."
+              placeholder={t('leaderboard.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-zinc-950 text-xs text-white pl-9 pr-3 py-2 rounded-xl border border-zinc-800 focus:border-amber-500/50 focus:outline-none transition"
@@ -565,7 +570,7 @@ export const LeaderboardView: React.FC = () => {
                         </span>
                         {isSelf && (
                           <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">
-                            YOU
+                            {t('leaderboard.youTag')}
                           </span>
                         )}
                       </div>

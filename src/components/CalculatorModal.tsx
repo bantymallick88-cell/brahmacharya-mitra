@@ -10,8 +10,10 @@ import {
   HeartCrack,
   Activity
 } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 export default function CalculatorModal() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [years, setYears] = useState(7);
   const [dailyHours, setDailyHours] = useState(2.5);
@@ -68,13 +70,13 @@ export default function CalculatorModal() {
             <div className="text-left mb-6 pr-10">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
                 <Calculator className="w-3.5 h-3.5 text-red-400" />
-                <span>Life Vitality Impact</span>
+                <span>{t('calculator.badge')}</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black font-cinzel text-white">
-                Relapse Cost & Vitality Hemorrhage Calculator
+                {t('calculator.title')} <span className="text-amber-400">{t('calculator.titleHighlight')}</span>
               </h2>
               <p className="text-xs text-zinc-400 mt-1">
-                Confront the true mathematical cost of compulsive relapse on your life, wealth, and spiritual essence.
+                {t('calculator.subtitle')}
               </p>
             </div>
 
@@ -84,14 +86,14 @@ export default function CalculatorModal() {
               {/* Sliders Column */}
               <div className="space-y-4 p-4 rounded-2xl bg-zinc-950/70 border border-zinc-800/80">
                 <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-                  Adjust Addiction Parameters
+                  {t('calculator.paramsTitle')}
                 </h3>
 
                 {/* Years */}
                 <div>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-zinc-300 font-medium">Years Active:</span>
-                    <span className="text-amber-400 font-bold">{years} Years</span>
+                    <span className="text-zinc-300 font-medium">{t('calculator.addictionDuration')}:</span>
+                    <span className="text-amber-400 font-bold">{years} {t('calculator.yearsUnit')}</span>
                   </div>
                   <input
                     type="range"
