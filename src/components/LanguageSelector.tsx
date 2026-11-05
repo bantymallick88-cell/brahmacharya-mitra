@@ -38,22 +38,22 @@ export default function LanguageSelector() {
 
   return (
     <div className="relative z-[9999] inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button with Compact Mobile Text ('IN OR ∨' / 'EN') */}
+      {/* Trigger Button with Minimal Padding to Prevent Logo Squeeze */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
-        aria-label="Select Language (IN OR ∨ / GB / HI)"
+        className="flex items-center gap-0.5 sm:gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
+        aria-label="Select Language"
         aria-expanded={isOpen}
         title="Switch Language / भाषा बदलें"
       >
         <span className="text-xs sm:text-sm leading-none" role="img" aria-label="Flag">
           {currentMeta.flag}
         </span>
-        <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-300">
+        <span className="text-[10px] sm:text-xs font-black uppercase tracking-tight text-amber-300">
           {currentLang.toUpperCase()}
         </span>
         <ChevronDown
-          className={`w-3 h-3 text-amber-400 transition-transform duration-200 ${
+          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />

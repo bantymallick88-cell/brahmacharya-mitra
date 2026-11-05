@@ -55,6 +55,21 @@ body {
   background: #f59e0b;
 }
 
+/* --- Header Responsive Stacking for Narrow Screens (<400px) --- */
+@media (max-width: 399.98px) {
+  .header-nav-container {
+    flex-wrap: wrap !important;
+  }
+  .header-logo-link {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  .header-controls-group {
+    width: 100% !important;
+    justify-content: flex-end !important;
+  }
+}
+
 /* --- 21st.dev, Impeccable & Godly Frosted Glassmorphism --- */
 .glass-panel {
   background: rgba(5, 5, 8, 0.7);
