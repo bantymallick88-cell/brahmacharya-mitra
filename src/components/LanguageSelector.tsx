@@ -37,12 +37,12 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button with Compact Mobile Text (text-[10px] sm:text-xs px-2 py-1) */}
+    <div className="relative z-[9999] inline-block text-left" ref={dropdownRef}>
+      {/* Trigger Button with Compact Mobile Text ('IN OR ∨' / 'EN') */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
-        aria-label="Select Language (IN OR / GB / HI)"
+        aria-label="Select Language (IN OR ∨ / GB / HI)"
         aria-expanded={isOpen}
         title="Switch Language / भाषा बदलें"
       >
@@ -59,16 +59,16 @@ export default function LanguageSelector() {
         />
       </button>
 
-      {/* Glassmorphic Dropdown Menu */}
+      {/* Layer-1 Front Dropdown Menu: absolute right-0 top-full mt-2 z-[9999] bg-amber-950/95 backdrop-blur-xl border border-amber-500/30 rounded-xl shadow-2xl */}
       {isOpen && (
-        <div className="absolute right-0 sm:right-0 mt-2 w-72 max-w-[90vw] rounded-2xl border-2 border-amber-500/50 bg-[#0d0d14]/98 backdrop-blur-2xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] z-[120] animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 top-full mt-2 w-72 max-w-[90vw] z-[9999] bg-amber-950/95 backdrop-blur-xl border border-amber-500/30 rounded-xl shadow-2xl p-3 animate-in fade-in zoom-in-95 duration-150">
           
           {/* Header */}
-          <div className="flex items-center justify-between px-1 pb-2 border-b border-zinc-800/80 mb-2.5">
+          <div className="flex items-center justify-between px-1 pb-2 border-b border-amber-500/20 mb-2.5">
             <span className="text-[11px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-amber-400" /> भाषा चुनें • Select Language
             </span>
-            <span className="text-[10px] text-zinc-400 font-semibold">15 Languages</span>
+            <span className="text-[10px] text-amber-300/70 font-semibold">15 Languages</span>
           </div>
 
           {/* ── QUICK 1-TAP SWITCH: EN, HI, OR ── */}
@@ -147,7 +147,7 @@ export default function LanguageSelector() {
             </div>
 
             {/* Global Languages Section */}
-            <div className="pt-2 border-t border-zinc-800/80">
+            <div className="pt-2 border-t border-amber-500/20">
               <div className="px-2 py-1 text-[10px] font-black text-sky-400 uppercase tracking-widest">
                 Global Languages
               </div>

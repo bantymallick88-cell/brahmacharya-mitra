@@ -730,11 +730,11 @@ export default function Header() {
     <>
       <header
         id="navbar"
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 w-full px-2 sm:px-4 ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
           }`}
       >
         <div
-          className={`flex items-center justify-between w-full max-w-5xl mx-auto px-3 py-3 overflow-hidden rounded-2xl transition-all duration-500 relative ${isScrolled
+          className={`flex items-center justify-between w-full max-w-5xl mx-auto px-4 py-3 rounded-2xl transition-all duration-500 relative ${isScrolled
               ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
               : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
             }`}
@@ -744,7 +744,7 @@ export default function Header() {
           }}
         >
 
-          {/* ── Column 1: Logo & Non-Wrapping Text with Dynamic Responsive Scaling ── */}
+          {/* ── Column 1: Logo & Ultra-Premium Typography (Dynamic Fluid Scaling, No Breaks) ── */}
           <a
             href={baseUrl}
             onClick={(e) => {
@@ -769,14 +769,14 @@ export default function Header() {
             </div>
 
             <div className="whitespace-nowrap shrink-1 min-w-0">
-              <span className="text-xs sm:text-base md:text-xl font-extrabold tracking-tight text-amber-400 whitespace-nowrap drop-shadow-[0_2px_10px_rgba(245,158,11,0.4)]">
+              <span className="text-sm sm:text-base md:text-xl font-black tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 drop-shadow-[0_2px_15px_rgba(245,158,11,0.5)] whitespace-nowrap">
                 BRAHMACHARYA MITRA
               </span>
             </div>
           </a>
 
           {/* ── Column 2: Right-Side Controls (Language Dropdown & ☰ Menu Button) ── */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0 relative z-[9999]">
             {/* Desktop Navigation Links (Large Screens Only) */}
             <div className="hidden lg:flex items-center gap-1.5 mr-1">
               <a
@@ -804,7 +804,7 @@ export default function Header() {
               </a>
             </div>
 
-            {/* Language Selector ('IN OR / GB / HI') */}
+            {/* Language Selector ('IN OR ∨' / 'EN') with Front Layer z-[9999] */}
             <LanguageSelector />
 
             {/* 3-line Hamburger Menu Icon '☰' */}
