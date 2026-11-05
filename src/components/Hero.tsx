@@ -10,8 +10,7 @@ import { MAHADEV_IMAGE_DATA } from '../assets/mahadevBase64';
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 export default function Hero() {
-  const { t, currentLang } = useTranslation();
-  const isHindi = currentLang === 'hi';
+  const { t } = useTranslation();
 
   return (
     <section
@@ -62,7 +61,7 @@ export default function Hero() {
           />
           <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span className="text-[10px] sm:text-xs font-semibold tracking-wider whitespace-normal text-center leading-snug">
-            {isHindi ? 'सनातन धर्म x आधुनिक न्यूरोसाइंस • नव-वैदिक ओजस्विता' : 'Sanatan Dharma x Modern Neuroscience • Ojas Transmutation'}
+            {t('hero.badge')}
           </span>
         </motion.div>
 
@@ -75,17 +74,15 @@ export default function Hero() {
         >
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black font-cinzel tracking-tight text-white max-w-full px-2 mx-auto leading-tight text-balance">
             <span className="block text-zinc-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-              {isHindi ? 'पौरुष को साधें।' : 'Reclaim Divine Vitality.'}
+              {t('hero.title1')}
             </span>
             <span className="block bg-gradient-to-r from-amber-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent metallic-gold-text drop-shadow-[0_0_30px_rgba(245,158,11,0.5)]">
-              {isHindi ? 'काम-ऊर्जा को ओजस में बदलें।' : 'Master & Transmute Energy.'}
+              {t('hero.title2')}
             </span>
           </h1>
 
           <p className="text-xs sm:text-sm md:text-base font-sanskrit font-medium text-amber-200/95 max-w-2xl px-3 mx-auto leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
-            {isHindi 
-              ? '“संयम, वीर्य रक्षा और आत्म-नियंत्रण का आधुनिक दिव्य मार्गदर्शक”' 
-              : '“Supreme guide for celibacy, semen retention & mind mastery”'}
+            {t('hero.subtitle')}
           </p>
         </motion.div>
 
@@ -97,16 +94,16 @@ export default function Hero() {
           className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1"
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-[11px] sm:text-xs font-bold shadow-sm">
-            {isHindi ? '🔥 100% निःशुल्क' : '🔥 100% Free'}
+            {t('hero.statFree')}
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/35 text-red-300 text-[11px] sm:text-xs font-bold shadow-sm">
-            {isHindi ? '🛑 1-टैप SOS' : '🛑 1-Tap SOS'}
+            {t('hero.statSos')}
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/35 text-yellow-300 text-[11px] sm:text-xs font-bold shadow-sm">
-            {isHindi ? '📿 108 जप माला' : '📿 108 Japa'}
+            {t('hero.statJapa')}
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] sm:text-xs font-bold shadow-sm">
-            {isHindi ? '📚 29 पवित्र ग्रंथ' : '📚 29 Books'}
+            {t('hero.statBooks')}
           </span>
         </motion.div>
 

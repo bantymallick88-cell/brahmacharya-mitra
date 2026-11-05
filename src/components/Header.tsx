@@ -88,50 +88,50 @@ function ToolsDrawer({
   const sadhanaFeatures = [
     {
       id: 'journal',
-      title: 'Schedule, Todo & Journal',
-      subtitle: 'Ideal Dinacharya, daily tasks, notes & reflections',
+      title: t('menu.streakCounter'),
+      subtitle: t('menu.quickStreakSubtitle'),
       icon: Clock,
       badge: 'Interactive',
       color: 'from-amber-400 to-yellow-500',
     },
     {
       id: 'stats',
-      title: 'Stats & Heatmap',
-      subtitle: 'Streak analytics, calendar history & milestones',
+      title: t('menu.analyticsTitle'),
+      subtitle: t('menu.analyticsSubtitle'),
       icon: BarChart3,
-      badge: 'Analytics',
+      badge: t('menu.analyticsBadge'),
       color: 'from-emerald-400 to-teal-500',
     },
     {
       id: 'community',
-      title: 'Sadhak Community',
-      subtitle: 'Public sharing feed for sadhak brotherhood posts',
+      title: t('menu.communityTitle'),
+      subtitle: t('menu.communitySubtitle'),
       icon: Users,
-      badge: 'Live Feed',
+      badge: t('menu.communityBadge'),
       color: 'from-blue-400 to-indigo-500',
     },
     {
       id: 'breathe',
-      title: 'Meditate & Breathe',
-      subtitle: 'Guided Pranayama with Om sound modes & vibration',
+      title: t('menu.breatheTitle'),
+      subtitle: t('menu.breatheSubtitle'),
       icon: Wind,
-      badge: 'Transmute',
+      badge: t('menu.breatheBadge'),
       color: 'from-purple-400 to-pink-500',
     },
     {
       id: 'gallery',
-      title: 'Gallery & Wallpapers',
-      subtitle: 'Motivational HD wallpapers with instant download',
+      title: t('menu.galleryTitle'),
+      subtitle: t('menu.gallerySubtitle'),
       icon: ImageIcon,
-      badge: 'HD Gallery',
+      badge: t('menu.galleryBadge'),
       color: 'from-amber-300 to-orange-500',
     },
     {
       id: 'settings',
-      title: 'Settings & Backup',
-      subtitle: 'Daily reminders, alarms, panic FAB & data export',
+      title: t('menu.settingsTitle'),
+      subtitle: t('menu.settingsSubtitle'),
       icon: Settings,
-      badge: 'Preferences',
+      badge: t('menu.settingsBadge'),
       color: 'from-zinc-400 to-zinc-600',
     },
   ];
@@ -139,10 +139,10 @@ function ToolsDrawer({
   // Direct Diagnostic & Emergency Tools (Opens Dedicated Modals)
   const diagnosticTools = [
     {
-      title: 'Urge Interceptor / Anti-Relapse Shield',
-      subtitle: '10-min mandatory lockout, reflection & 4-7-8 breathing',
+      title: t('menu.urgeInterceptorTitle'),
+      subtitle: t('menu.urgeInterceptorSubtitle'),
       icon: ShieldAlert,
-      badge: '10-Min Lockout',
+      badge: t('menu.urgeInterceptorBadge'),
       color: 'border-red-500/60 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.25)]',
       action: () => {
         window.dispatchEvent(new CustomEvent('open-interceptor-modal'));
@@ -150,10 +150,10 @@ function ToolsDrawer({
       },
     },
     {
-      title: 'System-Wide NSFW Blocker',
-      subtitle: 'Zero-bypass DNS shield for Android, iOS & Windows',
+      title: t('menu.dnsBlockerTitle'),
+      subtitle: t('menu.dnsBlockerSubtitle'),
       icon: ShieldCheck,
-      badge: 'DNS Shield',
+      badge: t('menu.dnsBlockerBadge'),
       color: 'border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]',
       action: () => {
         window.dispatchEvent(new CustomEvent('open-blocker-modal'));
@@ -161,10 +161,10 @@ function ToolsDrawer({
       },
     },
     {
-      title: 'Brain Fog Test',
-      subtitle: 'Porn-induced mental fog diagnostic',
+      title: t('menu.brainFogTitle'),
+      subtitle: t('menu.brainFogSubtitle'),
       icon: Brain,
-      badge: 'Test Modal',
+      badge: t('menu.brainFogBadge'),
       color: 'border-cyan-500/40 text-cyan-300',
       action: () => {
         window.dispatchEvent(new CustomEvent('open-brainfog-modal'));
@@ -172,10 +172,10 @@ function ToolsDrawer({
       },
     },
     {
-      title: 'Relapse Cost Calculator',
-      subtitle: 'Lost vitality, hours & economic drain',
+      title: t('menu.calculatorTitle'),
+      subtitle: t('menu.calculatorSubtitle'),
       icon: Calculator,
-      badge: 'Calculator Modal',
+      badge: t('menu.calculatorBadge'),
       color: 'border-amber-500/40 text-amber-300',
       action: () => {
         window.dispatchEvent(new CustomEvent('open-calculator-modal'));
@@ -183,10 +183,10 @@ function ToolsDrawer({
       },
     },
     {
-      title: 'Panic Mode',
-      subtitle: 'Instant urge breaker & 4-7-8 breathwork',
+      title: t('menu.panicModeTitle'),
+      subtitle: t('menu.panicModeSubtitle'),
       icon: ShieldAlert,
-      badge: 'Emergency',
+      badge: t('menu.panicModeBadge'),
       color: 'border-red-500/50 text-red-300',
       action: () => {
         triggerPanic();
@@ -198,20 +198,20 @@ function ToolsDrawer({
   // Quick navigation to primary sections
   const quickSections = [
     {
-      title: 'Streak Counter & Habit Carousel',
-      subtitle: 'Sobriety timer & daily disciplines',
+      title: t('menu.quickStreakTitle'),
+      subtitle: t('menu.quickStreakSubtitle'),
       href: '#streak',
       icon: Flame,
     },
     {
-      title: 'Sacred Library (29+ Free Books)',
-      subtitle: 'Complete scriptures, PDF studies & science',
+      title: t('menu.quickLibraryTitle'),
+      subtitle: t('menu.quickLibrarySubtitle'),
       href: baseUrl + 'books/',
       icon: BookOpen,
     },
     {
-      title: 'Frequently Asked Questions (FAQ)',
-      subtitle: 'NoFap, celibacy, brain fog & app guide',
+      title: t('menu.quickFaqTitle'),
+      subtitle: t('menu.quickFaqSubtitle'),
       href: '#faq',
       icon: HelpCircle,
     },
@@ -784,7 +784,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer whitespace-nowrap"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>{currentLang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'}</span>
+                <span>{t('nav.dashboard')}</span>
               </a>
 
               <a
@@ -792,7 +792,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer whitespace-nowrap"
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>{currentLang === 'hi' ? 'लीडरबोर्ड' : 'Leaderboard'}</span>
+                <span>{t('nav.leaderboard')}</span>
               </a>
 
               <a
@@ -800,7 +800,7 @@ export default function Header() {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer whitespace-nowrap"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>{currentLang === 'hi' ? 'ग्रंथालय' : 'Library'}</span>
+                <span>{t('nav.books')}</span>
               </a>
             </div>
 
@@ -821,7 +821,7 @@ export default function Header() {
                 <span className="w-4 sm:w-4.5 h-0.5 bg-amber-300 rounded-full group-hover:bg-white transition-colors" />
               </div>
               <span className="hidden sm:inline text-xs font-black uppercase tracking-wider text-amber-300 ml-0.5">
-                {currentLang === 'hi' ? 'मेन्यू' : 'Menu'}
+                {t('menu.menuLabel')}
               </span>
             </button>
           </div>

@@ -20,8 +20,7 @@ import { useTranslation } from '../i18n';
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 
 export default function VisualActionGrid() {
-  const { t, currentLang } = useTranslation();
-  const isHindi = currentLang === 'hi';
+  const { t } = useTranslation();
 
   const [streakDays, setStreakDays] = useState<number>(() => {
     try {
@@ -157,7 +156,7 @@ export default function VisualActionGrid() {
                 🔥
               </div>
               <span className="text-[11px] font-black uppercase px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 tracking-wider">
-                {isHindi ? 'सक्रिय • अखंड' : 'ACTIVE • CLEAN'}
+                {t('mainCards.card1ActiveBadge')}
               </span>
             </div>
 
@@ -169,7 +168,7 @@ export default function VisualActionGrid() {
                     {streakDays}
                   </span>
                   <span className="text-sm sm:text-base font-extrabold text-amber-300 uppercase tracking-wide">
-                    {isHindi ? 'दिन अखंड' : 'Days Clean'}
+                    {t('mainCards.card1DaysClean')}
                   </span>
                 </div>
 
@@ -178,7 +177,7 @@ export default function VisualActionGrid() {
                   <button
                     onClick={() => handleAdjustStreak(-1)}
                     className="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer active:scale-95"
-                    title={isHindi ? '-1 दिन घटाएं' : '-1 Day'}
+                    title={t('streak.minus1Day')}
                     aria-label="Subtract 1 day"
                   >
                     <Minus className="w-3.5 h-3.5" />
@@ -186,7 +185,7 @@ export default function VisualActionGrid() {
                   <button
                     onClick={() => handleAdjustStreak(1)}
                     className="w-7 h-7 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center transition cursor-pointer active:scale-95 font-bold"
-                    title={isHindi ? '+1 दिन जोड़ें' : '+1 Day'}
+                    title={t('streak.plus1Day')}
                     aria-label="Add 1 day"
                   >
                     <Plus className="w-3.5 h-3.5 stroke-[3]" />
@@ -196,17 +195,15 @@ export default function VisualActionGrid() {
 
               <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1.5 flex items-center gap-1.5">
                 <span>🔥</span>
-                <span>{isHindi ? 'स्ट्रीक ट्रैकर' : 'Streak Tracker'}</span>
+                <span>{t('mainCards.card1Title')}</span>
               </h3>
               <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
-                {isHindi ? 'अखंड ब्रह्मचर्य संकल्प • वीर्य रक्षा' : 'Akhand Brahmacharya • Ojas Transmutation'}
+                {t('mainCards.card1Subtitle')}
               </p>
             </div>
 
             <p className="text-xs text-zinc-300 mt-2 leading-relaxed">
-              {isHindi 
-                ? 'दैनिक वीर्य रक्षा का संकल्प लें। 1-टैप से चेक-इन करें।' 
-                : 'Track daily retention victory and 1-tap check-in.'}
+              {t('mainCards.card1TapHint')}
             </p>
           </div>
 
@@ -216,7 +213,7 @@ export default function VisualActionGrid() {
             className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
             <Flame className="w-4 h-4 fill-zinc-950 text-zinc-950 shrink-0" />
-            <span>{isHindi ? 'शुरू करें / चेक-इन' : 'Start / Check-in'}</span>
+            <span>{t('mainCards.card1Btn')}</span>
             <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
           </button>
         </motion.div>
@@ -242,7 +239,7 @@ export default function VisualActionGrid() {
                 🛑
               </div>
               <span className="text-[11px] font-black uppercase px-3 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-500/50 tracking-wider">
-                {isHindi ? 'आपातकालीन राहत' : 'INSTANT RELIEF'}
+                {t('mainCards.card2ShieldBadge')}
               </span>
             </div>
 
@@ -250,17 +247,15 @@ export default function VisualActionGrid() {
             <div className="my-2">
               <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-1.5">
                 <span>🛑</span>
-                <span>{isHindi ? 'इमरजेंसी SOS / रीलेप्स शील्ड' : 'Emergency SOS / Relapse Shield'}</span>
+                <span>{t('mainCards.card2Title')}</span>
               </h3>
               <p className="text-xs text-red-200 font-sanskrit font-bold mt-1">
-                {isHindi ? 'काम-वेग नियंत्रण • तुरंत सुरक्षा कवच' : 'Urge Shield & 4-7-8 Breathwork'}
+                {t('mainCards.card2Subtitle')}
               </p>
             </div>
 
             <p className="text-xs text-red-100/90 mt-2 leading-relaxed font-medium">
-              {isHindi
-                ? 'तीव्र काम-वासना या भटकाव? तुरंत 1-टैप करें और मस्तिष्क को शांत करें।'
-                : 'Having sudden urges? Tap once for the 4-7-8 emergency breathwork shield.'}
+              {t('mainCards.card2Lockout')}
             </p>
           </div>
 
@@ -271,7 +266,7 @@ export default function VisualActionGrid() {
               className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(239,68,68,0.5)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
             >
               <ShieldAlert className="w-4 h-4 animate-bounce text-white shrink-0" />
-              <span>{isHindi ? 'मुझे बचाओ • Save Me Now 🚨' : 'Save Me Now • मुझे बचाओ 🚨'}</span>
+              <span>{t('mainCards.card2Btn')} 🚨</span>
               <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
             </button>
 
@@ -280,7 +275,7 @@ export default function VisualActionGrid() {
               className="w-full py-2 px-3 rounded-xl bg-zinc-950/80 hover:bg-zinc-900 border border-red-500/40 text-red-200 hover:text-white font-bold text-[11px] flex items-center justify-center gap-1.5 transition cursor-pointer"
             >
               <Lock className="w-3.5 h-3.5 text-red-400 shrink-0" />
-              <span>{isHindi ? '10-मिनट लॉकआउट शील्ड' : '10-Min Urge Interceptor'}</span>
+              <span>{t('menu.urgeInterceptorBadge')}</span>
             </button>
           </div>
         </motion.div>
@@ -306,7 +301,7 @@ export default function VisualActionGrid() {
                 📿
               </div>
               <span className="text-[11px] font-black uppercase px-3 py-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-500/40 tracking-wider">
-                {isHindi ? '108 मनके • माला' : '108 JAPA MALA'}
+                {t('mainCards.card3Badge')}
               </span>
             </div>
 
@@ -339,12 +334,12 @@ export default function VisualActionGrid() {
 
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-black text-white truncate">
-                    {isHindi ? 'डिजिटल जप माला' : 'Digital Japa Mala'}
+                    {t('mainCards.card3Title')}
                   </div>
                   <div className="text-[10px] text-amber-300/90 font-medium">
                     {completedMalas > 0 
-                      ? `${completedMalas} ${isHindi ? 'माला पूर्ण 🕉️' : 'Mala Done 🕉️'}` 
-                      : (isHindi ? 'मनके गिनने के लिए टैप करें' : 'Tap bead to count')}
+                      ? `${completedMalas} ${t('mainCards.card3Malas')} 🕉️` 
+                      : t('mainCards.card3Btn')}
                   </div>
 
                   {/* 1-Tap Count Bead Button */}
@@ -353,12 +348,12 @@ export default function VisualActionGrid() {
                       onClick={handleIncrementJapa}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-xs flex items-center justify-center gap-1 shadow-md active:scale-95 transition cursor-pointer"
                     >
-                      <span>+1 जप (Tap)</span>
+                      <span>+1 {t('mainCards.card3Btn')}</span>
                     </button>
                     <button
                       onClick={handleResetJapa}
                       className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition cursor-pointer"
-                      title={isHindi ? 'रीसेट करें' : 'Reset Mala'}
+                      title={t('mainCards.card3ResetBtn')}
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                     </button>
@@ -370,10 +365,10 @@ export default function VisualActionGrid() {
 
             <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1 flex items-center gap-1.5">
               <span>📿</span>
-              <span>{isHindi ? '108 जप माला काउंटर' : '108 Japa Mala Counter'}</span>
+              <span>{t('mainCards.card3Title')}</span>
             </h3>
             <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
-              {isHindi ? 'गायत्री, महामृत्युंजय व नाम-जप' : 'Gayatri, Mahamrityunjaya & Naam Jap'}
+              {t('mainCards.card3Subtitle')}
             </p>
           </div>
 
@@ -383,7 +378,7 @@ export default function VisualActionGrid() {
             className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
           >
             <Disc className="w-4 h-4 text-amber-400 animate-spin-slow shrink-0" />
-            <span>{isHindi ? 'दैनिक साधना खोलें' : 'Open Daily Sadhana'}</span>
+            <span>{t('menu.dailySadhana')}</span>
             <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
           </a>
         </motion.div>
@@ -409,7 +404,7 @@ export default function VisualActionGrid() {
                 📚
               </div>
               <span className="text-[11px] font-black uppercase px-3 py-1 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/40 tracking-wider">
-                {isHindi ? 'ज्ञान व श्रेणी' : 'BOOKS & RANKS'}
+                {t('mainCards.card4Badge')}
               </span>
             </div>
 
@@ -431,17 +426,17 @@ export default function VisualActionGrid() {
               </div>
 
               <div className="flex items-center justify-between text-[11px] font-bold text-amber-200">
-                <span>📖 29 Sacred Shastras</span>
-                <span>🏆 Top Sadhaks</span>
+                <span>📖 {t('badges.sacredBooks29')}</span>
+                <span>🏆 {t('nav.leaderboard')}</span>
               </div>
             </div>
 
             <h3 className="text-base sm:text-lg font-black text-white tracking-tight mt-1 flex items-center gap-1.5">
               <span>📚</span>
-              <span>{isHindi ? 'पवित्र ग्रंथ एवं लीडरबोर्ड' : 'Sacred Books & Leaderboard'}</span>
+              <span>{t('mainCards.card4Title')}</span>
             </h3>
             <p className="text-xs text-amber-200/90 font-sanskrit font-medium">
-              {isHindi ? 'प्रेमानंद जी, शिवानन्द जी व विश्व साधक' : 'Ancient Shastras & Global Sadhaks'}
+              {t('mainCards.card4Subtitle')}
             </p>
           </div>
 
@@ -452,7 +447,7 @@ export default function VisualActionGrid() {
               className="py-3 px-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 text-amber-300 hover:text-white font-black text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer text-center"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>{isHindi ? '29 पवित्र ग्रंथ' : '29 Sacred Books'}</span>
+              <span>{t('mainCards.card4BtnBooks')}</span>
             </a>
 
             <a
@@ -460,7 +455,7 @@ export default function VisualActionGrid() {
               className="py-3 px-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-[11px] sm:text-xs flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer text-center"
             >
               <Trophy className="w-3.5 h-3.5 text-zinc-950 shrink-0" />
-              <span>{isHindi ? 'लीडरबोर्ड 🏆' : 'Leaderboard 🏆'}</span>
+              <span>{t('mainCards.card4BtnRanks')} 🏆</span>
             </a>
           </div>
         </motion.div>

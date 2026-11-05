@@ -275,4 +275,19 @@ export interface TranslationDictionary {
     backToTop: string;
     medicalDisclaimer: string;
   };
+  appName?: string;
+  menu?: Record<string, string>;
+  mainCards?: Record<string, string>;
+  badges?: Record<string, string>;
+  dashboard?: Record<string, string>;
+  libraryShowcase?: Record<string, string>;
+  legal?: Record<string, string>;
+  bottomNav?: Record<string, string>;
+  [key: string]: any;
 }
+
+export type TranslationFunction = {
+  (key: string, params?: Record<string, string | number>): string;
+} & TranslationDictionary & {
+  [key: string]: any;
+};

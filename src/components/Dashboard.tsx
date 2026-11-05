@@ -6,9 +6,11 @@ import {
   ShieldCheck, RefreshCw, ChevronRight, X, SlidersHorizontal
 } from 'lucide-react';
 import { getStoredStreak, updateGlobalStreak, logRelapse, getDynamicTarget } from '../streakStore';
+import { useTranslation } from '../i18n';
 import Habits from './Habits';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const initial = getStoredStreak();
   const [streakDays, setStreakDays] = useState(initial.days);
   const [bestDays, setBestDays] = useState(initial.bestDays);
@@ -213,7 +215,7 @@ export default function Dashboard() {
                 {streakDays}
               </span>
               <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-amber-300 -mt-1 mb-2">
-                Days Clean
+                {t('dashboard.daysClean')}
               </span>
 
               {/* Real-time Second-by-Second Sobriety Ticker: Hrs : Mins : Secs */}
@@ -225,7 +227,7 @@ export default function Dashboard() {
                 <span className="text-amber-400">{String(timeState.seconds).padStart(2, '0')}</span>
               </div>
               <span className="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">
-                Sobriety Ticker
+                {t('dashboard.sobrietyTicker')}
               </span>
             </div>
           </div>
@@ -238,8 +240,8 @@ export default function Dashboard() {
               whileTap={{ scale: 0.97 }}
               className="flex-1 min-w-[110px] p-2 sm:p-2.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-amber-500/40 hover:shadow-[0_0_15px_rgba(245,158,11,0.15)] transition text-center shadow-sm cursor-default"
             >
-              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-zinc-400 tracking-wider block">BEST</span>
-              <span className="text-sm sm:text-base font-black text-amber-300 font-cinzel">{bestDays} days</span>
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-zinc-400 tracking-wider block">{t('dashboard.best')}</span>
+              <span className="text-sm sm:text-base font-black text-amber-300 font-cinzel">{bestDays} {t('dashboard.days')}</span>
             </motion.div>
 
             {/* ATTEMPT Count Card */}
@@ -248,7 +250,7 @@ export default function Dashboard() {
               whileTap={{ scale: 0.97 }}
               className="flex-1 min-w-[110px] p-2 sm:p-2.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-purple-500/40 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] transition text-center shadow-sm cursor-default"
             >
-              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-zinc-400 tracking-wider block">ATTEMPT</span>
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-zinc-400 tracking-wider block">{t('dashboard.attempt')}</span>
               <span className="text-sm sm:text-base font-black text-white font-cinzel">
                 {attemptNumber}{attemptNumber === 1 ? 'st' : attemptNumber === 2 ? 'nd' : attemptNumber === 3 ? 'rd' : 'th'}
               </span>
@@ -262,7 +264,7 @@ export default function Dashboard() {
               className="flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-2.5 rounded-2xl bg-red-950/50 hover:bg-red-900/70 border border-red-500/50 hover:border-red-400 text-red-200 hover:text-white font-bold text-xs tracking-wide shadow-[0_0_20px_rgba(239,68,68,0.25)] hover:shadow-[0_0_25px_rgba(239,68,68,0.45)] transition cursor-pointer"
             >
               <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
-              <span>Relapse Log</span>
+              <span>{t('dashboard.relapseLog')}</span>
             </motion.button>
           </div>
 
@@ -271,7 +273,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-2 mb-1.5 text-xs font-semibold text-zinc-400">
               <span className="flex items-center gap-1 text-amber-300 text-[11px] sm:text-xs">
                 <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>Adjust Streak & Unlock Wallpapers</span>
+                <span>{t('dashboard.adjustStreak')}</span>
               </span>
               <div className="flex items-center gap-1.5">
                 <motion.button

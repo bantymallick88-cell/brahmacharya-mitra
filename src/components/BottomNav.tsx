@@ -12,8 +12,7 @@ import {
 import { useTranslation } from '../i18n';
 
 export default function BottomNav() {
-  const { currentLang } = useTranslation();
-  const isHindi = currentLang === 'hi';
+  const { t } = useTranslation();
 
   const [currentPath, setCurrentPath] = useState('');
   const [isVisible, setIsVisible] = useState(true);
@@ -49,28 +48,28 @@ export default function BottomNav() {
   const navItems = [
     {
       id: 'home',
-      label: isHindi ? 'गृह' : 'Home',
+      label: t('bottomNav.home'),
       icon: Home,
       href: baseUrl,
       isActive: currentPath === baseUrl || currentPath === '/' || currentPath === '',
     },
     {
       id: 'dashboard',
-      label: isHindi ? 'साधना' : 'Dashboard',
+      label: t('bottomNav.dashboard'),
       icon: Compass,
       href: `${baseUrl}dashboard/`,
       isActive: currentPath.includes('/dashboard'),
     },
     {
       id: 'leaderboard',
-      label: isHindi ? 'श्रेणी' : 'Ranks',
+      label: t('bottomNav.ranks'),
       icon: Trophy,
       href: `${baseUrl}leaderboard/`,
       isActive: currentPath.includes('/leaderboard'),
     },
     {
       id: 'books',
-      label: isHindi ? 'ग्रंथ' : 'Sanctuary',
+      label: t('bottomNav.sanctuary'),
       badge: '29',
       icon: BookOpen,
       href: `${baseUrl}books/`,
@@ -146,7 +145,7 @@ export default function BottomNav() {
           >
             <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-400" />
             <span className="text-[9px] xs:text-[10px] tracking-tight sm:tracking-wide mt-0.5 leading-none font-semibold">
-              {isHindi ? 'सेटअप' : 'Setup'}
+              {t('menu.settingsBadge')}
             </span>
           </motion.button>
 
@@ -164,7 +163,7 @@ export default function BottomNav() {
             </span>
             <ShieldAlert className="w-3.5 h-3.5 text-white flex-shrink-0" />
             <span className="hidden xs:inline uppercase tracking-wider font-extrabold whitespace-nowrap">
-              {isHindi ? 'आपात 🚨' : 'Panic 🚨'}
+              {t('bottomNav.panic')} 🚨
             </span>
           </motion.button>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 export const FAQ_QUESTIONS = [
   {
@@ -29,6 +30,7 @@ export const FAQ_QUESTIONS = [
 ];
 
 export default function FAQ() {
+  const { t } = useTranslation();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggle = (idx: number) => {
@@ -60,14 +62,14 @@ export default function FAQ() {
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-3 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
           <HelpCircle className="w-4 h-4 text-amber-400" />
-          <span>Sanatan Dharma & Modern Neuroscience</span>
+          <span>{t('hero.badge')}</span>
         </div>
 
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-cinzel text-white tracking-tight">
-          Frequently Asked Questions (FAQ)
+          {t('menu.quickFaqTitle')}
         </h2>
         <p className="mt-2.5 text-xs sm:text-sm text-zinc-300 max-w-2xl mx-auto">
-          Essential answers for overcoming porn addiction, mastering celibacy, curing brain fog, and transmuting vital energy.
+          {t('menu.quickFaqSubtitle')}
         </p>
       </div>
 

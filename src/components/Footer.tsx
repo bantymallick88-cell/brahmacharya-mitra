@@ -238,9 +238,9 @@ export default function Footer() {
                   <span>Sanctuary Library (29+ PDFs)</span>
                 </a>
               </li>
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (30D Reset)</a></li>
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (60D Transformation)</a></li>
-              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} (100D Akhand Vrat)</a></li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} ({t('badges.reset30d')})</a></li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} ({t('badges.transform60d')})</a></li>
+              <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} ({t('badges.akhand100d')})</a></li>
               <li><a href="#deities" className="hover:text-amber-300 transition">{t.nav.deities}</a></li>
             </ul>
           </div>
@@ -249,10 +249,10 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3.5 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Legal & Fair Use Sanctuary</span>
+              <span>{t('legal.sanctuaryTitle')}</span>
             </h4>
             <p className="text-xs text-zinc-400 leading-relaxed mb-3">
-              Dedicated to pure spiritual growth, vital energy preservation, and ethical character building.
+              {t('legal.sanctuaryDesc')}
             </p>
             <div className="flex flex-col gap-2">
               <button
@@ -260,28 +260,28 @@ export default function Footer() {
                 className="text-xs text-amber-300 hover:text-amber-200 transition flex items-center gap-1.5 font-semibold cursor-pointer w-fit"
               >
                 <Scale className="w-3.5 h-3.5 text-amber-400" />
-                <span>DMCA Notice & Takedown</span>
+                <span>{t('legal.dmcaNotice')}</span>
               </button>
               <button
                 onClick={openPrivacyModal}
                 className="text-xs text-zinc-300 hover:text-amber-300 transition flex items-center gap-1.5 font-medium cursor-pointer w-fit"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Privacy & Data Sovereignty</span>
+                <span>{t('legal.privacySovereignty')}</span>
               </button>
               <a
                 href={`${baseUrl}privacy`}
                 className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium w-fit"
               >
                 <Info className="w-3.5 h-3.5 text-amber-400" />
-                <span>Full Terms & Legal Details</span>
+                <span>{t('legal.fullTerms')}</span>
               </a>
               <a
                 href={`mailto:${contactEmail}`}
                 className="text-xs text-zinc-400 hover:text-amber-300 transition flex items-center gap-1.5 font-medium w-fit pt-1"
               >
                 <Mail className="w-3.5 h-3.5 text-amber-400" />
-                <span>Contact: {contactEmail}</span>
+                <span>{t('legal.contactSupport', { email: contactEmail })}</span>
               </a>
             </div>
           </div>
@@ -295,12 +295,10 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
             <div className="flex items-center gap-1.5 font-cinzel font-bold text-white tracking-wider">
               <span>© {new Date().getFullYear()}</span>
-              <span className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">BRAHMACHARYA MITRA</span>
+              <span className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">{t('appName')}</span>
             </div>
             <span className="text-zinc-600 hidden sm:inline">•</span>
-            <span className="text-[11px] text-zinc-400">All rights reserved</span>
-            <span className="text-zinc-600 hidden sm:inline">•</span>
-            <span className="text-[11px] text-zinc-400 font-sanskrit">ब्रह्मचर्य मित्र</span>
+            <span className="text-[11px] text-zinc-400">{t('legal.allRightsReserved')}</span>
           </div>
 
           {/* Glassmorphic Legal & Contact Pills */}
@@ -312,7 +310,7 @@ export default function Footer() {
               title="View DMCA Copyright & Fair Use Notice"
             >
               <Scale className="w-3.5 h-3.5 text-amber-400" />
-              <span>DMCA / Fair Use</span>
+              <span>{t('legal.dmcaShort')}</span>
             </button>
 
             {/* Privacy Policy */}
@@ -322,7 +320,7 @@ export default function Footer() {
               title="Privacy Policy & Local Data Sovereignty"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Privacy Policy</span>
+              <span>{t('legal.privacyPolicy')}</span>
             </button>
 
             {/* Terms */}
@@ -332,7 +330,7 @@ export default function Footer() {
               title="Terms of Use & Legal Framework"
             >
               <Info className="w-3.5 h-3.5 text-blue-400" />
-              <span>Terms</span>
+              <span>{t('legal.terms')}</span>
             </a>
 
             {/* Contact Support */}
@@ -342,7 +340,7 @@ export default function Footer() {
               title={`Email support: ${contactEmail}`}
             >
               <Mail className="w-3.5 h-3.5 text-amber-400" />
-              <span>Support: {contactEmail}</span>
+              <span>{t('legal.contactSupport', { email: contactEmail })}</span>
             </a>
 
             {/* Back to Top */}
