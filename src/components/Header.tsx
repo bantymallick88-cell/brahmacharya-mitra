@@ -735,28 +735,32 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-1.5 sm:px-4 w-full">
           <div
-            className={`w-full flex items-center justify-between min-w-0 overflow-x-auto no-scrollbar px-1.5 py-1 gap-1 sm:gap-2 rounded-2xl transition-all duration-500 ${isScrolled
-                ? 'bg-zinc-950/90 backdrop-blur-3xl border border-amber-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(109,40,217,0.15)] nav-dock-glow'
-                : 'bg-zinc-950/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
+            className={`w-full flex items-center justify-between min-w-0 overflow-x-auto no-scrollbar px-2 sm:px-4 py-1.5 sm:py-2.5 gap-2 sm:gap-4 rounded-2xl transition-all duration-500 ${isScrolled
+                ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
+                : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
               }`}
+            style={{
+              background: isScrolled ? 'rgba(20, 14, 8, 0.92)' : 'rgba(28, 20, 10, 0.75)',
+              border: '1px solid rgba(245, 158, 11, 0.25)',
+            }}
           >
 
-            {/* ── Left: Logo (Mahadev Divine Photo) & Responsive Brand Title ── */}
+            {/* ── Left: Logo (Mahadev Divine Photo) & Enriched Brand Title ── */}
             <a
               href={baseUrl}
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0 cursor-pointer"
+              className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 cursor-pointer group"
               title="Brahmacharya Mitra — Home"
             >
               <div className="relative group/logo shrink-0 flex items-center justify-center">
-                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[4px] opacity-75 group-hover/logo:opacity-100 transition-opacity duration-300" />
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[5px] opacity-80 group-hover/logo:opacity-100 transition-opacity duration-300" />
                 <img
                   src={baseUrl + "photo_mahadev.jpg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="relative w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
+                  className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(255,140,0,0.6)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                   style={{ objectPosition: 'center 20%' }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -766,22 +770,15 @@ export default function Header() {
               </div>
 
               <div className="flex flex-col leading-none shrink-0">
-                <div className="flex items-baseline gap-0.5 sm:gap-1 text-[10px] xs:text-xs sm:text-sm md:text-base font-bold whitespace-nowrap tracking-tight shrink-0">
-                  <span
-                    className="font-cinzel font-bold text-[10px] xs:text-xs sm:text-sm md:text-base tracking-tight text-white drop-shadow-[0_1px_12px_rgba(255,255,255,0.4)] whitespace-nowrap shrink-0 group-hover:text-amber-100 transition-colors"
-                  >
-                    BRAHMACHARYA
-                  </span>
-                  <span
-                    className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent font-serif italic drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] text-[10px] xs:text-xs sm:text-sm md:text-base font-bold tracking-tight whitespace-nowrap shrink-0 pr-0.5"
-                  >
-                    MITRA
-                  </span>
-                </div>
-                <span className="mt-0.5 text-[7px] sm:text-[8px] font-sanskrit tracking-[0.15em] text-amber-400/80 hidden sm:flex items-center gap-1 shrink-0 whitespace-nowrap">
+                <span
+                  className="font-cinzel text-base xs:text-lg sm:text-2xl font-black tracking-wide bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(245,158,11,0.5)] whitespace-nowrap shrink-0"
+                >
+                  BRAHMACHARYA MITRA
+                </span>
+                <span className="mt-0.5 text-[8px] sm:text-[10px] font-sanskrit tracking-[0.18em] text-amber-300/80 hidden sm:flex items-center gap-1.5 shrink-0 whitespace-nowrap">
                   ब्रह्मचर्य मित्र
                   <span className="inline-block w-px h-1.5 bg-amber-500/50" />
-                  <span className="text-amber-300/75">दिव्य शक्ति</span>
+                  <span className="text-amber-200/90 font-medium">दिव्य शक्ति • Ojas & Tejas</span>
                 </span>
               </div>
             </a>
@@ -790,7 +787,7 @@ export default function Header() {
             <div className="hidden lg:flex items-center gap-1 sm:gap-1.5 xl:gap-2 shrink-0">
               <a
                 href={baseUrl + "dashboard/"}
-                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Dashboard</span>
@@ -798,7 +795,7 @@ export default function Header() {
 
               <a
                 href={baseUrl + "leaderboard/"}
-                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Leaderboard</span>
@@ -806,7 +803,7 @@ export default function Header() {
 
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
-                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0 whitespace-nowrap"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-xs font-bold text-amber-300 transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Setup Wizard</span>
@@ -814,7 +811,7 @@ export default function Header() {
 
               <a
                 href={baseUrl + "books/"}
-                className="flex items-center gap-1 px-2 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 hover:text-white transition cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Library</span>
@@ -847,20 +844,10 @@ export default function Header() {
               )}
             </div>
 
-            {/* ── Right: Action Buttons (Theme Toggle, Share, Language Selector & Hamburger) ── */}
-            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            {/* ── Right: Action Buttons (Theme Toggle, Language Selector & Hamburger Menu — Share removed from top bar) ── */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* 3D Sun/Moon Theme Toggle (Compact & Mobile-Optimized) */}
               <ThemeToggle className="shrink-0 scale-90 sm:scale-100 origin-center" />
-
-              {/* Share Icon Button */}
-              <button
-                onClick={handleShare}
-                className="relative group p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
-                aria-label="Share Brahmacharya Mitra"
-                title="Share App / Copy Link"
-              >
-                <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
-              </button>
 
               <div className="shrink-0 flex items-center">
                 <LanguageSelector />
@@ -869,7 +856,7 @@ export default function Header() {
               {/* 3-line Hamburger Menu Icon */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative group p-1 sm:p-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
+                className="relative group p-1.5 sm:p-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all cursor-pointer active:scale-95 flex items-center justify-center shrink-0 text-xs"
                 aria-label="Open Sadhana Tools and Navigation Drawer"
               >
                 <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform shrink-0" />

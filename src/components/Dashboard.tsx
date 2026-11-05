@@ -123,13 +123,17 @@ export default function Dashboard() {
     <section id="streak" className="py-8 sm:py-12 relative w-full max-w-full overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-3 sm:px-6">
 
-        {/* ── Main Dashboard Glass Panel (Compact Mobile-App Layout) ── */}
+        {/* ── Main Dashboard Glass Panel (Compact Mobile-App Layout with Warm Saffron Glassmorphism) ── */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative backdrop-blur-3xl bg-zinc-950/80 rounded-3xl p-4 sm:p-7 border border-amber-500/30 hover:border-amber-400/60 shadow-[0_0_60px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center text-center w-full max-w-full"
+          className="relative backdrop-blur-3xl rounded-3xl p-4 sm:p-7 shadow-[0_0_60px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center text-center w-full max-w-full"
+          style={{
+            background: 'rgba(28, 20, 10, 0.75)',
+            border: '1px solid rgba(245, 158, 11, 0.25)',
+          }}
         >
           {/* Subtle Ambient Cosmic Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[420px] h-[300px] sm:h-[420px] bg-[radial-gradient(circle,rgba(236,72,153,0.12)_0%,rgba(168,85,247,0.15)_35%,rgba(245,158,11,0.12)_65%,transparent_80%)] blur-3xl rounded-full pointer-events-none -z-10 animate-aura-pulse" />

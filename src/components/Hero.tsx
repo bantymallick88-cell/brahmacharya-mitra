@@ -115,15 +115,32 @@ export default function Hero() {
           {t.hero.subheadlineHindi}
         </motion.p>
 
-        {/* Core Value Proposition with mobile wrap */}
-        <motion.p 
+        {/* High-Contrast Visual Feature Pills & Clear Tagline (Replaces dense paragraphs) */}
+        <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-3 sm:mt-4 text-xs sm:text-sm md:text-base text-zinc-300 max-w-3xl px-3 sm:px-4 mx-auto leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.7)] text-balance break-words"
+          className="mt-3 sm:mt-4 space-y-3 max-w-3xl px-3 sm:px-4 mx-auto"
         >
-          {t.hero.description}
-        </motion.p>
+          <p className="text-xs sm:text-sm md:text-base text-amber-200/90 font-medium leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)] text-balance">
+            काम-वासना को दिव्य ओजस और तेजस में बदलें • Transmute Vital Energy into Supreme Strength & Focus
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-[11px] sm:text-xs font-bold shadow-sm">
+              🔥 100% Free & Open
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/35 text-red-300 text-[11px] sm:text-xs font-bold shadow-sm">
+              🛑 1-Tap Urge Breaker
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/35 text-yellow-300 text-[11px] sm:text-xs font-bold shadow-sm">
+              📿 108 Japa Counter
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] sm:text-xs font-bold shadow-sm">
+              📖 29 Sacred Books
+            </span>
+          </div>
+        </motion.div>
 
         {/* Interactive Liquid Glass Cards & CTAs with 21st.dev Glowing Border Beams and Framer Motion Micro-Interactions */}
         <motion.div 
