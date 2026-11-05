@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Globe, ChevronDown, Check, Sparkles } from 'lucide-react';
+import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useTranslation, SUPPORTED_LANGUAGES, type LanguageCode } from '../i18n';
 
 export default function LanguageSelector() {
@@ -7,7 +7,7 @@ export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -38,28 +38,28 @@ export default function LanguageSelector() {
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button with High-Contrast Bilingual Indicator ('GB' / 'HI') */}
+      {/* Trigger Button with Compact Mobile Text (text-[10px] sm:text-xs px-2 py-1) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_20px_rgba(245,158,11,0.35)] cursor-pointer shrink-0 active:scale-95"
-        aria-label="Select Language (English / Hindi)"
+        className="flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border-2 border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
+        aria-label="Select Language (IN OR / GB / HI)"
         aria-expanded={isOpen}
         title="Switch Language / भाषा बदलें"
       >
-        <span className="text-sm leading-none" role="img" aria-label="Flag">
+        <span className="text-xs sm:text-sm leading-none" role="img" aria-label="Flag">
           {currentMeta.flag}
         </span>
-        <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-amber-300">
-          {currentLang === 'hi' ? 'HI' : (currentLang === 'en' ? 'EN' : currentLang.toUpperCase())}
+        <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-300">
+          {currentLang.toUpperCase()}
         </span>
         <ChevronDown
-          className={`w-3.5 h-3.5 text-amber-400 transition-transform duration-200 ${
+          className={`w-3 h-3 text-amber-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
       </button>
 
-      {/* Glassmorphic Dropdown Menu (Guaranteed High z-index & Mobile Alignment) */}
+      {/* Glassmorphic Dropdown Menu */}
       {isOpen && (
         <div className="absolute right-0 sm:right-0 mt-2 w-72 max-w-[90vw] rounded-2xl border-2 border-amber-500/50 bg-[#0d0d14]/98 backdrop-blur-2xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] z-[120] animate-in fade-in zoom-in-95 duration-150">
           
@@ -71,32 +71,45 @@ export default function LanguageSelector() {
             <span className="text-[10px] text-zinc-400 font-semibold">15 Languages</span>
           </div>
 
-          {/* ── QUICK 1-TAP SWITCH: ENGLISH (GB/EN) & HINDI (IN/HI) ── */}
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* ── QUICK 1-TAP SWITCH: EN, HI, OR ── */}
+          <div className="grid grid-cols-3 gap-1.5 mb-3">
             <button
               onClick={() => handleSelect('en')}
-              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
                 currentLang === 'en'
-                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] font-black border border-amber-300'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
                   : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
               }`}
             >
-              <span className="text-sm">🇬🇧</span>
-              <span>English (EN)</span>
-              {currentLang === 'en' && <Check className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />}
+              <span>🇬🇧</span>
+              <span>EN</span>
+              {currentLang === 'en' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
             </button>
 
             <button
               onClick={() => handleSelect('hi')}
-              className={`py-2 px-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
                 currentLang === 'hi'
-                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.4)] font-black border border-amber-300'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
                   : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
               }`}
             >
-              <span className="text-sm">🇮🇳</span>
-              <span>हिन्दी (HI)</span>
-              {currentLang === 'hi' && <Check className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />}
+              <span>🇮🇳</span>
+              <span>HI</span>
+              {currentLang === 'hi' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
+            </button>
+
+            <button
+              onClick={() => handleSelect('or')}
+              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                currentLang === 'or'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
+                  : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
+              }`}
+            >
+              <span>🇮🇳</span>
+              <span>OR</span>
+              {currentLang === 'or' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
             </button>
           </div>
 
