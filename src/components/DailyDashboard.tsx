@@ -11,6 +11,7 @@ import type { UserProfile } from './OnboardingWizard';
 import { ALL_TASK_MAP } from './OnboardingWizard';
 import { getWallpaperForDay, downloadCanvasWallpaper } from '../data/wallpapers';
 import { MILESTONES } from './Habits';
+import { getStoredStreak, updateGlobalStreak, getDynamicTarget } from '../streakStore';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Brave Sadhak',
@@ -45,7 +46,8 @@ const TASK_DEFINITIONS: Record<string, { label: string; icon: string; time: stri
 
 export const DailyDashboard: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
-  const [streakDays, setStreakDays] = useState<number>(14);
+  const initialStreak = getStoredStreak();
+  const [streakDays, setStreakDays] = useState<number>(initialStreak.days);
   const [todayCompletedTasks, setTodayCompletedTasks] = useState<string[]>([]);
   const [japaCount, setJapaCount] = useState<number>(108);
   const [checkedInToday, setCheckedInToday] = useState<boolean>(false);
@@ -70,7 +72,7 @@ export const DailyDashboard: React.FC = () => {
 
   const todayKey = new Date().toISOString().slice(0, 10);
 
-  // Load state from localStorage
+  // Load state from single source of truth in localStorage & subscribe to live updates
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -80,12 +82,9 @@ export const DailyDashboard: React.FC = () => {
         setProfile(JSON.parse(savedProfile));
       }
 
-      const savedStreak = localStorage.getItem('bm_active_streak');
-      if (savedStreak) {
-        setStreakDays(parseInt(savedStreak, 10) || 1);
-      } else {
-        localStorage.setItem('bm_active_streak', '14');
-      }
+      // Read single source of truth streak
+      const currentStreak = getStoredStreak();
+      setStreakDays(currentStreak.days);
 
       const savedTasks = localStorage.getItem(`bm_daily_tasks_${todayKey}`);
       if (savedTasks) {
@@ -117,8 +116,36 @@ export const DailyDashboard: React.FC = () => {
       } catch (e) {}
     };
 
+    // Real-time synchronization when adjusted on Home page or anywhere in app
+    const handleStreakUpdate = (e: any) => {
+      if (e.detail?.days !== undefined) {
+        setStreakDays(e.detail.days);
+      }
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (
+        e.key === 'bm_streak_days' ||
+        e.key === 'tapasya_start_timestamp' ||
+        e.key === 'user_streak_start_date' ||
+        e.key === 'bm_active_streak'
+      ) {
+        const updated = getStoredStreak();
+        setStreakDays(updated.days);
+      }
+    };
+
     window.addEventListener('bm_profile_updated', handleProfileUpdate);
-    return () => window.removeEventListener('bm_profile_updated', handleProfileUpdate);
+    window.addEventListener('streak-updated', handleStreakUpdate);
+    window.addEventListener('bm_streak_sync', handleStreakUpdate);
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener('bm_profile_updated', handleProfileUpdate);
+      window.removeEventListener('streak-updated', handleStreakUpdate);
+      window.removeEventListener('bm_streak_sync', handleStreakUpdate);
+      window.removeEventListener('storage', handleStorage);
+    };
   }, [todayKey]);
 
   // Toggle routine task
@@ -133,14 +160,14 @@ export const DailyDashboard: React.FC = () => {
     } catch (e) {}
   };
 
-  // Check-in for today
+  // Check-in for today (synchronizes immediately across Home & Dashboard)
   const handleCheckIn = () => {
     if (checkedInToday) return;
     const newStreak = streakDays + 1;
     setStreakDays(newStreak);
     setCheckedInToday(true);
+    updateGlobalStreak(newStreak);
     try {
-      localStorage.setItem('bm_active_streak', newStreak.toString());
       localStorage.setItem(`bm_checkin_${todayKey}`, 'true');
     } catch (e) {}
   };
@@ -154,13 +181,13 @@ export const DailyDashboard: React.FC = () => {
     } catch (e) {}
   };
 
-  // Speedometer calculation
-  const targetDays = profile.targetDays || 90;
-  const progressPercent = Math.min(100, Math.round((streakDays / targetDays) * 100));
-  const remainingDays = Math.max(0, targetDays - streakDays);
+  // Dynamic unlimited speed dial calculation ($N+$ days)
+  const baseGoal = profile.targetDays || 90;
+  const { target: targetDays, percent: progressPercent, remaining: remainingDays } = getDynamicTarget(streakDays, baseGoal);
 
-  // Rank determination
+  // Rank determination with higher Akhand mastery milestones
   const getSadhakRank = (days: number) => {
+    if (days >= 365) return { title: 'Akhand Tapasvi', color: 'text-amber-300', badge: '🕉️ Akhand Siddhi' };
     if (days >= 108) return { title: 'Paramhansa Sadhak', color: 'text-amber-400', badge: '👑 Divya Tejas' };
     if (days >= 90) return { title: 'Ojasvi Brahmachari', color: 'text-amber-500', badge: '⚡ Vajra Kaya' };
     if (days >= 60) return { title: 'Tejasvi Warrior', color: 'text-orange-400', badge: '🔥 Agni Tejas' };

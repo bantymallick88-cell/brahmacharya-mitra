@@ -342,7 +342,7 @@ export default function OnboardingWizard({
       const existingRaw = localStorage.getItem('bm_registered_sadhaks');
       let registeredList: any[] = existingRaw ? JSON.parse(existingRaw) : [];
 
-      const currentStreak = parseInt(localStorage.getItem('bm_active_streak') || '14', 10);
+      const currentStreak = parseInt(localStorage.getItem('bm_streak_days') || localStorage.getItem('bm_active_streak') || '14', 10);
       const currentJapa = parseInt(localStorage.getItem('bm_japa_counter') || '108', 10);
 
       const existingIndex = registeredList.findIndex(

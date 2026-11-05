@@ -5,7 +5,7 @@ import {
   Dumbbell, BookOpen, Droplets, Sparkles, Clock, Calendar,
   ShieldCheck, RefreshCw, ChevronRight, X, SlidersHorizontal
 } from 'lucide-react';
-import { getStoredStreak, updateGlobalStreak, logRelapse } from '../streakStore';
+import { getStoredStreak, updateGlobalStreak, logRelapse, getDynamicTarget } from '../streakStore';
 import Habits from './Habits';
 
 export default function Dashboard() {
@@ -23,9 +23,7 @@ export default function Dashboard() {
     seconds: 45,
   });
 
-
-
-  // Sync streak from global store & custom events
+  // Sync streak from global store, custom events & cross-tab storage
   useEffect(() => {
     const current = getStoredStreak();
     setStreakDays(current.days);
@@ -37,17 +35,50 @@ export default function Dashboard() {
       if (e.detail?.bestDays !== undefined) setBestDays(e.detail.bestDays);
       if (e.detail?.attemptNumber !== undefined) setAttemptNumber(e.detail.attemptNumber);
     };
-    window.addEventListener('streak-updated', handleStreakChange);
 
-    return () => window.removeEventListener('streak-updated', handleStreakChange);
+    const handleStorage = (e: StorageEvent) => {
+      if (
+        e.key === 'bm_streak_days' ||
+        e.key === 'tapasya_start_timestamp' ||
+        e.key === 'user_streak_start_date' ||
+        e.key === 'bm_active_streak'
+      ) {
+        const updated = getStoredStreak();
+        setStreakDays(updated.days);
+        setBestDays(updated.bestDays);
+        setAttemptNumber(updated.attemptNumber);
+      }
+    };
+
+    window.addEventListener('streak-updated', handleStreakChange);
+    window.addEventListener('bm_streak_sync', handleStreakChange);
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener('streak-updated', handleStreakChange);
+      window.removeEventListener('bm_streak_sync', handleStreakChange);
+      window.removeEventListener('storage', handleStorage);
+    };
   }, []);
 
-  // Live second-by-second ticker
+  // Live second-by-second ticker reading single source of truth timestamp
   useEffect(() => {
     const updateTicker = () => {
       try {
-        const startTimeStr = localStorage.getItem('bm_streak_start_time');
-        const start = startTimeStr ? new Date(startTimeStr).getTime() : Date.now() - (streakDays * 86400000);
+        const startTimeStr =
+          localStorage.getItem('tapasya_start_timestamp') ||
+          localStorage.getItem('user_streak_start_date') ||
+          localStorage.getItem('bm_streak_start_time');
+
+        let start: number;
+        if (startTimeStr && !isNaN(Number(startTimeStr))) {
+          start = Number(startTimeStr);
+        } else if (startTimeStr) {
+          start = new Date(startTimeStr).getTime();
+        } else {
+          start = Date.now() - streakDays * 86400000;
+        }
+
         const elapsed = Math.max(0, Date.now() - start);
 
         const d = Math.floor(elapsed / (1000 * 60 * 60 * 24));
@@ -55,10 +86,10 @@ export default function Dashboard() {
         const m = Math.floor((elapsed / (1000 * 60)) % 60);
         const s = Math.floor((elapsed / 1000) % 60);
 
-        // Keep days synced with stored streak
+        // Keep hours, minutes, seconds synced with stored streak
         setTimeState({ hours: h, minutes: m, seconds: s });
       } catch {
-        setTimeState(prev => {
+        setTimeState((prev) => {
           const nextSec = (prev.seconds + 1) % 60;
           const nextMin = nextSec === 0 ? (prev.minutes + 1) % 60 : prev.minutes;
           const nextHr = nextSec === 0 && nextMin === 0 ? (prev.hours + 1) % 24 : prev.hours;
@@ -72,8 +103,6 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [streakDays]);
 
-
-
   const handleRelapseReset = () => {
     logRelapse();
     setConfirmRelapseOpen(false);
@@ -83,10 +112,11 @@ export default function Dashboard() {
     updateGlobalStreak(days);
   };
 
-  // Circular progress calculations (based on 90-day mastery cycle)
+  // Circular progress calculations with unlimited day counter ($N+$ days)
+  const { target: dynamicTarget, percent: dynamicPercent } = getDynamicTarget(streakDays, 90);
   const radius = 108;
   const circumference = 2 * Math.PI * radius;
-  const progressPercent = Math.min(100, Math.max(5, (streakDays / 90) * 100));
+  const progressPercent = Math.min(100, Math.max(5, dynamicPercent));
   const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
 
   return (

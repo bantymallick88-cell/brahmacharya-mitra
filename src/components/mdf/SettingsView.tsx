@@ -5,6 +5,7 @@ import {
   Trash2, RotateCcw, Check, Globe, RefreshCw, ShieldCheck
 } from 'lucide-react';
 import LanguageSelector from '../LanguageSelector';
+import { getStoredStreak, updateGlobalStreak, logRelapse } from '../../streakStore';
 
 export default function SettingsView() {
   const [streakDays, setStreakDays] = useState(7);
@@ -16,22 +17,31 @@ export default function SettingsView() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('bm_streak_days');
-      if (saved) setStreakDays(parseInt(saved, 10));
+      const stored = getStoredStreak();
+      setStreakDays(stored.days);
 
       const fab = localStorage.getItem('bm_show_panic_fab');
       if (fab !== null) setShowPanicFAB(fab === 'true');
     } catch {}
+
+    const handleStreak = (e: any) => {
+      if (e.detail?.days !== undefined) {
+        setStreakDays(e.detail.days);
+      }
+    };
+    window.addEventListener('streak-updated', handleStreak);
+    window.addEventListener('bm_streak_sync', handleStreak);
+    return () => {
+      window.removeEventListener('streak-updated', handleStreak);
+      window.removeEventListener('bm_streak_sync', handleStreak);
+    };
   }, []);
 
   const handleUpdateStreak = (val: number) => {
     const next = Math.max(0, val);
     setStreakDays(next);
-    try {
-      localStorage.setItem('bm_streak_days', String(next));
-      window.dispatchEvent(new CustomEvent('streak-updated', { detail: { days: next } }));
-      showSuccess('Streak days updated successfully');
-    } catch {}
+    updateGlobalStreak(next);
+    showSuccess('Streak days updated successfully');
   };
 
   const handleToggleFAB = () => {

@@ -6,6 +6,7 @@ import {
   Disc, MapPin, ArrowUpRight, Award, Zap, Code, ShieldAlert
 } from 'lucide-react';
 import type { UserProfile } from './OnboardingWizard';
+import { getStoredStreak } from '../streakStore';
 
 interface LeaderboardEntry {
   rank: number;
@@ -47,8 +48,8 @@ export const LeaderboardView: React.FC = () => {
         setUserProfile(parsedProfile);
       }
 
-      const savedStreak = localStorage.getItem('bm_active_streak');
-      const streakVal = savedStreak ? parseInt(savedStreak, 10) || 1 : 14;
+      const storedStreak = getStoredStreak();
+      const streakVal = storedStreak.days;
       setCurrentUserStreak(streakVal);
 
       const savedJapa = localStorage.getItem('bm_japa_counter');
@@ -90,11 +91,15 @@ export const LeaderboardView: React.FC = () => {
     window.addEventListener('bm_sadhaks_updated', handleUpdate);
     window.addEventListener('onboarding-completed', handleUpdate);
     window.addEventListener('bm_profile_updated', handleUpdate);
+    window.addEventListener('streak-updated', handleUpdate);
+    window.addEventListener('bm_streak_sync', handleUpdate);
 
     return () => {
       window.removeEventListener('bm_sadhaks_updated', handleUpdate);
       window.removeEventListener('onboarding-completed', handleUpdate);
       window.removeEventListener('bm_profile_updated', handleUpdate);
+      window.removeEventListener('streak-updated', handleUpdate);
+      window.removeEventListener('bm_streak_sync', handleUpdate);
     };
   }, []);
 

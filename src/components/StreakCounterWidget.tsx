@@ -14,6 +14,7 @@ import {
   Check
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
+import { getStoredStreak, updateGlobalStreak, getDynamicTarget } from '../streakStore';
 
 interface StageInfo {
   name: string;
@@ -70,14 +71,9 @@ export default function StreakCounterWidget() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('bm_streak_days');
-      if (saved) {
-        const val = parseInt(saved, 10);
-        if (!isNaN(val)) {
-          setDays(val);
-          setCustomDays(String(val));
-        }
-      }
+      const stored = getStoredStreak();
+      setDays(stored.days);
+      setCustomDays(String(stored.days));
 
       const pledgeDate = localStorage.getItem('bm_pledge_date');
       const today = new Date().toDateString();
@@ -93,17 +89,18 @@ export default function StreakCounterWidget() {
       }
     };
     window.addEventListener('streak-updated', handleStreak);
-    return () => window.removeEventListener('streak-updated', handleStreak);
+    window.addEventListener('bm_streak_sync', handleStreak);
+    return () => {
+      window.removeEventListener('streak-updated', handleStreak);
+      window.removeEventListener('bm_streak_sync', handleStreak);
+    };
   }, []);
 
   const updateStreak = (newDays: number) => {
     const val = Math.max(0, newDays);
     setDays(val);
     setCustomDays(String(val));
-    try {
-      localStorage.setItem('bm_streak_days', String(val));
-      window.dispatchEvent(new CustomEvent('streak-updated', { detail: { days: val } }));
-    } catch (e) {}
+    updateGlobalStreak(val);
   };
 
   const handlePledge = () => {
@@ -288,19 +285,24 @@ export default function StreakCounterWidget() {
                   {currentStage.desc}
                 </p>
 
-                {/* Progress bar to Day 90 */}
-                <div className="mt-5">
-                  <div className="flex items-center justify-between text-xs text-zinc-300 mb-1.5 font-medium">
-                    <span>{t.streak.progressTo90}</span>
-                    <span className="text-amber-400 font-bold">{Math.min(100, Math.round((days / 90) * 100))}%</span>
-                  </div>
-                  <div className="w-full h-2.5 rounded-full bg-zinc-900 overflow-hidden border border-zinc-800">
-                    <div 
-                      className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 transition-all duration-700 shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-                      style={{ width: `${Math.min(100, Math.round((days / 90) * 100))}%` }}
-                    />
-                  </div>
-                </div>
+                {/* Progress bar with dynamic target for unlimited days counter */}
+                {(() => {
+                  const { target: dynamicGoal, percent: dynamicProgress } = getDynamicTarget(days, 90);
+                  return (
+                    <div className="mt-5">
+                      <div className="flex items-center justify-between text-xs text-zinc-300 mb-1.5 font-medium">
+                        <span>{days >= 90 ? `Target: Day ${dynamicGoal}` : t.streak.progressTo90}</span>
+                        <span className="text-amber-400 font-bold">{dynamicProgress}%</span>
+                      </div>
+                      <div className="w-full h-2.5 rounded-full bg-zinc-900 overflow-hidden border border-zinc-800">
+                        <div 
+                          className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 transition-all duration-700 shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+                          style={{ width: `${dynamicProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Vitality Reclaimed Stats Grid */}
