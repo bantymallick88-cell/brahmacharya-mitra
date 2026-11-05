@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Flame, 
-  ShieldAlert, 
-  Sparkles, 
+import {
+  Flame,
+  ShieldAlert,
+  Sparkles,
   ArrowRight
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
@@ -37,7 +37,7 @@ export default function Hero() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#02040a]/90 via-[#02040a]/75 to-[#02040a]" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#02040a]/85 via-transparent to-[#02040a]/85" />
       <div className="hero-radial-tint absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(109,40,217,0.22)_0%,rgba(245,158,11,0.12)_45%,rgba(2,4,10,0.95)_80%)]" />
-      
+
       {/* ── 21st.dev Style Active Flowing Liquid Aurora Shader Canvas Background ── */}
       <LiquidAuroraCanvas />
 
@@ -50,9 +50,9 @@ export default function Hero() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 w-full">
-        
+
         {/* Divine Badge with Rotating Border Beam & Mahadev Avatar */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -75,7 +75,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Bilingual Main Headline with 21st.dev Glowing Lens Flare */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -90,7 +90,7 @@ export default function Hero() {
             <span className="block text-zinc-100 drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
               {t.hero.title1}
             </span>
-            
+
             {/* High-Intensity Glow Lens Flare & Glowing Prism Headline (21st.dev Style) */}
             <span className="relative inline-block my-1.5 px-2 sm:px-6 max-w-full break-words">
               <span className="lens-flare-beam" />
@@ -107,7 +107,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Hindi / Regional Subheadline with mobile wrap */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -117,7 +117,7 @@ export default function Hero() {
         </motion.p>
 
         {/* High-Contrast Visual Feature Pills & Clear Tagline (Replaces dense paragraphs) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -144,7 +144,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Interactive Liquid Glass Cards & CTAs with 21st.dev Glowing Border Beams and Framer Motion Micro-Interactions */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
