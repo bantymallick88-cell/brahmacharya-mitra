@@ -16,19 +16,33 @@
   --color-card-bg: rgba(12, 9, 8, 0.7);
 }
 
+/* --- Natural Smooth Vertical Scrolling Hard-Lock (Eliminates Scroll Freezes) --- */
+html, body {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
 html {
   scroll-behavior: smooth;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #0c0908;
   color: #f4f4f6;
-  overscroll-behavior: none;
 }
 
 body {
-  overflow-x: hidden;
   background-color: #0c0908;
-  overscroll-behavior: none;
+  color: #f4f4f6;
+  overflow-x: clip;
+}
+
+/* Main Content Container: natural vertical flow with bottom padding for navigation dock */
+.main-content-container,
+main {
+  overflow-y: visible !important;
   min-height: 100vh;
+  padding-bottom: 7rem;
 }
 
 .font-cinzel {

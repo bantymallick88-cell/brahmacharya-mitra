@@ -35,7 +35,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="bg-[#0c0908] text-zinc-100 min-h-screen relative selection:bg-amber-400 selection:text-black overflow-x-hidden antialiased w-full overscroll-none">
+    <div className="bg-[#0c0908] text-zinc-100 min-h-screen relative selection:bg-amber-400 selection:text-black antialiased w-full">
       {/* ── SEO Metadata & Structured Schema ── */}
       <SEO />
 
@@ -52,7 +52,7 @@ export default function App() {
       <PrivacyModal />
 
       {/* ── Main Landing Content ── */}
-      <main className="flex-1 w-full max-w-full overflow-x-hidden">
+      <main className="main-content-container flex-1 w-full max-w-full overflow-y-visible min-h-screen pb-28">
         {/* Hero Section */}
         <Hero />
 
