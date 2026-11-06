@@ -71,7 +71,7 @@ export function getInitialLanguage(): LanguageCode {
     if (saved && saved in translations) {
       return saved;
     }
-  } catch (e) {}
+  } catch (e) { }
   return DEFAULT_LANG;
 }
 
@@ -80,7 +80,7 @@ export function setLanguage(lang: LanguageCode): void {
 
   try {
     localStorage.setItem(STORAGE_KEY, lang);
-  } catch (e) {}
+  } catch (e) { }
 
   if (typeof document !== 'undefined') {
     document.documentElement.lang = lang;
