@@ -6,6 +6,7 @@ import { SUPPORTED_LANGUAGES } from './types';
 import enJson from '../locales/en.json';
 import hiJson from '../locales/hi.json';
 import orJson from '../locales/or.json';
+import mrJson from '../locales/mr.json';
 
 // Traditional TypeScript locales
 import { en } from './locales/en';
@@ -47,7 +48,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
   hi: deepMerge(deepMerge(deepMerge({}, enJson), hi), hiJson) as TranslationDictionary,
   or: deepMerge(deepMerge(deepMerge({}, enJson), or), orJson) as TranslationDictionary,
   bn: deepMerge(deepMerge({}, enJson), bn) as any,
-  mr: deepMerge(deepMerge({}, enJson), mr) as any,
+  mr: deepMerge(deepMerge(deepMerge({}, enJson), mr), mrJson) as TranslationDictionary,
   te: deepMerge(deepMerge({}, enJson), te) as any,
   ta: deepMerge(deepMerge({}, enJson), ta) as any,
   gu: deepMerge(deepMerge({}, enJson), gu) as any,

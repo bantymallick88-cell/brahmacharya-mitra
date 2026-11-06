@@ -60,7 +60,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-amber-500/25 bg-[#02040a] relative overflow-hidden pt-16 pb-20 sm:pb-24">
+    <footer className="border-t border-amber-500/25 bg-[#0c0908] relative overflow-hidden pt-16 pb-28 sm:pb-32">
       
       {/* ── Sacred Shloka Grand Sanctuary Banner ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

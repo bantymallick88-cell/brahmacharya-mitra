@@ -141,11 +141,11 @@ export default function BottomNav() {
             whileHover={{ y: -2, scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
             className="flex flex-col items-center justify-center px-1.5 xs:px-2 sm:px-2.5 py-1 rounded-xl text-amber-300/90 hover:text-amber-200 hover:bg-zinc-900/60 transition cursor-pointer flex-shrink-0"
-            title="Configure Setup & Goals"
+            title={t('bottomNav.preferences')}
           >
             <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-400" />
             <span className="text-[9px] xs:text-[10px] tracking-tight sm:tracking-wide mt-0.5 leading-none font-semibold">
-              {t('menu.settingsBadge')}
+              {t('bottomNav.preferences')}
             </span>
           </motion.button>
 

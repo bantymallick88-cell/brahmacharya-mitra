@@ -6,6 +6,7 @@ import {
   X, ShieldCheck, Heart, User, MapPin, Globe, Sliders,
   Check, RefreshCw, Zap, Search, AlertCircle, Compass as CompassIcon
 } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 export interface UserProfile {
   name: string;
@@ -192,6 +193,7 @@ export default function OnboardingWizard({
   onComplete,
   forceShow = false,
 }: OnboardingWizardProps) {
+  const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const [step, setStep] = useState(1);
 
@@ -418,19 +420,19 @@ export default function OnboardingWizard({
               </div>
               <div>
                 <h3 className="font-cinzel font-bold text-sm sm:text-lg text-white flex items-center gap-1.5 sm:gap-2">
-                  <span>Sadhak Onboarding</span>
+                  <span>{t('onboarding.modalTitle')}</span>
                   <span className="text-[9px] sm:text-[10px] font-sans px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    Step {step} of 4
+                    {t('onboarding.stepOf', { step: String(step) })}
                   </span>
                 </h3>
-                <p className="text-[10px] sm:text-xs text-zinc-400 leading-tight">Personalize your Brahmacharya journey & dynamic leaderboard rank</p>
+                <p className="text-[10px] sm:text-xs text-zinc-400 leading-tight">{t('onboarding.modalSubtitle')}</p>
               </div>
             </div>
 
             <button
               onClick={handleClose}
               className="p-1.5 sm:p-2 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-white/10 transition cursor-pointer shrink-0"
-              title="Close Wizard"
+              title={t('onboarding.closeWizard')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -460,13 +462,13 @@ export default function OnboardingWizard({
                 <div className="text-center space-y-0.5 sm:space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-semibold">
                     <User className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>STEP 1: SACRED IDENTITY</span>
+                    <span>{t('onboarding.step1Badge')}</span>
                   </div>
                   <h4 className="text-lg sm:text-2xl font-cinzel font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200 leading-tight">
-                    Who is Taking the Sankalpa?
+                    {t('onboarding.step1Title')}
                   </h4>
                   <p className="text-[11px] sm:text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
-                    Your name and location appear dynamically on the Global Sadhak Brotherhood Leaderboard.
+                    {t('onboarding.step1Desc')}
                   </p>
                 </div>
 
@@ -476,17 +478,17 @@ export default function OnboardingWizard({
                     <label className="block text-[11px] sm:text-xs font-semibold text-amber-300 mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <User className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                        <span>Your Name / Sadhak Alias (साधक नाम) *</span>
+                        <span>{t('onboarding.nameLabel')}</span>
                       </span>
                       {!name.trim() && (
-                        <span className="text-[10px] text-amber-400 font-normal">Required</span>
+                        <span className="text-[10px] text-amber-400 font-normal">{t('onboarding.required')}</span>
                       )}
                     </label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Banty, Aryan, Rohit, Shiva..."
+                      placeholder={t('onboarding.namePlaceholder')}
                       className="w-full px-3 py-2 sm:py-2.5 rounded-xl bg-zinc-900/90 border border-amber-500/30 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-500/30 text-white placeholder-zinc-500 text-xs sm:text-sm transition"
                     />
                   </div>
@@ -496,9 +498,9 @@ export default function OnboardingWizard({
                     <label className="block text-[11px] sm:text-xs font-semibold text-amber-300 mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                        <span>Global Country / Desh (देश) *</span>
+                        <span>{t('onboarding.countryLabel')}</span>
                       </span>
-                      <span className="text-[10px] text-zinc-400">Searchable across all nations</span>
+                      <span className="text-[10px] text-zinc-400">{t('onboarding.countryDesc')}</span>
                     </label>
 
                     {/* Interactive Country Selector Box */}
@@ -530,7 +532,7 @@ export default function OnboardingWizard({
 
                       <div className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold group-hover:bg-amber-500/20 transition flex items-center gap-1">
                         <Search className="w-3 h-3" />
-                        <span>Change</span>
+                        <span>{t('onboarding.change')}</span>
                       </div>
                     </button>
                   </div>
@@ -540,13 +542,13 @@ export default function OnboardingWizard({
                     <div>
                       <label className="block text-[11px] sm:text-xs font-semibold text-zinc-300 mb-1 flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-amber-400 shrink-0" />
-                        <span className="truncate">State (राज्य)</span>
+                        <span className="truncate">{t('onboarding.stateLabel')}</span>
                       </label>
                       <input
                         type="text"
                         value={stateName}
                         onChange={(e) => setStateName(e.target.value)}
-                        placeholder="e.g. Odisha, Delhi..."
+                        placeholder={t('onboarding.statePlaceholder')}
                         className="w-full px-2.5 sm:px-3.5 py-2 rounded-xl bg-zinc-900/90 border border-white/15 focus:border-amber-400 focus:outline-none text-white placeholder-zinc-500 text-xs transition"
                       />
                     </div>
@@ -554,13 +556,13 @@ export default function OnboardingWizard({
                     <div>
                       <label className="block text-[11px] sm:text-xs font-semibold text-zinc-300 mb-1 flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-amber-400 shrink-0" />
-                        <span className="truncate">City (नगर)</span>
+                        <span className="truncate">{t('onboarding.cityLabel')}</span>
                       </label>
                       <input
                         type="text"
                         value={cityName}
                         onChange={(e) => setCityName(e.target.value)}
-                        placeholder="e.g. Bhubaneswar..."
+                        placeholder={t('onboarding.cityPlaceholder')}
                         className="w-full px-2.5 sm:px-3.5 py-2 rounded-xl bg-zinc-900/90 border border-white/15 focus:border-amber-400 focus:outline-none text-white placeholder-zinc-500 text-xs transition"
                       />
                     </div>
@@ -581,13 +583,13 @@ export default function OnboardingWizard({
                 <div className="text-center space-y-0.5 sm:space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-semibold">
                     <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>STEP 2: CHOOSE YOUR GOAL</span>
+                    <span>{t('onboarding.step2Badge')}</span>
                   </div>
                   <h4 className="text-lg sm:text-2xl font-cinzel font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200 leading-tight">
-                    What is Your Sacred Resolve?
+                    {t('onboarding.step2Title')}
                   </h4>
                   <p className="text-[11px] sm:text-xs text-zinc-400">
-                    Select a classical milestone or calibrate a custom day target.
+                    {t('onboarding.step2Desc')}
                   </p>
                 </div>
 
@@ -650,10 +652,10 @@ export default function OnboardingWizard({
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] sm:text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
                       <Sliders className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
-                      <span>Custom Target Slider</span>
+                      <span>{t('onboarding.sliderTitle')}</span>
                     </span>
                     <span className="font-mono font-black text-amber-300 text-xs sm:text-sm">
-                      {targetDays} DAYS
+                      {targetDays} {t('onboarding.daysUnit')}
                     </span>
                   </div>
 
@@ -692,13 +694,13 @@ export default function OnboardingWizard({
                 <div className="text-center space-y-0.5 sm:space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-semibold">
                     <Compass className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>STEP 3: 10 DAILY DINACHARYA RULES</span>
+                    <span>{t('onboarding.step3Badge')}</span>
                   </div>
                   <h4 className="text-lg sm:text-2xl font-cinzel font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200 leading-tight">
-                    Build Your Daily Disciplines
+                    {t('onboarding.step3Title')}
                   </h4>
                   <p className="text-[11px] sm:text-xs text-zinc-400">
-                    Choose 10 spiritual & health habits per period. <span className="text-amber-300 font-bold">Min 3 tasks required in every period</span> to proceed.
+                    {t('onboarding.step3Desc')}
                   </p>
                 </div>
 
@@ -713,7 +715,7 @@ export default function OnboardingWizard({
                         : 'text-zinc-400 hover:text-white'
                     }`}
                   >
-                    <span>🌅 Morning</span>
+                    <span>🌅 {t('onboarding.morning')}</span>
                     <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded-full font-mono ${morningValid ? 'bg-emerald-500/30 text-emerald-200' : 'bg-red-500/30 text-red-200'}`}>
                       {morningCount}/10 {morningValid ? '✓' : ''}
                     </span>
@@ -728,7 +730,7 @@ export default function OnboardingWizard({
                         : 'text-zinc-400 hover:text-white'
                     }`}
                   >
-                    <span>☀️ Afternoon</span>
+                    <span>☀️ {t('onboarding.afternoon')}</span>
                     <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded-full font-mono ${afternoonValid ? 'bg-emerald-500/30 text-emerald-200' : 'bg-red-500/30 text-red-200'}`}>
                       {afternoonCount}/10 {afternoonValid ? '✓' : ''}
                     </span>
@@ -743,7 +745,7 @@ export default function OnboardingWizard({
                         : 'text-zinc-400 hover:text-white'
                     }`}
                   >
-                    <span>🌙 Night</span>
+                    <span>🌙 {t('onboarding.night')}</span>
                     <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded-full font-mono ${nightValid ? 'bg-emerald-500/30 text-emerald-200' : 'bg-red-500/30 text-red-200'}`}>
                       {nightCount}/10 {nightValid ? '✓' : ''}
                     </span>
@@ -763,14 +765,14 @@ export default function OnboardingWizard({
                       <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0 animate-pulse" />
                     )}
                     <span className="text-[11px] sm:text-xs font-bold tracking-wide">
-                      {activeRoutineTab.toUpperCase()} ROUTINE: {currentTabCount}/10 selected (min 3 req)
+                      {t('onboarding.routineReq', { period: activeRoutineTab.toUpperCase(), count: String(currentTabCount) })}
                     </span>
                   </div>
 
                   <span className={`text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full ${
                     currentTabCount >= 3 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
                   }`}>
-                    {currentTabCount >= 3 ? '✓ Requirement Met' : `Needs ${3 - currentTabCount} more`}
+                    {currentTabCount >= 3 ? t('onboarding.reqMet') : t('onboarding.needsMore', { count: String(3 - currentTabCount) })}
                   </span>
                 </div>
 
@@ -813,10 +815,10 @@ export default function OnboardingWizard({
 
                 {/* Overall Dinacharya Status Summary */}
                 <div className="flex items-center justify-between text-[11px] sm:text-xs text-zinc-400 pt-0.5 sm:pt-1">
-                  <span>Total {totalSelectedTasks} of 30 daily disciplines activated</span>
+                  <span>{t('onboarding.totalDisciplines', { count: String(totalSelectedTasks) })}</span>
                   {!allRoutinesValid && (
                     <span className="text-amber-400 font-bold text-[10px] sm:text-[11px]">
-                      Min 3 tasks in each period needed.
+                      {t('onboarding.min3Warning')}
                     </span>
                   )}
                 </div>
@@ -844,10 +846,10 @@ export default function OnboardingWizard({
 
                 <div className="space-y-0.5 sm:space-y-1">
                   <h4 className="text-xl sm:text-3xl font-cinzel font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-100">
-                    Your Sacred Resolve is Sealed!
+                    {t('onboarding.step4Title')}
                   </h4>
                   <p className="text-[11px] sm:text-sm text-zinc-400">
-                    Sadhak <span className="text-amber-300 font-bold">{name || 'Veer'}</span>, you are now dynamically active in the Global Brotherhood.
+                    {t('onboarding.step4Subtitle', { name: name || 'Veer' })}
                   </p>
                 </div>
 
@@ -871,30 +873,30 @@ export default function OnboardingWizard({
                     </div>
 
                     <div className="text-right">
-                      <div className="text-[10px] sm:text-xs text-amber-300/80 uppercase font-semibold">Target Resolve</div>
-                      <div className="font-mono font-black text-amber-400 text-base sm:text-lg">{targetDays} DAYS</div>
+                      <div className="text-[10px] sm:text-xs text-amber-300/80 uppercase font-semibold">{t('onboarding.targetResolve')}</div>
+                      <div className="font-mono font-black text-amber-400 text-base sm:text-lg">{targetDays} {t('onboarding.daysUnit')}</div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-center text-xs">
                     <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-950/70 border border-white/10">
-                      <div className="text-[9px] sm:text-[10px] text-zinc-500">Morning (10)</div>
-                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{selectedRoutines.morning.length} Selected</div>
+                      <div className="text-[9px] sm:text-[10px] text-zinc-500">{t('onboarding.morning')} (10)</div>
+                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{t('onboarding.selectedCount', { count: String(selectedRoutines.morning.length) })}</div>
                     </div>
                     <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-950/70 border border-white/10">
-                      <div className="text-[9px] sm:text-[10px] text-zinc-500">Afternoon (10)</div>
-                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{selectedRoutines.afternoon.length} Selected</div>
+                      <div className="text-[9px] sm:text-[10px] text-zinc-500">{t('onboarding.afternoon')} (10)</div>
+                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{t('onboarding.selectedCount', { count: String(selectedRoutines.afternoon.length) })}</div>
                     </div>
                     <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-950/70 border border-white/10">
-                      <div className="text-[9px] sm:text-[10px] text-zinc-500">Night (10)</div>
-                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{selectedRoutines.night.length} Selected</div>
+                      <div className="text-[9px] sm:text-[10px] text-zinc-500">{t('onboarding.night')} (10)</div>
+                      <div className="font-bold text-amber-300 text-[11px] sm:text-xs">{t('onboarding.selectedCount', { count: String(selectedRoutines.night.length) })}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Sacred Quote */}
                 <div className="p-2.5 sm:p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] sm:text-xs text-amber-300 font-serif italic">
-                  "ब्रह्मचर्येण तपसा देवा मृत्युमपाघ्नत — Through Brahmacharya and Tapasya, one conquers all mortality and attains divine effulgence."
+                  {t('onboarding.sacredQuote')}
                 </div>
               </motion.div>
             )}
@@ -909,7 +911,7 @@ export default function OnboardingWizard({
                 className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back</span>
+                <span>{t('onboarding.back')}</span>
               </button>
             ) : (
               <div />
@@ -929,7 +931,7 @@ export default function OnboardingWizard({
                 }`}
               >
                 <span>
-                  {step === 3 && !allRoutinesValid ? 'Select Min 3 Tasks per Period' : 'Continue'}
+                  {step === 3 && !allRoutinesValid ? t('onboarding.min3TasksButton') : t('onboarding.continue')}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -940,7 +942,7 @@ export default function OnboardingWizard({
                 className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-zinc-950 font-black text-xs sm:text-sm tracking-wider shadow-[0_0_30px_rgba(245,158,11,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
               >
                 <Sparkles className="w-4 h-4 text-zinc-950" />
-                <span>START JOURNEY (साधना आरम्भ करें)</span>
+                <span>{t('onboarding.startJourney')}</span>
               </button>
             )}
           </div>
@@ -967,7 +969,7 @@ export default function OnboardingWizard({
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-amber-400" />
-                    <h4 className="text-base font-bold text-white">Select Global Country</h4>
+                    <h4 className="text-base font-bold text-white">{t('onboarding.selectCountryModalTitle')}</h4>
                   </div>
                   <button
                     onClick={() => setCountryModalOpen(false)}
@@ -984,7 +986,7 @@ export default function OnboardingWizard({
                     type="text"
                     value={countrySearch}
                     onChange={(e) => setCountrySearch(e.target.value)}
-                    placeholder="Search by country name or code (e.g. India, US, Nepal, IN)..."
+                    placeholder={t('onboarding.searchCountryPlaceholder')}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 focus:border-amber-400 focus:outline-none text-white text-xs"
                     autoFocus
                   />
@@ -1023,7 +1025,7 @@ export default function OnboardingWizard({
                   })}
                   {filteredCountries.length === 0 && (
                     <div className="text-center py-6 text-zinc-500 text-xs">
-                      No country found matching "{countrySearch}"
+                      {t('onboarding.noCountryFound', { query: countrySearch })}
                     </div>
                   )}
                 </div>

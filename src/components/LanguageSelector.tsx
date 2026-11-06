@@ -71,11 +71,11 @@ export default function LanguageSelector() {
             <span className="text-[10px] text-amber-300/70 font-semibold">15 Languages</span>
           </div>
 
-          {/* ── QUICK 1-TAP SWITCH: EN, HI, OR ── */}
-          <div className="grid grid-cols-3 gap-1.5 mb-3">
+          {/* ── QUICK 1-TAP SWITCH: EN, HI, OR, MR ── */}
+          <div className="grid grid-cols-4 gap-1 sm:gap-1.5 mb-3">
             <button
               onClick={() => handleSelect('en')}
-              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
+              className={`py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-black flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
                 currentLang === 'en'
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
                   : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
@@ -83,12 +83,12 @@ export default function LanguageSelector() {
             >
               <span>🇬🇧</span>
               <span>EN</span>
-              {currentLang === 'en' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
+              {currentLang === 'en' && <Check className="w-2.5 h-2.5 text-zinc-950 stroke-[3]" />}
             </button>
 
             <button
               onClick={() => handleSelect('hi')}
-              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
+              className={`py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-black flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
                 currentLang === 'hi'
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
                   : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
@@ -96,12 +96,12 @@ export default function LanguageSelector() {
             >
               <span>🇮🇳</span>
               <span>HI</span>
-              {currentLang === 'hi' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
+              {currentLang === 'hi' && <Check className="w-2.5 h-2.5 text-zinc-950 stroke-[3]" />}
             </button>
 
             <button
               onClick={() => handleSelect('or')}
-              className={`py-1.5 px-1.5 rounded-xl text-[11px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer ${
+              className={`py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-black flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
                 currentLang === 'or'
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
                   : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
@@ -109,7 +109,20 @@ export default function LanguageSelector() {
             >
               <span>🇮🇳</span>
               <span>OR</span>
-              {currentLang === 'or' && <Check className="w-3 h-3 text-zinc-950 stroke-[3]" />}
+              {currentLang === 'or' && <Check className="w-2.5 h-2.5 text-zinc-950 stroke-[3]" />}
+            </button>
+
+            <button
+              onClick={() => handleSelect('mr')}
+              className={`py-1.5 px-1 rounded-xl text-[10px] sm:text-[11px] font-black flex items-center justify-center gap-0.5 transition-all cursor-pointer ${
+                currentLang === 'mr'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-black border border-amber-300 shadow-md'
+                  : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-850'
+              }`}
+            >
+              <span>🇮🇳</span>
+              <span>MR</span>
+              {currentLang === 'mr' && <Check className="w-2.5 h-2.5 text-zinc-950 stroke-[3]" />}
             </button>
           </div>
 
