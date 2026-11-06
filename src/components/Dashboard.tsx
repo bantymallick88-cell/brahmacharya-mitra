@@ -143,7 +143,7 @@ export default function Dashboard() {
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-amber-500/15 border border-purple-500/40 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-3 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
             <Flame className="w-3.5 h-3.5 text-pink-400 fill-pink-400" />
-            <span>Sadhana Sobriety & Akhand Streak Engine</span>
+            <span>{t('dashboard.streakEngineBadge')}</span>
           </div>
 
           {/* ── Animated Circular Streak Timer (Matching 1st Screenshot) ── */}
@@ -344,9 +344,9 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <h3 className="text-base font-bold text-white">Log a Relapse & Reset Streak?</h3>
+                <h3 className="text-base font-bold text-white">{t('dashboard.relapseModalTitle')}</h3>
                 <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                  Honesty with yourself is the first step of genuine Brahmacharya. Your attempt count will advance to #{attemptNumber + 1}. Remember: Every master failed until he did not.
+                  {t('dashboard.relapseModalDesc', { attempt: attemptNumber + 1 })}
                 </p>
               </div>
 
@@ -355,13 +355,13 @@ export default function Dashboard() {
                   onClick={() => setConfirmRelapseOpen(false)}
                   className="flex-1 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-zinc-300 transition"
                 >
-                  Cancel
+                  {t('dashboard.cancel')}
                 </button>
                 <button
                   onClick={handleRelapseReset}
                   className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black transition shadow-[0_0_20px_rgba(239,68,68,0.4)]"
                 >
-                  Confirm Reset
+                  {t('dashboard.confirmReset')}
                 </button>
               </div>
             </motion.div>

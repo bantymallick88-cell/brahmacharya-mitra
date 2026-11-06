@@ -276,7 +276,7 @@ function ToolsDrawer({
                       </span>
                     </div>
                     <span className="text-[9px] font-sanskrit text-amber-400/80 mt-0.5 tracking-widest">
-                      ब्रह्मचर्य मित्र • Sadhana Tools
+                      ब्रह्मचर्य मित्र • {t('menu.sadhanaTools')}
                     </span>
                   </div>
                 </div>
@@ -286,7 +286,7 @@ function ToolsDrawer({
                   className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-amber-400 text-xs font-bold text-amber-300 transition cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  <span>Back to Menu</span>
+                  <span>{t('menu.backToMenu')}</span>
                 </button>
               )}
 
@@ -323,13 +323,13 @@ function ToolsDrawer({
                         </div>
                         <div>
                           <div className="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300 transition-colors flex items-center gap-2">
-                            <span>Sadhak Profile & Login</span>
+                            <span>{t('menu.sadhakProfileLogin')}</span>
                             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30">
-                              Free
+                              {t('menu.freeBadge')}
                             </span>
                           </div>
                           <div className="text-[11px] text-zinc-400 mt-0.5">
-                            Google & Phone OTP Verification
+                            {t('menu.otpVerification')}
                           </div>
                         </div>
                       </div>
@@ -344,7 +344,7 @@ function ToolsDrawer({
                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 to-yellow-500/10 hover:from-amber-500/25 hover:to-yellow-500/20 border border-amber-500/40 hover:border-amber-400 text-xs font-bold text-amber-300 transition shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
                     >
                       <Share2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                      <span>Share App</span>
+                      <span>{t('menu.shareApp')}</span>
                     </button>
 
                     <button
@@ -355,7 +355,7 @@ function ToolsDrawer({
                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-200 transition shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
                     >
                       <Smartphone className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                      <span>📱 Install PWA</span>
+                      <span>📱 {t('menu.installPwa')}</span>
                     </button>
                   </div>
 
@@ -366,7 +366,7 @@ function ToolsDrawer({
                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-zinc-950/80 border border-amber-500/30 hover:border-amber-400 text-xs font-bold text-amber-300 transition shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
                     >
                       <Flame className="w-4 h-4 text-amber-400 fill-amber-400/40 flex-shrink-0" />
-                      <span className="truncate">🔥 {streakDays} Days Clean</span>
+                      <span className="truncate">🔥 {t('menu.daysCleanCount', { count: streakDays })}</span>
                     </button>
 
                     <button
@@ -374,7 +374,7 @@ function ToolsDrawer({
                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl bg-red-950/50 border border-red-500/60 hover:border-red-400 text-xs font-bold text-red-200 transition shadow-[0_0_20px_rgba(239,68,68,0.25)] hover:shadow-[0_0_30px_rgba(239,68,68,0.45)] cursor-pointer"
                     >
                       <ShieldAlert className="w-4 h-4 text-red-400 animate-pulse flex-shrink-0" />
-                      <span>{t.nav.panicMode}</span>
+                      <span>{t('nav.panicMode')}</span>
                     </button>
                   </div>
 
@@ -395,9 +395,9 @@ function ToolsDrawer({
                       </div>
                       <div>
                         <h4 className="text-xs font-extrabold text-white group-hover:text-amber-300">
-                          Daily Dashboard
+                          {t('nav.dashboard')}
                         </h4>
-                        <p className="text-[10px] text-zinc-400 mt-0.5">Speedometer & Dinacharya</p>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">{t('menu.speedometerDesc')}</p>
                       </div>
                     </a>
 
@@ -416,9 +416,9 @@ function ToolsDrawer({
                       </div>
                       <div>
                         <h4 className="text-xs font-extrabold text-white group-hover:text-amber-300">
-                          Leaderboard
+                          {t('nav.leaderboard')}
                         </h4>
-                        <p className="text-[10px] text-zinc-400 mt-0.5">Global podium & ranks</p>
+                        <p className="text-[10px] text-zinc-400 mt-0.5">{t('menu.podiumDesc')}</p>
                       </div>
                     </a>
                   </div>
@@ -436,9 +436,9 @@ function ToolsDrawer({
                       </div>
                       <div>
                         <span className="text-xs font-bold text-white group-hover:text-amber-300 block">
-                          Setup Wizard & Goal Selector
+                          {t('menu.setupWizardTitle')}
                         </span>
-                        <span className="text-[10px] text-zinc-400">Custom target days, routines & country</span>
+                        <span className="text-[10px] text-zinc-400">{t('menu.setupWizardSubtitle')}</span>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
@@ -458,13 +458,13 @@ function ToolsDrawer({
                         </div>
                         <div>
                           <span className="text-xs font-bold text-amber-200 group-hover:text-white block">
-                            Official Telegram Community
+                            {t('menu.telegramCommunity')}
                           </span>
-                          <span className="text-[10px] text-zinc-400">Daily vichar, updates & sadhak sangha</span>
+                          <span className="text-[10px] text-zinc-400">{t('menu.telegramDesc')}</span>
                         </div>
                       </div>
                       <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors">
-                        Join ↗
+                        {t('menu.joinTelegram')}
                       </span>
                     </a>
                   ) : (
@@ -474,7 +474,7 @@ function ToolsDrawer({
                         onClose();
                       }}
                       className="w-full p-2.5 rounded-2xl bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 hover:border-amber-500/40 flex items-center justify-between transition-all group shadow-sm cursor-pointer text-left"
-                      title="Complete Setup Wizard to Join Telegram Community"
+                      title={t('menu.unlockTelegramTitle')}
                     >
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-amber-400">
@@ -482,13 +482,13 @@ function ToolsDrawer({
                         </div>
                         <div>
                           <span className="text-xs font-bold text-zinc-300 group-hover:text-amber-200 block">
-                            Official Telegram Community
+                            {t('menu.telegramCommunity')}
                           </span>
-                          <span className="text-[10px] text-zinc-500">Private Sangha • Complete Setup to Unlock</span>
+                          <span className="text-[10px] text-zinc-500">{t('menu.privateSanghaDesc')}</span>
                         </div>
                       </div>
                       <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                        Unlock 🔒
+                        {t('menu.unlock')}
                       </span>
                     </button>
                   )}
@@ -498,7 +498,7 @@ function ToolsDrawer({
                     <div className="flex-1 h-px bg-zinc-800/80" />
                     <span className="text-[10px] font-black text-amber-400/90 tracking-widest uppercase flex items-center gap-1.5">
                       <Zap className="w-3 h-3 text-amber-400" />
-                      Sadhana & Vitality Modules
+                      {t('menu.sadhanaModules')}
                     </span>
                     <div className="flex-1 h-px bg-zinc-800/80" />
                   </div>
@@ -539,8 +539,8 @@ function ToolsDrawer({
                   {/* ── Diagnostic & Emergency Modals Section ── */}
                   <div className="pt-2 space-y-2">
                     <div className="text-[10px] font-black text-amber-400/90 uppercase tracking-widest px-1 flex items-center justify-between">
-                      <span>Diagnostic & Emergency Tools</span>
-                      <span className="text-[9px] text-zinc-500 font-normal">Opens Interactive Modals</span>
+                      <span>{t('menu.diagnosticTools')}</span>
+                      <span className="text-[9px] text-zinc-500 font-normal">{t('menu.interactiveModals')}</span>
                     </div>
 
                     {diagnosticTools.map(tool => {
@@ -576,7 +576,7 @@ function ToolsDrawer({
                   {/* Primary Landing Page Links */}
                   <div className="pt-2 space-y-1.5">
                     <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-1">
-                      Main Landing Navigation
+                      {t('menu.mainLandingNav')}
                     </div>
                     {quickSections.map(sec => {
                       const Icon = sec.icon;
@@ -718,10 +718,10 @@ export default function Header() {
         document.execCommand('copy');
         document.body.removeChild(textArea);
       }
-      setToastMessage('Link Copied to Clipboard!');
+      setToastMessage(t('menu.linkCopied'));
       setTimeout(() => setToastMessage(null), 2500);
     } catch (e) {
-      setToastMessage('Link Copied!');
+      setToastMessage(t('menu.linkCopied'));
       setTimeout(() => setToastMessage(null), 2500);
     }
   };

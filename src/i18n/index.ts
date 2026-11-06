@@ -27,23 +27,37 @@ import { ar } from './locales/ar';
 export { SUPPORTED_LANGUAGES };
 export type { LanguageCode, LanguageMeta, TranslationDictionary, TranslationFunction };
 
-// Centralized dictionaries merged with type-safety & 100% fallback guarantees
+function deepMerge<T = any>(target: any, source: any): T {
+  if (!source) return target || ({} as T);
+  if (!target) return source;
+  const output = { ...target };
+  for (const key of Object.keys(source)) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      output[key] = deepMerge(target[key] || {}, source[key]);
+    } else {
+      output[key] = source[key];
+    }
+  }
+  return output as T;
+}
+
+// Centralized dictionaries merged with deep type-safety & 100% fallback guarantees
 export const translations: Record<LanguageCode, TranslationDictionary> = {
-  en: { ...en, ...enJson } as TranslationDictionary,
-  hi: { ...hi, ...hiJson } as TranslationDictionary,
-  or: { ...or, ...orJson } as TranslationDictionary,
-  bn: { ...enJson, ...bn } as any,
-  mr: { ...enJson, ...mr } as any,
-  te: { ...enJson, ...te } as any,
-  ta: { ...enJson, ...ta } as any,
-  gu: { ...enJson, ...gu } as any,
-  kn: { ...enJson, ...kn } as any,
-  pa: { ...enJson, ...pa } as any,
-  ru: { ...enJson, ...ru } as any,
-  es: { ...enJson, ...es } as any,
-  fr: { ...enJson, ...fr } as any,
-  de: { ...enJson, ...de } as any,
-  ar: { ...enJson, ...ar } as any,
+  en: deepMerge(deepMerge({}, en), enJson) as TranslationDictionary,
+  hi: deepMerge(deepMerge(deepMerge({}, enJson), hi), hiJson) as TranslationDictionary,
+  or: deepMerge(deepMerge(deepMerge({}, enJson), or), orJson) as TranslationDictionary,
+  bn: deepMerge(deepMerge({}, enJson), bn) as any,
+  mr: deepMerge(deepMerge({}, enJson), mr) as any,
+  te: deepMerge(deepMerge({}, enJson), te) as any,
+  ta: deepMerge(deepMerge({}, enJson), ta) as any,
+  gu: deepMerge(deepMerge({}, enJson), gu) as any,
+  kn: deepMerge(deepMerge({}, enJson), kn) as any,
+  pa: deepMerge(deepMerge({}, enJson), pa) as any,
+  ru: deepMerge(deepMerge({}, enJson), ru) as any,
+  es: deepMerge(deepMerge({}, enJson), es) as any,
+  fr: deepMerge(deepMerge({}, enJson), fr) as any,
+  de: deepMerge(deepMerge({}, enJson), de) as any,
+  ar: deepMerge(deepMerge({}, enJson), ar) as any,
 };
 
 const STORAGE_KEY = 'bm_lang';

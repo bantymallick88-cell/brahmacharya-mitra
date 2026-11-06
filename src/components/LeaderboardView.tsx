@@ -368,8 +368,8 @@ export const LeaderboardView: React.FC = () => {
               </div>
             ) : (
               <div className="order-2 md:order-1 hidden md:flex flex-col items-center p-6 rounded-3xl border border-dashed border-zinc-800 text-center text-zinc-600 text-xs">
-                <span>Rank #2 Spot Open</span>
-                <span className="text-[10px] text-zinc-700 mt-1">Complete setup to claim</span>
+                <span>{t('leaderboard.rank2SpotOpen')}</span>
+                <span className="text-[10px] text-zinc-700 mt-1">{t('leaderboard.completeSetupClaim')}</span>
               </div>
             )}
 
@@ -382,13 +382,13 @@ export const LeaderboardView: React.FC = () => {
                   <Trophy className="w-10 h-10 text-zinc-950 fill-zinc-950" />
                 </div>
                 <span className="absolute -bottom-2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-zinc-950 text-xs font-black shadow-lg shadow-amber-500/40">
-                  #1 CHAMPION
+                  #{t('leaderboard.rank1Champion')}
                 </span>
               </div>
 
               <div className="w-full rounded-3xl bg-gradient-to-b from-amber-950/40 via-zinc-900 to-zinc-950 border-2 border-amber-500/50 p-6 text-center flex flex-col items-center backdrop-blur-2xl shadow-2xl shadow-amber-500/10">
                 <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">
-                  Divya Tejas Winner
+                  {t('leaderboard.divyaTejasWinner')}
                 </span>
                 <h3 className="font-extrabold text-white text-lg md:text-xl truncate max-w-[200px] mt-0.5">
                   {top1.name}
@@ -457,8 +457,8 @@ export const LeaderboardView: React.FC = () => {
               </div>
             ) : (
               <div className="order-3 hidden md:flex flex-col items-center p-6 rounded-3xl border border-dashed border-zinc-800 text-center text-zinc-600 text-xs">
-                <span>Rank #3 Spot Open</span>
-                <span className="text-[10px] text-zinc-700 mt-1">Complete setup to claim</span>
+                <span>{t('leaderboard.rank3SpotOpen')}</span>
+                <span className="text-[10px] text-zinc-700 mt-1">{t('leaderboard.completeSetupClaim')}</span>
               </div>
             )}
           </div>
@@ -470,10 +470,10 @@ export const LeaderboardView: React.FC = () => {
             🏆
           </div>
           <h3 className="text-xl font-bold text-white font-cinzel">
-            No Public Sadhaks Ranked Yet
+            {t('leaderboard.emptyTitle')}
           </h3>
           <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-            Be the very first warrior to take the sacred Sankalpa and claim the <strong className="text-amber-400">#1 Saffron Gold</strong> position on the Global Leaderboard!
+            {t('leaderboard.claimGoldDesc')}
           </p>
           <button
             onClick={() => {
@@ -484,7 +484,7 @@ export const LeaderboardView: React.FC = () => {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 transition cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Complete Setup to Claim Rank #1</span>
+            <span>{t('leaderboard.claimRank1Btn')}</span>
           </button>
         </div>
       )}
@@ -498,14 +498,14 @@ export const LeaderboardView: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-black text-white">{myPublicEntry.name} (You)</span>
+                <span className="text-sm font-black text-white">{myPublicEntry.name} ({t('leaderboard.youTag')})</span>
                 <span className="text-xs">{myPublicEntry.countryFlag}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">
                   {myPublicEntry.title}
                 </span>
               </div>
               <p className="text-xs text-zinc-400">
-                {myPublicEntry.city}, {myPublicEntry.country} • Keep going brother, honor your Sankalpa!
+                {myPublicEntry.city}, {myPublicEntry.country} • {t('leaderboard.keepGoingMsg')}
               </p>
             </div>
           </div>
@@ -513,7 +513,7 @@ export const LeaderboardView: React.FC = () => {
             <span className="text-lg font-black text-amber-400">
               {metric === 'streak' ? `${myPublicEntry.streakDays} Days` : `${myPublicEntry.japaCount.toLocaleString()} Jap`}
             </span>
-            <span className="text-[10px] text-zinc-400 block">Personal Score</span>
+            <span className="text-[10px] text-zinc-400 block">{t('leaderboard.personalScore')}</span>
           </div>
         </div>
       )}
@@ -524,10 +524,10 @@ export const LeaderboardView: React.FC = () => {
           <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
             <h2 className="text-base font-bold text-white flex items-center gap-2">
               <Shield className="w-4 h-4 text-amber-400" />
-              <span>Verified Sadhak Ranks ({filteredList.length})</span>
+              <span>{t('leaderboard.verifiedSadhakRanks')} ({filteredList.length})</span>
             </h2>
             <span className="text-xs text-zinc-400">
-              Dynamic LocalStorage Verification
+              {t('leaderboard.dynamicVerification')}
             </span>
           </div>
 

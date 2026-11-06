@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, ArrowRight, Loader2, CheckCircle, Shield, Sparkles } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 /* ── Google "G" SVG ── */
 function GoogleIcon() {
@@ -22,6 +23,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<AuthStep>('choose');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -138,26 +140,26 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <AnimatePresence mode="wait">
                   {step === 'choose' && (
                     <motion.div key="choose" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">Welcome Back, Sadhak</h2>
-                      <p className="mt-1.5 text-xs text-zinc-400">Sign in to sync your streak & progress across devices</p>
+                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">{t('auth.welcomeTitle')}</h2>
+                      <p className="mt-1.5 text-xs text-zinc-400">{t('auth.welcomeSubtitle')}</p>
                     </motion.div>
                   )}
                   {step === 'phone' && (
                     <motion.div key="phone" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">Enter Your Number</h2>
-                      <p className="mt-1.5 text-xs text-zinc-400">We'll send a one-time verification code</p>
+                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">{t('auth.enterNumberTitle')}</h2>
+                      <p className="mt-1.5 text-xs text-zinc-400">{t('auth.enterNumberSubtitle')}</p>
                     </motion.div>
                   )}
                   {step === 'otp' && (
                     <motion.div key="otp" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">Verify OTP</h2>
-                      <p className="mt-1.5 text-xs text-zinc-400">6-digit code sent to <span className="text-amber-400">{phone}</span></p>
+                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">{t('auth.verifyOtpTitle')}</h2>
+                      <p className="mt-1.5 text-xs text-zinc-400">{t('auth.otpSentTo')} <span className="text-amber-400">{phone}</span></p>
                     </motion.div>
                   )}
                   {step === 'success' && (
                     <motion.div key="success" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">ब्रह्मचर्य यात्रा जारी है 🔱</h2>
-                      <p className="mt-1.5 text-xs text-zinc-400">You are now signed in. Your streak is protected.</p>
+                      <h2 className="text-xl font-black text-white font-cinzel tracking-wide">{t('auth.signedInTitle')}</h2>
+                      <p className="mt-1.5 text-xs text-zinc-400">{t('auth.signedInSubtitle')}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -177,13 +179,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl bg-white/95 hover:bg-white text-zinc-900 font-bold text-sm transition-all hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
                       >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleIcon />}
-                        <span>Continue with Google</span>
+                        <span>{t('auth.continueGoogle')}</span>
                       </button>
 
                       {/* Divider */}
                       <div className="flex items-center gap-3 py-1">
                         <div className="flex-1 h-px bg-zinc-800" />
-                        <span className="text-xs text-zinc-600 font-medium">or</span>
+                        <span className="text-xs text-zinc-600 font-medium">{t('auth.or')}</span>
                         <div className="flex-1 h-px bg-zinc-800" />
                       </div>
 
@@ -193,12 +195,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800/90 border border-zinc-700/60 hover:border-amber-500/50 text-white font-semibold text-sm transition-all hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:scale-[1.02] active:scale-[0.98]"
                       >
                         <Phone className="w-4 h-4 text-amber-400" />
-                        <span>Continue with Phone</span>
+                        <span>{t('auth.continuePhone')}</span>
                       </button>
 
                       {/* Privacy note */}
                       <p className="text-center text-[10px] text-zinc-600 pt-1 flex items-center justify-center gap-1">
-                        <Shield className="w-3 h-3" /> No data sold. 100% private & free.
+                        <Shield className="w-3 h-3" /> {t('auth.privacyNote')}
                       </p>
                     </motion.div>
                   )}
@@ -227,9 +229,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         disabled={loading || phone.replace(/\D/g, '').length < 10}
                         className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-zinc-950 font-black text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Send OTP</span><ArrowRight className="w-4 h-4" /></>}
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>{t('auth.sendOtp')}</span><ArrowRight className="w-4 h-4" /></>}
                       </button>
-                      <button onClick={() => setStep('choose')} className="w-full text-center text-xs text-zinc-500 hover:text-zinc-300 transition pt-1">← Back</button>
+                      <button onClick={() => setStep('choose')} className="w-full text-center text-xs text-zinc-500 hover:text-zinc-300 transition pt-1">{t('auth.back')}</button>
                     </motion.div>
                   )}
 
@@ -258,17 +260,17 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         disabled={loading || otp.join('').length < 6}
                         className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-black text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Verify & Sign In</span><ArrowRight className="w-4 h-4" /></>}
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>{t('auth.verifyOtpBtn')}</span><ArrowRight className="w-4 h-4" /></>}
                       </button>
 
                       <div className="text-center text-xs text-zinc-500">
                         {countdown > 0 ? (
-                          <span>Resend OTP in <span className="text-amber-400 font-bold">{countdown}s</span></span>
+                          <span>{t('auth.resendIn', { count: countdown })}</span>
                         ) : (
-                          <button onClick={handleSendOtp} className="text-amber-400 hover:text-amber-300 font-semibold transition">Resend OTP</button>
+                          <button onClick={handleSendOtp} className="text-amber-400 hover:text-amber-300 font-semibold transition">{t('auth.resendOtp')}</button>
                         )}
                       </div>
-                      <button onClick={() => setStep('phone')} className="w-full text-center text-xs text-zinc-500 hover:text-zinc-300 transition">← Change Number</button>
+                      <button onClick={() => setStep('phone')} className="w-full text-center text-xs text-zinc-500 hover:text-zinc-300 transition">{t('auth.changeNumber')}</button>
                     </motion.div>
                   )}
 
@@ -280,13 +282,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                           <CheckCircle className="w-8 h-8 text-emerald-400" />
                         </div>
                       </div>
-                      <p className="text-sm text-zinc-300">Your journey continues. <span className="text-amber-400 font-bold">Stay strong, Sadhak!</span></p>
+                      <p className="text-sm text-zinc-300">{t('auth.stayStrong')}</p>
                       <button
                         onClick={onClose}
                         className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-zinc-950 font-black text-sm transition-all hover:scale-[1.02]"
                       >
                         <Sparkles className="w-4 h-4" />
-                        <span>Continue Sadhana</span>
+                        <span>{t('auth.continueSadhana')}</span>
                       </button>
                     </motion.div>
                   )}

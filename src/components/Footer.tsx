@@ -112,13 +112,13 @@ export default function Footer() {
             <div className="space-y-2.5 text-center lg:text-left max-w-2xl">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(245,158,11,0.2)]">
                 <HeartHandshake className="w-3.5 h-3.5 text-amber-400" />
-                <span>Official Sangha & Support Sanctuary</span>
+                <span>{t('footer.supportSanctuaryBadge')}</span>
               </div>
               <h4 className="text-xl sm:text-2xl lg:text-3xl font-black font-cinzel text-amber-300 tracking-wide drop-shadow-[0_2px_15px_rgba(245,158,11,0.35)]">
-                Community, Questions & DMCA Support
+                {t('footer.communityDmcaTitle')}
               </h4>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-medium">
-                For questions, feedback, spiritual mentorship, or DMCA copyright inquiries, contact us directly via email or our private Telegram sadhak community.
+                {t('footer.communityDmcaDesc')}
               </p>
             </div>
 
@@ -132,17 +132,17 @@ export default function Footer() {
                   className="btn-shimmer btn-metallic-glow px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 text-xs sm:text-sm font-black transition-all duration-300 flex items-center gap-2.5 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:shadow-[0_0_30px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <TelegramIcon className="w-4 h-4 text-zinc-950" />
-                  <span>Join Official Telegram</span>
+                  <span>{t('footer.joinTelegram')}</span>
                   <ExternalLink className="w-3.5 h-3.5 text-zinc-900" />
                 </a>
               ) : (
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-wizard'))}
                   className="px-5 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2.5 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
-                  title="Telegram Community is private. Complete Setup Wizard to join."
+                  title={t('footer.unlockTelegram')}
                 >
                   <Lock className="w-4 h-4 text-amber-400" />
-                  <span>Unlock Telegram (Complete Setup)</span>
+                  <span>{t('footer.unlockTelegram')}</span>
                 </button>
               )}
 
@@ -198,7 +198,7 @@ export default function Footer() {
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
                   <span className="text-[10px] font-sans uppercase tracking-widest text-zinc-300 font-semibold">
-                    Divine Sanctum
+                    {t('footer.divineSanctum')}
                   </span>
                 </div>
               </div>
@@ -216,12 +216,12 @@ export default function Footer() {
               <span>{t.footer.coreToolsTitle}</span>
             </h4>
             <ul className="space-y-2.5 text-xs text-zinc-400">
-              <li><a href="#streak" className="hover:text-amber-300 transition flex items-center gap-1"><span>🔥</span> <span>Streak Counter</span></a></li>
-              <li><a href={`${baseUrl}dashboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🧭</span> <span>Daily Sadhana Dashboard</span></a></li>
-              <li><a href={`${baseUrl}leaderboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🏆</span> <span>Global Leaderboard</span></a></li>
+              <li><a href="#streak" className="hover:text-amber-300 transition flex items-center gap-1"><span>🔥</span> <span>{t('footer.streakCounter')}</span></a></li>
+              <li><a href={`${baseUrl}dashboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🧭</span> <span>{t('footer.dailyDashboard')}</span></a></li>
+              <li><a href={`${baseUrl}leaderboard/`} className="hover:text-amber-300 transition flex items-center gap-1"><span>🏆</span> <span>{t('footer.globalLeaderboard')}</span></a></li>
               <li><a href="#calculator" className="hover:text-amber-300 transition flex items-center gap-1"><span>🧮</span> <span>{t.nav.calculator}</span></a></li>
               <li><a href="#brain-fog" className="hover:text-amber-300 transition flex items-center gap-1"><span>🧠</span> <span>{t.nav.brainFog}</span></a></li>
-              <li><button onClick={triggerPanic} className="text-red-400 hover:text-red-300 transition text-left cursor-pointer flex items-center gap-1"><span>🚨</span> <span>{t.nav.panicMode} (Urge Breaker)</span></button></li>
+              <li><button onClick={triggerPanic} className="text-red-400 hover:text-red-300 transition text-left cursor-pointer flex items-center gap-1"><span>🚨</span> <span>{t('nav.panicMode')} ({t('footer.urgeBreaker')})</span></button></li>
             </ul>
           </div>
 
@@ -235,7 +235,7 @@ export default function Footer() {
               <li>
                 <a href={`${baseUrl}books/`} className="hover:text-amber-300 transition flex items-center gap-1.5 font-medium text-amber-300/90">
                   <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Sanctuary Library (29+ PDFs)</span>
+                  <span>{t('footer.sanctuaryLibrary')}</span>
                 </a>
               </li>
               <li><a href="#courses" className="hover:text-amber-300 transition">{t.courses.titleHighlight} ({t('badges.reset30d')})</a></li>

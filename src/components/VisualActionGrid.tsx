@@ -413,15 +413,15 @@ export default function VisualActionGrid() {
               <div className="flex items-center justify-between gap-1 text-center mb-2 pb-1.5 border-b border-zinc-800/80">
                 <div className="flex-1">
                   <span className="text-base sm:text-lg block">🥈</span>
-                  <span className="text-[10px] text-zinc-300 font-bold block">#2 Silver</span>
+                  <span className="text-[10px] text-zinc-300 font-bold block">{t('mainCards.rank2Silver')}</span>
                 </div>
                 <div className="flex-1 border-x border-amber-500/20">
                   <span className="text-xl sm:text-2xl block">🥇</span>
-                  <span className="text-[10px] text-amber-300 font-black block">#1 Gold</span>
+                  <span className="text-[10px] text-amber-300 font-black block">{t('mainCards.rank1Gold')}</span>
                 </div>
                 <div className="flex-1">
                   <span className="text-base sm:text-lg block">🥉</span>
-                  <span className="text-[10px] text-orange-300 font-bold block">#3 Bronze</span>
+                  <span className="text-[10px] text-orange-300 font-bold block">{t('mainCards.rank3Bronze')}</span>
                 </div>
               </div>
 
