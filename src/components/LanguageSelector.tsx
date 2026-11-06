@@ -41,7 +41,7 @@ export default function LanguageSelector() {
       {/* Trigger Button with Minimal Padding to Prevent Logo Squeeze */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-0.5 sm:gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
+        className="flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
         aria-label="Select Language"
         aria-expanded={isOpen}
         title="Switch Language / भाषा बदलें"

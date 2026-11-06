@@ -91,6 +91,19 @@ export default function LibraryView() {
     window.dispatchEvent(new CustomEvent('open-dmca-modal'));
   };
 
+  const getCategoryName = (cat: string) => {
+    switch (cat) {
+      case 'All Books': return t('library.allCategories');
+      case 'Brahmacharya Sadhana': return t('library.catBrahmacharyaSadhana');
+      case 'Addiction Recovery': return t('library.catAddictionRecovery');
+      case 'Vedic Wisdom': return t('library.catVedicWisdom');
+      case 'Psychology & Mind': return t('library.catPsychologyMind');
+      case 'Physical Health & Prana': return t('library.catPhysicalHealthPrana');
+      case 'Modern Science': return t('library.catModernScience');
+      default: return cat;
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* ── Top Breadcrumb & Navigation Bar ── */}
@@ -161,11 +174,11 @@ export default function LibraryView() {
             </div>
             <div>
               <h3 className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-2">
-                <span>Copyright & Educational Fair Use Disclaimer</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-500/30">Non-Profit</span>
+                <span>{t('library.disclaimerTitle')}</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-500/30">{t('library.nonProfitBadge')}</span>
               </h3>
               <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
-                All scriptures, books, and scientific papers hosted in this sanctuary are provided <strong>strictly for educational, non-profit spiritual study, character building, and research</strong> under Section 107 of the US Copyright Act and Section 52 of the Indian Copyright Act, 1957. All rights belong entirely to their respective authors, publishers, and spiritual lineages.
+                {t('library.disclaimerDesc')}
               </p>
             </div>
           </div>
@@ -175,7 +188,7 @@ export default function LibraryView() {
               onClick={openDmcaModal}
               className="w-full md:w-auto px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer whitespace-nowrap active:scale-95"
             >
-              <span>DMCA Takedown / Copyright Notice</span>
+              <span>{t('library.dmcaButton')}</span>
               <ExternalLink className="w-3 h-3 text-amber-400" />
             </button>
           </div>
@@ -200,7 +213,7 @@ export default function LibraryView() {
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500 hover:text-white px-1.5 py-0.5 rounded bg-zinc-800"
               >
-                Clear
+                {t('library.clear')}
               </button>
             )}
           </div>
@@ -217,7 +230,7 @@ export default function LibraryView() {
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
-                {lang === 'All' ? '🌐 All Lang' : lang === 'Hindi' ? '🇮🇳 Hindi' : '🇬🇧 English'}
+                {lang === 'All' ? t('library.langAll') : lang === 'Hindi' ? t('library.langHindi') : t('library.langEnglish')}
               </button>
             ))}
           </div>
@@ -243,7 +256,7 @@ export default function LibraryView() {
                     : 'bg-zinc-900/70 hover:bg-zinc-850 text-zinc-400 hover:text-amber-200 border border-zinc-800/80 hover:border-amber-500/40'
                 }`}
               >
-                <span>{cat}</span>
+                <span>{getCategoryName(cat)}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
                     isSelected ? 'bg-zinc-950/30 text-zinc-950' : 'bg-zinc-800 text-zinc-400'
@@ -260,12 +273,12 @@ export default function LibraryView() {
       {/* ── Results Count Indicator ── */}
       <div className="flex items-center justify-between mb-6 px-1 text-xs text-zinc-400">
         <span>
-          Showing <span className="text-amber-400 font-bold">{filteredBooks.length}</span> of 29 Books
+          {t('library.showingCount', { count: filteredBooks.length, total: 29 })}
           {selectedCategory !== 'All Books' && (
-            <span className="text-zinc-500"> in "{selectedCategory}"</span>
+            <span className="text-zinc-500"> {t('library.inCategory', { category: getCategoryName(selectedCategory) })}</span>
           )}
           {searchQuery && (
-            <span className="text-zinc-500"> matching "{searchQuery}"</span>
+            <span className="text-zinc-500"> {t('library.matchingQuery', { query: searchQuery })}</span>
           )}
         </span>
 
@@ -278,7 +291,7 @@ export default function LibraryView() {
             }}
             className="text-amber-400 hover:underline cursor-pointer"
           >
-            Reset Filters
+            {t('library.resetFilters')}
           </button>
         )}
       </div>
@@ -287,9 +300,9 @@ export default function LibraryView() {
       {filteredBooks.length === 0 ? (
         <div className="text-center py-16 bg-zinc-950/60 border border-zinc-800 rounded-3xl p-8">
           <BookOpen className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-white font-cinzel">No Books Found</h3>
+          <h3 className="text-lg font-bold text-white font-cinzel">{t('library.noBooksFound')}</h3>
           <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
-            No scriptures or books matched your search query. Try clearing filters or searching for different keywords.
+            {t('library.noBooksDesc')}
           </p>
           <button
             onClick={() => {
@@ -299,7 +312,7 @@ export default function LibraryView() {
             }}
             className="mt-4 px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/30 transition cursor-pointer"
           >
-            View All 29 Books
+            {t('library.viewAllBooks')}
           </button>
         </div>
       ) : (
@@ -317,19 +330,19 @@ export default function LibraryView() {
                   {/* Top Badges & Meta */}
                   <div className="flex items-center justify-between gap-2 mb-3.5">
                     <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/35">
-                      {book.category}
+                      {getCategoryName(book.category)}
                     </span>
 
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-400">
-                        {book.language}
+                        {book.language === 'Hindi' ? t('library.langHindi') : book.language === 'English' ? t('library.langEnglish') : t('library.langSanskritHindi')}
                       </span>
                       <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-amber-400/90">
                         {book.sizeMb} MB
                       </span>
                       {lastReadMap[book.id] && (
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300">
-                          Pg {lastReadMap[book.id]}
+                          {t('library.pageAbbr', { page: lastReadMap[book.id] })}
                         </span>
                       )}
                     </div>
@@ -338,18 +351,18 @@ export default function LibraryView() {
                   {/* Book Title & Hindi Title */}
                   <div className="mb-2">
                     <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition-colors font-cinzel leading-snug">
-                      {book.title}
+                      {currentLang === 'hi' && book.hindiTitle ? book.hindiTitle : book.title}
                     </h3>
                     {book.hindiTitle && book.hindiTitle !== book.title && (
                       <p className="text-xs text-amber-400/80 font-sanskrit mt-0.5">
-                        {book.hindiTitle}
+                        {currentLang === 'hi' ? book.title : book.hindiTitle}
                       </p>
                     )}
                   </div>
 
                   {/* Author Line */}
                   <div className="flex items-center gap-1.5 text-xs text-zinc-400 mb-3">
-                    <span className="text-amber-500 font-bold">By:</span>
+                    <span className="text-amber-500 font-bold">{t('library.byAuthor')}:</span>
                     <span className="text-zinc-300 font-medium truncate">{book.author}</span>
                   </div>
 

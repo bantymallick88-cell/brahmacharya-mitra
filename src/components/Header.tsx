@@ -734,7 +734,7 @@ export default function Header() {
           }`}
       >
         <div
-          className={`header-nav-container flex flex-wrap min-[400px]:flex-nowrap items-center justify-between w-full max-w-5xl mx-auto px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-2xl transition-all duration-500 relative gap-y-1.5 gap-x-2 ${isScrolled
+          className={`header-nav-container flex items-center justify-between w-full px-3 py-2.5 max-w-5xl mx-auto overflow-hidden rounded-2xl transition-all duration-500 relative ${isScrolled
               ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
               : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
             }`}
@@ -751,7 +751,7 @@ export default function Header() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="header-logo-link flex items-center gap-2 sm:gap-2.5 shrink-0 cursor-pointer group"
+            className="header-logo-link flex items-center gap-2 sm:gap-2.5 flex-1 min-w-0 pr-2 cursor-pointer group"
             title="Brahmacharya Mitra — Home"
           >
             <div className="relative group/logo shrink-0 flex items-center justify-center">
@@ -768,15 +768,15 @@ export default function Header() {
               />
             </div>
 
-            <div className="whitespace-nowrap shrink-0">
-              <span className="text-base sm:text-xl md:text-2xl font-black whitespace-nowrap tracking-wider text-amber-400 drop-shadow-md uppercase select-none">
+            <div className="min-w-0 overflow-hidden">
+              <span className="truncate text-xs sm:text-base md:text-lg font-black tracking-wider text-amber-400 uppercase drop-shadow-md select-none block">
                 BRAHMACHARYA MITRA
               </span>
             </div>
           </a>
 
           {/* ── Column 2: Right-Side Controls (Language Dropdown & ☰ Menu Button) ── */}
-          <div className="header-controls-group flex items-center gap-1 sm:gap-2 shrink-0 relative z-[9999]">
+          <div className="header-controls-group flex items-center gap-1.5 shrink-0 relative z-[9999]">
             {/* Desktop Navigation Links (Large Screens Only) */}
             <div className="hidden lg:flex items-center gap-1.5 mr-1">
               <a
