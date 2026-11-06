@@ -663,7 +663,17 @@ export default function Header() {
       }
     } catch (e) {}
 
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 20;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     try {
@@ -734,12 +744,18 @@ export default function Header() {
           }`}
       >
         <div
-          className={`header-nav-container flex flex-row items-center justify-between w-full px-3 py-3 max-w-5xl mx-auto flex-nowrap rounded-2xl transition-all duration-500 relative ${isScrolled
-              ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
-              : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
+          className={`header-nav-container flex flex-row items-center justify-between w-full px-2.5 sm:px-4 py-2 sm:py-2.5 max-w-5xl mx-auto flex-nowrap rounded-2xl transition-all duration-300 relative ${isScrolled
+              ? 'backdrop-blur-md shadow-[0_10px_35px_rgba(0,0,0,0.9),0_0_20px_rgba(245,158,11,0.2)]'
+              : 'backdrop-blur-sm shadow-[0_8px_25px_rgba(0,0,0,0.7)]'
             }`}
           style={{
-            background: isScrolled ? 'rgba(20, 14, 8, 0.95)' : 'rgba(28, 20, 10, 0.85)',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'nowrap',
+            width: '100%',
+            background: isScrolled ? 'rgba(16, 11, 8, 0.95)' : 'rgba(24, 16, 10, 0.88)',
             border: '1.5px solid rgba(245, 158, 11, 0.3)',
           }}
         >
@@ -769,14 +785,24 @@ export default function Header() {
             </div>
 
             <div className="min-w-0 overflow-hidden">
-              <span className="truncate text-xs sm:text-base md:text-lg font-black tracking-wider text-amber-400 uppercase drop-shadow-md select-none block">
+              <span className="truncate text-xs sm:text-base font-black tracking-wider text-amber-400 uppercase drop-shadow-md select-none block">
                 BRAHMACHARYA MITRA
               </span>
             </div>
           </a>
 
           {/* ── Column 2: Right-Side Controls (Language Dropdown & ☰ Menu Button) ── */}
-          <div className="header-controls-group flex flex-row items-center gap-2 shrink-0 whitespace-nowrap relative z-[99999]">
+          <div
+            className="header-controls-group flex flex-row items-center gap-2 shrink-0 whitespace-nowrap relative z-[99999]"
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '8px',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+            }}
+          >
             {/* Desktop Navigation Links (Large Screens Only) */}
             <div className="hidden lg:flex items-center gap-1.5 mr-1">
               <a

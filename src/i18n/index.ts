@@ -210,7 +210,7 @@ export function useTranslation() {
     const handleLangChange = (e: any) => {
       const newLang = e.detail?.lang as LanguageCode;
       if (newLang && newLang in translations) {
-        setCurrentLangState(newLang);
+        setCurrentLangState((prev) => (prev !== newLang ? newLang : prev));
         if (typeof document !== 'undefined') {
           document.documentElement.lang = newLang;
           document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
@@ -222,7 +222,7 @@ export function useTranslation() {
       if (e.key === STORAGE_KEY && e.newValue) {
         const newLang = e.newValue as LanguageCode;
         if (newLang in translations) {
-          setCurrentLangState(newLang);
+          setCurrentLangState((prev) => (prev !== newLang ? newLang : prev));
         }
       }
     };

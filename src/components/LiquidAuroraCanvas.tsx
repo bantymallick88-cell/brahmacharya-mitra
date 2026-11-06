@@ -182,9 +182,7 @@ export default function LiquidAuroraCanvas() {
         });
 
         ctx.fillStyle = grad;
-        ctx.filter = 'blur(45px)';
         ctx.fill();
-        ctx.filter = 'none';
       });
 
       // 3. Central Prismatic Beams (Diagonal Aurora Streaks)
@@ -203,20 +201,35 @@ export default function LiquidAuroraCanvas() {
       prismGrad.addColorStop(1, 'transparent');
 
       ctx.fillStyle = prismGrad;
-      ctx.filter = 'blur(35px)';
       ctx.fillRect(-width * 0.45, -80, width * 0.9, 160);
       ctx.restore();
 
       // Reset composite operation
       ctx.globalCompositeOperation = 'source-over';
 
-      animationFrameId = requestAnimationFrame(render);
+      if (isVisible) {
+        animationFrameId = requestAnimationFrame(render);
+      }
     };
 
+    // IntersectionObserver to pause rendering when off-screen
+    let isVisible = true;
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        cancelAnimationFrame(animationFrameId);
+      }
+    }, { threshold: 0.05 });
+
+    observer.observe(canvas);
     animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
     };
@@ -227,7 +240,9 @@ export default function LiquidAuroraCanvas() {
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none -z-10"
       style={{
-        background: '#02040a',
+        background: '#0c0908',
+        filter: 'blur(28px)',
+        transform: 'translateZ(0)',
         willChange: 'transform'
       }}
       aria-hidden="true"

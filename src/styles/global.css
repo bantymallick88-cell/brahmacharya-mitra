@@ -58,19 +58,32 @@ body {
   background: #f59e0b;
 }
 
-/* --- Header Responsive Stacking for Narrow Screens (<400px) --- */
-@media (max-width: 399.98px) {
-  .header-nav-container {
-    flex-wrap: wrap !important;
-  }
-  .header-logo-link {
-    width: 100% !important;
-    justify-content: flex-start !important;
-  }
-  .header-controls-group {
-    width: 100% !important;
-    justify-content: flex-end !important;
-  }
+/* --- Header Hard-Lock (Strict Single Row & Perfect Alignment Across ALL Viewports) --- */
+.header-nav-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+}
+
+.header-controls-group {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+.header-logo-link {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  flex-shrink: 1 !important;
 }
 
 /* --- 21st.dev, Impeccable & Godly Frosted Glassmorphism --- */

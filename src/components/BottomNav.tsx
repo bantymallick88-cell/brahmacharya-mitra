@@ -15,8 +15,6 @@ export default function BottomNav() {
   const { t } = useTranslation();
 
   const [currentPath, setCurrentPath] = useState('');
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL)
     ? (import.meta.env.BASE_URL.replace(/\/$/, '') + '/')
@@ -25,17 +23,8 @@ export default function BottomNav() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setCurrentPath(window.location.pathname);
-
-      const handleScroll = () => {
-        const currentY = window.scrollY;
-        setIsVisible(true);
-        setLastScrollY(currentY);
-      };
-
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleScroll);
     }
-  }, [lastScrollY]);
+  }, []);
 
   const triggerPanic = () => {
     window.dispatchEvent(new CustomEvent('open-panic-modal'));
