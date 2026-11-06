@@ -730,11 +730,11 @@ export default function Header() {
     <>
       <header
         id="navbar"
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 w-full px-2 sm:px-4 ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
+        className={`fixed top-0 left-0 right-0 z-[99999] transition-all duration-500 w-full px-2 sm:px-4 ${isScrolled ? 'py-1 sm:py-2' : 'py-1.5 sm:py-3'
           }`}
       >
         <div
-          className={`header-nav-container flex items-center justify-between w-full px-3 py-2.5 max-w-5xl mx-auto overflow-hidden rounded-2xl transition-all duration-500 relative ${isScrolled
+          className={`header-nav-container flex flex-row items-center justify-between w-full px-3 py-3 max-w-5xl mx-auto flex-nowrap rounded-2xl transition-all duration-500 relative ${isScrolled
               ? 'backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.25)] nav-dock-glow'
               : 'backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.7)]'
             }`}
@@ -776,7 +776,7 @@ export default function Header() {
           </a>
 
           {/* ── Column 2: Right-Side Controls (Language Dropdown & ☰ Menu Button) ── */}
-          <div className="header-controls-group flex items-center gap-1.5 shrink-0 relative z-[9999]">
+          <div className="header-controls-group flex flex-row items-center gap-2 shrink-0 whitespace-nowrap relative z-[99999]">
             {/* Desktop Navigation Links (Large Screens Only) */}
             <div className="hidden lg:flex items-center gap-1.5 mr-1">
               <a

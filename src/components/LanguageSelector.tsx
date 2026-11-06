@@ -37,11 +37,11 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="relative z-[9999] inline-block text-left" ref={dropdownRef}>
+    <div className="relative z-[99999] inline-block text-left" ref={dropdownRef}>
       {/* Trigger Button with Minimal Padding to Prevent Logo Squeeze */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
+        className="relative z-[99999] flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 rounded-lg sm:rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/40 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-zinc-100 hover:text-white transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer shrink-0 active:scale-95"
         aria-label="Select Language"
         aria-expanded={isOpen}
         title="Switch Language / भाषा बदलें"
@@ -59,9 +59,9 @@ export default function LanguageSelector() {
         />
       </button>
 
-      {/* Layer-1 Front Dropdown Menu: absolute right-0 top-full mt-2 z-[9999] bg-amber-950/95 backdrop-blur-xl border border-amber-500/30 rounded-xl shadow-2xl */}
+      {/* Layer-1 Front Dropdown Menu with Maximum z-index Overlay */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 max-w-[90vw] z-[9999] bg-amber-950/95 backdrop-blur-xl border border-amber-500/30 rounded-xl shadow-2xl p-3 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 top-full mt-2 z-[99999] min-w-[140px] w-72 max-w-[90vw] bg-amber-950/98 backdrop-blur-2xl border border-amber-500/40 rounded-xl shadow-2xl p-3 animate-in fade-in zoom-in-95 duration-150">
           
           {/* Header */}
           <div className="flex items-center justify-between px-1 pb-2 border-b border-amber-500/20 mb-2.5">
