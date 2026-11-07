@@ -141,8 +141,8 @@ export default function VisualActionGrid() {
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           className="relative overflow-hidden rounded-3xl p-5 sm:p-6 backdrop-blur-2xl shadow-2xl flex flex-col justify-between group transition-all"
           style={{
-            background: 'rgba(28, 20, 10, 0.85)',
-            border: '1.5px solid rgba(245, 158, 11, 0.45)',
+            background: 'rgba(20, 14, 11, 0.9)',
+            border: '1.5px solid rgba(245, 158, 11, 0.35)',
             boxShadow: '0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 158, 11, 0.15)',
           }}
         >
@@ -210,9 +210,9 @@ export default function VisualActionGrid() {
           {/* 1-Tap Action Button: Start / Check-in */}
           <button
             onClick={handleScrollToStreak}
-            className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            className="mt-5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:via-orange-400 hover:to-amber-500 text-black font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            <Flame className="w-4 h-4 fill-zinc-950 text-zinc-950 shrink-0" />
+            <Flame className="w-4 h-4 fill-black text-black shrink-0" />
             <span>{t('mainCards.card1Btn')}</span>
             <ArrowRight className="w-4 h-4 ml-auto shrink-0" />
           </button>
@@ -286,9 +286,9 @@ export default function VisualActionGrid() {
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           className="relative overflow-hidden rounded-3xl p-5 sm:p-6 backdrop-blur-2xl shadow-2xl flex flex-col justify-between group transition-all"
           style={{
-            background: 'rgba(26, 16, 36, 0.88)',
-            border: '1.5px solid rgba(217, 119, 6, 0.45)',
-            boxShadow: '0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(217, 119, 6, 0.15)',
+            background: 'rgba(20, 14, 11, 0.9)',
+            border: '1.5px solid rgba(245, 158, 11, 0.35)',
+            boxShadow: '0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 158, 11, 0.15)',
           }}
         >
           {/* Ambient Cosmic Purple/Gold Glow */}
@@ -389,9 +389,9 @@ export default function VisualActionGrid() {
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           className="relative overflow-hidden rounded-3xl p-5 sm:p-6 backdrop-blur-2xl shadow-2xl flex flex-col justify-between group transition-all"
           style={{
-            background: 'rgba(28, 20, 10, 0.85)',
-            border: '1.5px solid rgba(234, 179, 8, 0.45)',
-            boxShadow: '0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(234, 179, 8, 0.15)',
+            background: 'rgba(20, 14, 11, 0.9)',
+            border: '1.5px solid rgba(245, 158, 11, 0.35)',
+            boxShadow: '0 10px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 158, 11, 0.15)',
           }}
         >
           {/* Ambient Golden Glow */}

@@ -31,7 +31,12 @@
     "quickLibraryTitle": "पवित्र ग्रंथालय",
     "quickLibrarySubtitle": "२९+ सनातन व आधुनिक पुस्तके",
     "quickFaqTitle": "नेहमी विचारले जाणारे प्रश्न (FAQ)",
-    "quickFaqSubtitle": "सर्व शंकांचे सविस्तर निरसन"
+    "quickFaqSubtitle": "सर्व शंकांचे सविस्तर निरसन",
+    "installPwa": "PWA स्थापित करा",
+    "pwaInstallTitle": "होम स्क्रीनवर जोडा",
+    "pwainstallTitle": "होम स्क्रीनवर जोडा",
+    "pwaInstallSubtitle": "📱 ऑफलाइन साधनेसाठी होम स्क्रीनवर जोडा",
+    "pwainstallSubtitle": "📱 ऑफलाइन साधनेसाठी होम स्क्रीनवर जोडा"
   },
   "nav": {
     "calculator": "कॅल्क्युलेटर",

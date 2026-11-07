@@ -13,8 +13,8 @@ export default function SacredLibraryShowcase() {
       <div 
         className="relative overflow-hidden rounded-3xl p-6 sm:p-10 backdrop-blur-2xl shadow-[0_0_45px_rgba(245,158,11,0.15)] transition-all duration-500 group"
         style={{
-          background: 'rgba(28, 20, 10, 0.75)',
-          border: '1.5px solid rgba(245, 158, 11, 0.25)',
+          background: 'rgba(20, 14, 11, 0.9)',
+          border: '1.5px solid rgba(245, 158, 11, 0.35)',
         }}
       >
         {/* Ambient Cosmic Gold Aura */}
@@ -56,7 +56,7 @@ export default function SacredLibraryShowcase() {
           <div className="flex flex-col sm:flex-row lg:flex-col items-center gap-3 shrink-0 w-full sm:w-auto">
             <a
               href={`${baseUrl}books/`}
-              className="btn-shimmer btn-metallic-glow w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-zinc-950 font-black text-sm transition-all duration-300 flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.55)] hover:scale-105 active:scale-95 cursor-pointer text-center"
+              className="btn-shimmer btn-metallic-glow w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:via-orange-400 hover:to-amber-500 text-black font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg shadow-orange-500/20 hover:scale-105 active:scale-95 cursor-pointer text-center"
             >
               <span>{t('libraryShowcase.browseBtn')}</span>
               <span className="text-base">→</span>

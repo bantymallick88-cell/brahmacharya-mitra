@@ -100,9 +100,9 @@ export default function InstallPrompt() {
           className="fixed bottom-24 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 z-40 sm:max-w-md w-auto"
         >
           <div
-            className="relative overflow-hidden rounded-2xl p-3.5 sm:p-4 backdrop-blur-2xl border border-amber-500/40 shadow-[0_10px_40px_rgba(0,0,0,0.95),0_0_25px_rgba(245,158,11,0.25)] flex items-center justify-between gap-3 text-white"
+            className="relative overflow-hidden rounded-2xl p-3.5 sm:p-4 backdrop-blur-2xl border border-amber-500/30 hover:border-amber-500/50 shadow-[0_10px_40px_rgba(0,0,0,0.95),0_0_25px_rgba(245,158,11,0.25)] flex items-center justify-between gap-3 text-white transition-all"
             style={{
-              background: 'linear-gradient(135deg, rgba(13,13,13,0.96) 0%, rgba(20,20,30,0.96) 100%)',
+              background: 'linear-gradient(135deg, rgba(20,14,11,0.96) 0%, rgba(12,9,8,0.98) 100%)',
             }}
           >
             {/* Subtle top shimmer beam */}
@@ -113,14 +113,14 @@ export default function InstallPrompt() {
               <img
                 src={baseUrl + "photo_mahadev.jpg"}
                 alt="Brahmacharya Mitra"
-                className="w-10 h-10 rounded-full object-cover border-2 border-[#FF8C00] shrink-0 shadow-[0_0_12px_rgba(255,140,0,0.5)]"
+                className="w-10 h-10 rounded-full object-cover border-2 border-amber-500 shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                 style={{ objectPosition: 'center 20%' }}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = MAHADEV_IMAGE_DATA;
                 }}
               />
-              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-[9px] font-black flex items-center justify-center text-black border border-black">
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-black flex items-center justify-center text-black border border-black shadow">
                 +
               </span>
             </div>
@@ -128,15 +128,15 @@ export default function InstallPrompt() {
             {/* App Info */}
             <div className="flex-1 min-w-0 pr-1">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-xs sm:text-sm font-bold text-white truncate">
+                <h4 className="text-xs sm:text-sm font-bold text-amber-400 truncate">
                   Brahmacharya Mitra
                 </h4>
-                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
                   PWA
                 </span>
               </div>
               <p className="text-[11px] text-zinc-300 truncate mt-0.5">
-                {t('menu.pwaInstallSubtitle') || '📱 Add to Home Screen for offline sadhana'}
+                {t('menu.pwaInstallSubtitle', '📱 Add to Home Screen for offline sadhana')}
               </p>
             </div>
 
@@ -144,11 +144,11 @@ export default function InstallPrompt() {
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <button
                 onClick={handleInstallClick}
-                className="flex items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-xs shadow-[0_0_20px_rgba(245,158,11,0.4)] active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                className="flex items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:via-orange-400 hover:to-amber-500 text-black font-bold text-xs shadow-lg shadow-orange-500/20 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
                 title="1-Tap Native Install"
               >
-                <Smartphone className="w-3.5 h-3.5 shrink-0" />
-                <span>{t('menu.pwaInstallTitle') || 'Add to Home Screen'}</span>
+                <Smartphone className="w-3.5 h-3.5 shrink-0 text-black" />
+                <span>{t('menu.pwaInstallTitle', 'Add to Home Screen')}</span>
               </button>
 
               <button

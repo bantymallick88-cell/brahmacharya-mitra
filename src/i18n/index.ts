@@ -7,6 +7,7 @@ import enJson from '../locales/en.json';
 import hiJson from '../locales/hi.json';
 import orJson from '../locales/or.json';
 import mrJson from '../locales/mr.json';
+import bnJson from '../locales/bn.json';
 
 // Traditional TypeScript locales
 import { en } from './locales/en';
@@ -47,7 +48,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
   en: deepMerge(deepMerge({}, en), enJson) as TranslationDictionary,
   hi: deepMerge(deepMerge(deepMerge({}, enJson), hi), hiJson) as TranslationDictionary,
   or: deepMerge(deepMerge(deepMerge({}, enJson), or), orJson) as TranslationDictionary,
-  bn: deepMerge(deepMerge({}, enJson), bn) as any,
+  bn: deepMerge(deepMerge(deepMerge({}, enJson), bn), bnJson) as any,
   mr: deepMerge(deepMerge(deepMerge({}, enJson), mr), mrJson) as TranslationDictionary,
   te: deepMerge(deepMerge({}, enJson), te) as any,
   ta: deepMerge(deepMerge({}, enJson), ta) as any,
@@ -93,15 +94,42 @@ export function setLanguage(lang: LanguageCode): void {
 }
 
 /**
- * Safely resolves a nested dot-delimited key in an object.
+ * Built-in fallback strings for high-traffic UI keys to guarantee zero raw key leaks.
+ */
+const GLOBAL_KEY_FALLBACKS: Record<string, string> = {
+  'menu.pwainstalltitle': 'Add to Home Screen',
+  'menu.pwainstallsubtitle': '📱 Add to Home Screen for offline sadhana',
+  'menu.pwainstall': 'Install PWA',
+  'menu.installpwa': 'Install PWA',
+  'menu.linkcopied': 'Link Copied to Clipboard!',
+  'bottomnav.home': 'Home',
+  'bottomnav.dashboard': 'Dashboard',
+  'bottomnav.ranks': 'Ranks',
+  'bottomnav.sanctuary': 'Sanctuary',
+  'bottomnav.preferences': 'Preferences',
+};
+
+/**
+ * Safely resolves a nested dot-delimited key in an object with case-insensitive resilience.
  */
 function getNestedValue(obj: any, path: string): string | undefined {
   if (!obj || typeof obj !== 'object') return undefined;
   const parts = path.split('.');
   let current: any = obj;
   for (const part of parts) {
-    if (current && typeof current === 'object' && part in current) {
-      current = current[part];
+    if (current && typeof current === 'object') {
+      if (part in current) {
+        current = current[part];
+      } else {
+        // Case-insensitive fallback match (e.g., pwainstallTitle -> pwaInstallTitle)
+        const lowerPart = part.toLowerCase();
+        const matchedKey = Object.keys(current).find((k) => k.toLowerCase() === lowerPart);
+        if (matchedKey) {
+          current = current[matchedKey];
+        } else {
+          return undefined;
+        }
+      }
     } else {
       return undefined;
     }
@@ -120,18 +148,38 @@ function interpolate(text: string, params?: Record<string, string | number>): st
 }
 
 /**
- * Standalone translation lookup helper with automatic English fallback.
+ * Standalone translation lookup helper with automatic English and built-in fallback.
+ * Guarantees zero raw key leaks even if a string is missing in a dictionary.
  */
-export function getTranslation(key: string, lang?: LanguageCode, params?: Record<string, string | number>): string {
+export function getTranslation(
+  key: string,
+  lang?: LanguageCode,
+  params?: Record<string, string | number> | string,
+  defaultFallback?: string
+): string {
   const activeLang = lang || getInitialLanguage();
   const currentDict = translations[activeLang] || translations.en;
   const fallbackDict = translations.en;
 
+  // Resolve params vs default fallback text
+  let p: Record<string, string | number> | undefined;
+  let explicitFallback = defaultFallback;
+  if (typeof params === 'string') {
+    explicitFallback = params;
+    p = undefined;
+  } else {
+    p = params;
+  }
+
+  // 1. Try active language dictionary
   let val = getNestedValue(currentDict, key);
+
+  // 2. Try English fallback dictionary
   if (val === undefined) {
     val = getNestedValue(fallbackDict, key);
   }
 
+  // 3. Try flat key match in active or English
   if (val === undefined) {
     if (typeof (currentDict as any)?.[key] === 'string') {
       val = (currentDict as any)[key];
@@ -140,8 +188,34 @@ export function getTranslation(key: string, lang?: LanguageCode, params?: Record
     }
   }
 
+  // 4. Try built-in static key fallbacks
+  if (val === undefined) {
+    const lowerKey = key.toLowerCase();
+    if (GLOBAL_KEY_FALLBACKS[lowerKey]) {
+      val = GLOBAL_KEY_FALLBACKS[lowerKey];
+    }
+  }
+
+  // 5. Use explicitly provided fallback string
+  if (val === undefined && explicitFallback) {
+    val = explicitFallback;
+  }
+
   if (val !== undefined) {
-    return interpolate(val, params);
+    return interpolate(val, p);
+  }
+
+  // 6. If key is in dot notation (e.g., 'menu.pwainstallTitle'), gracefully humanize rather than leaking code path
+  if (key.includes('.')) {
+    const lastPart = key.split('.').pop() || key;
+    // Turn camelCase into words: e.g. pwaInstallTitle -> Pwa Install Title
+    const humanized = lastPart
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase())
+      .replace(/ Title$/i, '')
+      .replace(/ Subtitle$/i, '')
+      .trim();
+    if (humanized.length > 0) return humanized;
   }
 
   return key;
@@ -155,8 +229,12 @@ export function createT(currentLang: LanguageCode): TranslationFunction {
   const currentDict = translations[currentLang] || translations.en;
   const fallbackDict = translations.en;
 
-  const tFunc = (key: string, params?: Record<string, string | number>): string => {
-    return getTranslation(key, currentLang, params);
+  const tFunc = (
+    key: string,
+    params?: Record<string, string | number> | string,
+    defaultFallback?: string
+  ): string => {
+    return getTranslation(key, currentLang, params, defaultFallback);
   };
 
   return new Proxy(tFunc, {
