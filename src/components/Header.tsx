@@ -5,7 +5,7 @@ import {
   Calculator, Brain, Compass, ChevronRight, ArrowRight,
   UserCircle, BookOpen, BarChart3, Users, Wind,
   Image as ImageIcon, Settings, ChevronLeft, Zap, Clock,
-  Share2, Check, Smartphone, HelpCircle, Lock, ShieldCheck
+  Share2, Check, Smartphone, HelpCircle, Lock, ShieldCheck, Sun, Moon
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../i18n';
@@ -291,7 +291,6 @@ function ToolsDrawer({
               )}
 
               <div className="flex items-center gap-2">
-                <ThemeToggle />
                 <button
                   onClick={onClose}
                   className="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-zinc-400 hover:text-white hover:border-amber-500/50 transition cursor-pointer"
@@ -357,6 +356,24 @@ function ToolsDrawer({
                       <Smartphone className="w-4 h-4 text-amber-400 flex-shrink-0" />
                       <span>📱 {t('menu.installPwa')}</span>
                     </button>
+                  </div>
+
+                  {/* ── Dark / Light Theme Mode Toggle Card ── */}
+                  <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-zinc-950/80 border border-amber-500/30 hover:border-amber-400/50 flex items-center justify-between shadow-sm transition-all">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                        <Sun className="w-4 h-4 text-amber-400" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                          <span>{t('menu.themeMode', 'Theme Mode')}</span>
+                        </div>
+                        <div className="text-[10px] text-zinc-400">
+                          {t('menu.themeModeDesc', '🌙 Dark / ☀️ Light')}
+                        </div>
+                      </div>
+                    </div>
+                    <ThemeToggle />
                   </div>
 
                   {/* Streak & Emergency Panic Quick Row */}

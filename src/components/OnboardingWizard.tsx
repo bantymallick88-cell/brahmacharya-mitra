@@ -193,9 +193,17 @@ export default function OnboardingWizard({
   onComplete,
   forceShow = false,
 }: OnboardingWizardProps) {
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+  const [, setLangTick] = useState(0);
   const [internalOpen, setInternalOpen] = useState(false);
   const [step, setStep] = useState(1);
+
+  // Global reactive language listener: updates all open modals instantly
+  useEffect(() => {
+    const handleLangChange = () => setLangTick((n) => n + 1);
+    window.addEventListener('language-changed', handleLangChange);
+    return () => window.removeEventListener('language-changed', handleLangChange);
+  }, []);
 
   // Form State
   const [name, setName] = useState('');
@@ -625,9 +633,11 @@ export default function OnboardingWizard({
                             </div>
                             <div className="min-w-0">
                               <div className="font-cinzel font-black text-xs sm:text-lg text-white truncate">
-                                {g.title}
+                                {t(`onboarding.goal${g.days}Title`, g.title)}
                               </div>
-                              <div className="text-[10px] sm:text-xs text-amber-400/90 font-medium truncate">{g.subtitle}</div>
+                              <div className="text-[10px] sm:text-xs text-amber-400/90 font-medium truncate">
+                                {t(`onboarding.goal${g.days}Subtitle`, g.subtitle)}
+                              </div>
                             </div>
                           </div>
 
@@ -639,8 +649,12 @@ export default function OnboardingWizard({
                         </div>
 
                         <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-white/10 flex items-center justify-between text-[9px] sm:text-[11px] gap-1">
-                          <span className="font-sanskrit text-zinc-300 truncate">{g.hindi}</span>
-                          <span className="text-amber-300/90 font-semibold shrink-0">{g.highlight}</span>
+                          <span className="font-sanskrit text-zinc-300 truncate">
+                            {t(`onboarding.goal${g.days}Vedic`, g.hindi)}
+                          </span>
+                          <span className="text-amber-300/90 font-semibold shrink-0">
+                            {t(`onboarding.goal${g.days}Highlight`, g.highlight)}
+                          </span>
                         </div>
                       </button>
                     );

@@ -23,8 +23,16 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+  const [, setLangTick] = useState(0);
   const [step, setStep] = useState<AuthStep>('choose');
+
+  // Global reactive language listener
+  useEffect(() => {
+    const handleLangChange = () => setLangTick((n) => n + 1);
+    window.addEventListener('language-changed', handleLangChange);
+    return () => window.removeEventListener('language-changed', handleLangChange);
+  }, []);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
