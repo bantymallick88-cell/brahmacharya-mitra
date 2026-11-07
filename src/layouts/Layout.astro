@@ -8,16 +8,20 @@ import NsfwBlockerModal from '../components/NsfwBlockerModal';
 interface Props {
 	title?: string;
 	description?: string;
+	canonical?: string;
+	noindex?: boolean;
 }
 
 const { 
-	title = "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker",
-	description = "Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, transmute energy into Ojas, and access 29 free sacred scriptures."
+	title = "Brahmacharya Mitra — Ultimate Sobriety & Habit Transformation Suite",
+	description = "Master celibacy, track sobriety streaks, break urges with 4-7-8 breathwork, and access sacred Vedic scriptures.",
+	canonical = "https://brahmacharya.fixeehub.com/",
+	noindex = false,
 } = Astro.props;
 
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
-const canonicalUrl = "https://brahmacharya.fixeehub.com/";
-const ogImage = "https://brahmacharya.fixeehub.com/photo_mahadev.jpg";
+const canonicalUrl = canonical || "https://brahmacharya.fixeehub.com/";
+const ogImage = "https://brahmacharya.fixeehub.com/logo.png";
 
 // Comprehensive AI Overview & Google Rich Snippet Structured Data
 const websiteJsonLd = {
@@ -29,6 +33,15 @@ const websiteJsonLd = {
 	"url": canonicalUrl,
 	"description": description,
 	"inLanguage": ["en", "hi", "sa"],
+	"publisher": {
+		"@type": "Organization",
+		"name": "Brahmacharya Mitra",
+		"url": canonicalUrl,
+		"logo": {
+			"@type": "ImageObject",
+			"url": "https://brahmacharya.fixeehub.com/logo.png"
+		}
+	},
 	"potentialAction": {
 		"@type": "SearchAction",
 		"target": {
@@ -238,9 +251,10 @@ const faqJsonLd = {
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
-		<link rel="icon" type="image/jpeg" href={`${baseUrl}photo_mahadev.jpg`} />
-		<link rel="shortcut icon" href={`${baseUrl}photo_mahadev.jpg`} />
-		<link rel="apple-touch-icon" href={`${baseUrl}photo_mahadev.jpg`} />
+		<link rel="icon" type="image/png" sizes="512x512" href={`${baseUrl}logo.png`} />
+		<link rel="icon" type="image/png" sizes="32x32" href={`${baseUrl}favicon.ico`} />
+		<link rel="shortcut icon" href={`${baseUrl}favicon.svg`} />
+		<link rel="apple-touch-icon" href={`${baseUrl}logo.png`} />
 		<link rel="manifest" href={`${baseUrl}manifest.json`} />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -253,13 +267,22 @@ const faqJsonLd = {
 		<title>{title}</title>
 		<meta name="title" content={title} />
 		<meta name="description" content={description} />
-		<meta name="keywords" content="brahmacharya, celibacy, nofap, porn addiction recovery, semen retention tracker, dopamine detox, brain fog recovery, ojas transmutation, quit porn, streak counter, swami sivananda brahmacharya, premanand ji maharaj brahmacharya" />
+		<meta name="keywords" content="brahmacharya, celibacy, nofap, sobriety suite, habit transformation, porn addiction recovery, semen retention tracker, dopamine detox, brain fog recovery, ojas transmutation, quit porn, streak counter, 4-7-8 breathwork, swami sivananda brahmacharya, premanand ji maharaj brahmacharya" />
 		<meta name="author" content="Brahmacharya Mitra" />
-		<meta name="theme-color" content="#02040a" />
+		<meta name="theme-color" content="#0c0908" />
 
 		<!-- Crawlers & AI Overview Directives -->
-		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-		<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+		{noindex ? (
+			<>
+				<meta name="robots" content="noindex, follow" />
+				<meta name="googlebot" content="noindex, follow" />
+			</>
+		) : (
+			<>
+				<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+				<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+			</>
+		)}
 		<meta name="classification" content="Health, Spirituality, Neuroscience, Celibacy, Mental Wellness" />
 		<meta name="coverage" content="Worldwide" />
 		<meta name="distribution" content="Global" />

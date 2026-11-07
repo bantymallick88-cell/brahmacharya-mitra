@@ -178,13 +178,12 @@ export default function Footer() {
             <div className="flex items-center gap-3.5">
               <div className="relative shrink-0 flex items-center justify-center">
                 <img
-                  src={baseUrl + "photo_mahadev.jpg"}
+                  src={baseUrl + "favicon.svg"}
                   alt="Brahmacharya Mitra Logo"
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] shrink-0"
-                  style={{ objectPosition: 'center 20%' }}
+                  className="w-12 h-12 rounded-2xl object-contain border-2 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)] shrink-0"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                    e.currentTarget.src = baseUrl + "logo.png";
                   }}
                 />
               </div>

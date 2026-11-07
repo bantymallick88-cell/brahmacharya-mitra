@@ -33,13 +33,12 @@ const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 export function MahadevLogo({ className, size }: { size?: number; className?: string }) {
   return (
     <img
-      src={baseUrl + "photo_mahadev.jpg"}
-      alt="Brahmacharya Mitra"
-      className={className || "w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_15px_rgba(255,140,0,0.5)] shrink-0"}
-      style={{ objectPosition: 'center 20%' }}
+      src={baseUrl + "favicon.svg"}
+      alt="Brahmacharya Mitra Logo"
+      className={className || "w-9 h-9 sm:w-10 sm:h-10 rounded-2xl object-contain border-2 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0"}
       onError={(e) => {
         e.currentTarget.onerror = null;
-        e.currentTarget.src = MAHADEV_IMAGE_DATA;
+        e.currentTarget.src = baseUrl + "logo.png";
       }}
     />
   );
@@ -254,15 +253,14 @@ function ToolsDrawer({
               {currentScreen === 'menu' ? (
                 <div className="flex items-center gap-3">
                   <div className="relative shrink-0 flex items-center justify-center">
-                    <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 blur-[3px] opacity-75" />
+                    <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 blur-[3px] opacity-75" />
                     <img
-                      src={baseUrl + "photo_mahadev.jpg"}
-                      alt="Brahmacharya Mitra"
-                      className="relative w-9 h-9 rounded-full object-cover border-2 border-[#FF8C00] shadow-[0_0_12px_rgba(255,140,0,0.5)] shrink-0"
-                      style={{ objectPosition: 'center 20%' }}
+                      src={baseUrl + "favicon.svg"}
+                      alt="Brahmacharya Mitra Logo"
+                      className="relative w-9 h-9 rounded-2xl object-contain border border-amber-400/60 shadow-[0_0_12px_rgba(245,158,11,0.5)] shrink-0"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                        e.currentTarget.src = baseUrl + "logo.png";
                       }}
                     />
                   </div>
@@ -788,15 +786,14 @@ export default function Header() {
             title="Brahmacharya Mitra — Home"
           >
             <div className="relative group/logo shrink-0 flex items-center justify-center">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[5px] opacity-80 group-hover/logo:opacity-100 transition-opacity duration-300" />
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 blur-[5px] opacity-80 group-hover/logo:opacity-100 transition-opacity duration-300" />
               <img
-                src={baseUrl + "photo_mahadev.jpg"}
+                src={baseUrl + "favicon.svg"}
                 alt="Brahmacharya Mitra Logo"
-                className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(255,140,0,0.6)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
-                style={{ objectPosition: 'center 20%' }}
+                className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-2xl object-contain border-2 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.6)] group-hover/logo:scale-105 transition-transform duration-300 shrink-0"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = MAHADEV_IMAGE_DATA;
+                  e.currentTarget.src = baseUrl + "logo.png";
                 }}
               />
             </div>

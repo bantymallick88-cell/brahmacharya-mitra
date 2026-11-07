@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { useTranslation } from '../i18n';
 
 export const SEO_CONFIG = {
-  title: "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker",
-  description: "Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, transmute energy into Ojas, and access 29 free sacred scriptures.",
-  keywords: "brahmacharya, celibacy, nofap, porn addiction recovery, semen retention tracker, dopamine detox, brain fog recovery, ojas transmutation, quit porn, streak counter, swami sivananda brahmacharya, premanand ji maharaj brahmacharya, celibacy benefits 90 days, urge breaker 4-7-8 breathing",
+  title: "Brahmacharya Mitra — Ultimate Sobriety & Habit Transformation Suite",
+  description: "Master celibacy, track sobriety streaks, break urges with 4-7-8 breathwork, and access sacred Vedic scriptures.",
+  keywords: "brahmacharya, celibacy, nofap, sobriety suite, habit transformation, porn addiction recovery, semen retention tracker, dopamine detox, brain fog recovery, ojas transmutation, quit porn, streak counter, swami sivananda brahmacharya, premanand ji maharaj brahmacharya, celibacy benefits 90 days, urge breaker 4-7-8 breathing",
   author: "Brahmacharya Mitra",
   siteUrl: "https://brahmacharya.fixeehub.com/",
-  image: "photo_mahadev.jpg",
+  image: "logo.png",
   type: "website",
 };
 
@@ -17,13 +17,13 @@ export default function SEO() {
   const titleByLang: Record<string, string> = {
     hi: "ब्रह्मचर्य मित्र — वीर्य रक्षा, ब्रह्मचर्य एवं NoFap साधना ट्रैकर",
     or: "ବ୍ରହ୍ମଚର୍ଯ୍ୟ ମିତ୍ର — ବୀର୍ଯ୍ୟ ରକ୍ଷା, ବ୍ରହ୍ମଚର୍ଯ୍ୟ ଓ NoFap ସାଧନା ଟ୍ରାକର୍",
-    en: "Brahmacharya Mitra — Celibacy, NoFap & Semen Retention Tracker"
+    en: "Brahmacharya Mitra — Ultimate Sobriety & Habit Transformation Suite"
   };
 
   const descByLang: Record<string, string> = {
     hi: "ब्रह्मचर्य मित्र के साथ अश्लीलता की लत, ब्रेन फॉग और पतन चक्र पर विजय प्राप्त करें। अपनी ब्रह्मचर्य स्ट्रीक ट्रैक करें, ओजस रूपांतरण सीखें और 29 निःशुल्क पवित्र शास्त्र पढ़ें।",
     or: "ବ୍ରହ୍ମଚର୍ଯ୍ୟ ମିତ୍ର ସହିତ ଅଶ୍ଳୀଳତା, ବ୍ରେନ୍ ଫଗ୍ ଓ ପତନ ଚକ୍ରରୁ ମୁକ୍ତି ପାଆନ୍ତୁ। ଆପଣଙ୍କ ବ୍ରହ୍ମଚର୍ଯ୍ୟ ଷ୍ଟ୍ରିକ୍ ଟ୍ରାକ୍ କରନ୍ତୁ ଏବଂ ୨୯ଟି ମାଗଣା ପବିତ୍ର ପୁସ୍ତକ ପଢ଼ନ୍ତୁ।",
-    en: "Overcome porn addiction, brain fog, and relapse cycles with Brahmacharya Mitra. Track your celibacy & NoFap streak, master semen retention, transmute energy into Ojas, and access 29 free sacred scriptures."
+    en: "Master celibacy, track sobriety streaks, break urges with 4-7-8 breathwork, and access sacred Vedic scriptures."
   };
 
   const activeTitle = titleByLang[currentLang] || titleByLang.en;
