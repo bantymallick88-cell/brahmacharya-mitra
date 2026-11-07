@@ -111,12 +111,12 @@ export default function InstallPrompt() {
             {/* Brand Avatar */}
             <div className="relative flex-shrink-0">
               <img
-                src={baseUrl + "favicon.svg"}
+                src={baseUrl + "logo.png"}
                 alt="Brahmacharya Mitra"
-                className="w-10 h-10 rounded-2xl object-contain border-2 border-amber-500 shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+                className="w-10 h-10 rounded-full object-cover border-2 border-amber-500 shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = baseUrl + "logo.png";
+                  e.currentTarget.src = baseUrl + "photo_mahadev.jpg";
                 }}
               />
               <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-black flex items-center justify-center text-black border border-black shadow">
